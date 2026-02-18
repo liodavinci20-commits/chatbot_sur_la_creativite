@@ -269,3 +269,22 @@ Et surtout, tu as appris à **CRÉER** et **IMAGINER** des formulaires, pas just
 
 Continue à coder et à être créatif ! Le monde du web t'attend ! 🌍💻
 """
+
+GENERAL_KNOWLEDGE = {
+    "definition": {
+        "keywords": ["c'est quoi", "qu'est-ce que", "definition", "expliques", "c'est un formulaire", "cest quoi"],
+        "response": "Un **formulaire**, c'est comme un **bon de commande** numérique ou un **questionnaire** ! 📝\n\nC'est une zone sur une page web qui te permet d'envoyer des informations au site (pour t'inscrire, te connecter, acheter quelque chose...)."
+    },
+    "history": {
+        "keywords": ["inventé", "créé", "origine", "histoire", "quand", "année", "invention"],
+        "response": "Les formulaires HTML sont nés avec le web au début des années 90 ! 🕰️\n\nC'est **Tim Berners-Lee** (l'inventeur du Web) et ses collègues qui les ont imaginés pour que le web ne soit pas juste de la lecture, mais aussi de l'échange !"
+    },
+    "utility": {
+        "keywords": ["sert à quoi", "pourquoi", "utilité", "usage", "ça sert"],
+        "response": "Ils servent à **discuter** avec les sites web ! 💬\n\nSans formulaire, tu ne pourrais pas :\n- T'inscrire sur Insta ou TikTok\n- Faire une recherche Google\n- Commander une pizza en ligne 🍕"
+    },
+    "structure": {
+        "keywords": ["structure", "balise", "code", "ressemble", "écrit"],
+        "response": "Un formulaire commence toujours par `<form>` et finit par `</form>`. À l'intérieur, on met des ingrédients comme `<input>` (zones de texte) ou `<button>` !"
+    }
+}

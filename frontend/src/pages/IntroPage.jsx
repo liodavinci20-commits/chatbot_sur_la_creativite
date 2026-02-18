@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Lottie from 'lottie-react'
 import { HiOutlineEye, HiOutlineXMark, HiOutlineArrowRight, HiOutlineQuestionMarkCircle, HiOutlineLightBulb } from 'react-icons/hi2'
 import helloAnimation from '../assets/animations/hello-robot.json'
+import ThinkingRobot from '../components/ThinkingRobot'
 
 // SVG du menu de restaurant
 function MenuSVG() {
@@ -53,10 +54,45 @@ function MenuSVG() {
 export default function IntroPage({ user }) {
     const [showPopup, setShowPopup] = useState(false)
     const [showSimpleExplanation, setShowSimpleExplanation] = useState(false)
+    const [question, setQuestion] = useState('')
+    const [answer, setAnswer] = useState(null)
+    const [robotState, setRobotState] = useState('idle')
     const navigate = useNavigate()
 
+    const handleAsk = async (e) => {
+        e.preventDefault()
+        if (!question.trim()) return
+
+        setRobotState('thinking')
+        setAnswer(null)
+
+        try {
+            // Simulation de délai pour l'animation
+            await new Promise(r => setTimeout(r, 1500))
+
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ message: question })
+            })
+            const data = await res.json()
+
+            setAnswer(data.response)
+            setRobotState('speaking')
+
+            // Revenir à idle après avoir parlé
+            setTimeout(() => setRobotState('idle'), 5000)
+
+        } catch (err) {
+            console.error(err)
+            setAnswer("Oups, je n'arrive pas à réfléchir... Réessaie plus tard ! 🤯")
+            setRobotState('idle')
+        }
+    }
+
     const handleContinue = () => {
-        navigate('/hub')
+        navigate('/foundations')
     }
 
     const fadeUp = {
@@ -272,6 +308,57 @@ export default function IntroPage({ user }) {
                         >
                             <MenuSVG />
                         </motion.div>
+                    </div>
+                </motion.section>
+
+                {/* ═══════════════════════════════════════
+                   SECTION Q&A — Pose une question
+                   ═══════════════════════════════════════ */}
+                <motion.section
+                    className="intro-section intro-qa"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: '-50px' }}
+                    variants={fadeUp}
+                >
+                    <div className="qa-container">
+                        <div className="qa-robot">
+                            <ThinkingRobot state={robotState} />
+                        </div>
+                        <div className="qa-content">
+                            <h3>Une question ? Demande à CodeBot ! 🤖</h3>
+                            <p>Essaie : "C'est quoi un formulaire ?", "Qui l'a inventé ?", "À quoi ça sert ?"</p>
+
+                            <form onSubmit={handleAsk} className="qa-form">
+                                <input
+                                    type="text"
+                                    value={question}
+                                    onChange={(e) => setQuestion(e.target.value)}
+                                    placeholder="Pose ta question ici..."
+                                    disabled={robotState !== 'idle'}
+                                />
+                                <button type="submit" disabled={robotState !== 'idle' || !question.trim()}>
+                                    {robotState === 'thinking' ? '...' : 'Demander'}
+                                </button>
+                            </form>
+
+                            <AnimatePresence>
+                                {answer && (
+                                    <motion.div
+                                        className="qa-answer"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                    >
+                                        <div className="qa-bubble">
+                                            {answer.split('\n').map((line, i) => (
+                                                <p key={i}>{line}</p>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
                 </motion.section>
 

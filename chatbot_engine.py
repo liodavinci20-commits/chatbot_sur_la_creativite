@@ -2,7 +2,7 @@
 # Moteur de conversation scripté — 100% local, sans API externe
 
 import re
-from lessons_data import LESSONS, FINAL_CHALLENGE, WELCOME_MESSAGE, COMPLETION_MESSAGE
+from lessons_data import LESSONS, FINAL_CHALLENGE, WELCOME_MESSAGE, COMPLETION_MESSAGE, GENERAL_KNOWLEDGE
 
 
 # ═══════════════════════════════════════════════════════════
@@ -10,6 +10,7 @@ from lessons_data import LESSONS, FINAL_CHALLENGE, WELCOME_MESSAGE, COMPLETION_M
 # ═══════════════════════════════════════════════════════════
 STATE_IDLE = "idle"
 STATE_EXPLANATION = "explanation"
+STATE_VISUALIZE = "visualize"
 STATE_QUIZ = "quiz"
 STATE_CHALLENGE = "challenge"
 STATE_REVIEW = "review"
@@ -93,6 +94,16 @@ def _detect_final_request(message):
     return any(kw in msg_lower for kw in keywords)
 
 
+def _detect_general_question(message):
+    """Détecte une question générale basée sur la base de connaissances."""
+    msg_lower = message.lower()
+    for key, data in GENERAL_KNOWLEDGE.items():
+        for keyword in data["keywords"]:
+            if keyword in msg_lower:
+                return data["response"]
+    return None
+
+
 def _check_html_tags(message, required_tags):
     """Vérifie la présence de balises HTML dans le code soumis."""
     msg_lower = message.lower()
@@ -107,14 +118,15 @@ def _check_html_tags(message, required_tags):
 
 
 def _format_explanation(lesson):
-    """Formate l'explication d'une rubrique avec le quiz."""
+    """Formate l'explication d'une rubrique (SANS le quiz)."""
     return f"""📖 **{lesson['title']}**
 
-{lesson['explanation']}
+{lesson['explanation']}"""
 
----
 
-✅ **Quiz — Vérifie que tu as compris !**
+def _format_quiz_only(lesson):
+    """Formate uniquement le quiz d'une rubrique."""
+    return f"""✅ **Quiz — Vérifie que tu as compris !**
 
 {lesson['quiz']['question']}
 
@@ -138,6 +150,17 @@ Maintenant, essaie de répondre au quiz ! 😊
 {chr(10).join(lesson['quiz']['choices'])}
 
 **Tape A, B ou C !**"""
+
+
+def _detect_ready_for_quiz(message):
+    """Détecte si l'élève est prêt pour le quiz."""
+    keywords = [
+        "prêt pour le quiz", "pret pour le quiz", "lance le quiz",
+        "je suis prêt", "je suis pret", "quiz", "commencer le quiz",
+        "passer au quiz", "go quiz", "let's go"
+    ]
+    msg_lower = message.lower().strip()
+    return any(kw in msg_lower for kw in keywords)
 
 
 def _format_quiz_correct(lesson):
@@ -228,10 +251,25 @@ class ChatbotEngine:
         if requested_topic and requested_topic in LESSONS:
             lesson = LESSONS[requested_topic]
             conversation_state["current_topic"] = requested_topic
-            conversation_state["state"] = STATE_QUIZ
+            conversation_state["state"] = STATE_VISUALIZE
 
             return {
                 "response": _format_explanation(lesson),
+                "completed_topic": None,
+                "final_complete": False,
+                "conversation_state": conversation_state
+            }
+
+        # ─────────────────────────────────────────────
+        # 1.5. Détection d'une question générale (Q&A)
+        # ─────────────────────────────────────────────
+        general_response = _detect_general_question(message)
+        if general_response:
+            # On répond à la question mais on garde l'état actuel (ou idle si flou)
+            # Si on était en quiz, on rappelle peut-être le quiz ? 
+            # Pour l'instant, simple réponse.
+            return {
+                "response": general_response,
                 "completed_topic": None,
                 "final_complete": False,
                 "conversation_state": conversation_state
@@ -254,6 +292,43 @@ Voici ta mission finale :
 {FINAL_CHALLENGE['description']}
 
 **Écris ton code HTML complet et envoie-le-moi !** 🚀""",
+                "completed_topic": None,
+                "final_complete": False,
+                "conversation_state": conversation_state
+            }
+
+        # ─────────────────────────────────────────────
+        # 2.5. État VISUALIZE : l'élève demande le quiz
+        # ─────────────────────────────────────────────
+        if state == STATE_VISUALIZE and current_topic_key and current_topic_key in LESSONS:
+            lesson = LESSONS[current_topic_key]
+
+            # L'élève ne comprend pas → analogie
+            if _detect_confusion(message):
+                return {
+                    "response": _format_analogy(lesson),
+                    "completed_topic": None,
+                    "final_complete": False,
+                    "conversation_state": conversation_state
+                }
+
+            # L'élève est prêt pour le quiz
+            if _detect_ready_for_quiz(message):
+                conversation_state["state"] = STATE_QUIZ
+                return {
+                    "response": _format_quiz_only(lesson),
+                    "completed_topic": None,
+                    "final_complete": False,
+                    "conversation_state": conversation_state
+                }
+
+            # Message non reconnu dans l'état visualize → on guide
+            return {
+                "response": f"""🤔 **{student_name}**, tu es encore en phase d'exploration !
+
+Prends le temps de regarder la visualisation et d'essayer les éléments interactifs. 🎨
+
+Quand tu es prêt, dis-moi **"prêt pour le quiz"** ou clique sur le bouton ! 😊""",
                 "completed_topic": None,
                 "final_complete": False,
                 "conversation_state": conversation_state

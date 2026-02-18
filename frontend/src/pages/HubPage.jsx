@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiOutlineCpuChip, HiOutlineUser, HiOutlineArrowRightOnRectangle } from 'react-icons/hi2'
+import { HiOutlineAcademicCap, HiOutlineUser, HiOutlineArrowRightOnRectangle } from 'react-icons/hi2'
 import TopicsSidebar from '../components/TopicsSidebar'
 import ChatPanel from '../components/ChatPanel'
 import Celebration from '../components/Celebration'
+import TeacherAvatar from '../components/TeacherAvatar'
+import { TOPIC_SVGS } from '../components/TopicVisualizations'
+import { TOPIC_PREVIEWS } from '../components/InteractivePreview'
 
 export default function HubPage({ user, onLogout }) {
     const [topics, setTopics] = useState([])
@@ -24,7 +27,7 @@ export default function HubPage({ user, onLogout }) {
 
     const fetchTopics = async () => {
         try {
-            const res = await fetch('/api/topics')
+            const res = await fetch('/api/topics', { credentials: 'include' })
             const data = await res.json()
             if (data.error) return
             setTopics(data.topics)
@@ -37,7 +40,7 @@ export default function HubPage({ user, onLogout }) {
 
     const showWelcome = async () => {
         try {
-            const res = await fetch('/api/welcome')
+            const res = await fetch('/api/welcome', { credentials: 'include' })
             const data = await res.json()
             if (data.message) {
                 setMessages([{ role: 'bot', content: data.message, id: Date.now() }])
@@ -77,6 +80,7 @@ export default function HubPage({ user, onLogout }) {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ message: text })
             })
             const data = await res.json()
@@ -85,6 +89,22 @@ export default function HubPage({ user, onLogout }) {
                 setMessages(prev => [...prev, { role: 'bot', content: '⚠ ' + data.error, id: Date.now() }])
             } else {
                 setMessages(prev => [...prev, { role: 'bot', content: data.response, id: Date.now() }])
+
+                // Après l'explication (état visualize), proposer la visualisation SVG
+                if (currentTopic && currentTopic.id !== 'final' && TOPIC_SVGS[currentTopic.id]) {
+                    // Vérifier si c'est une réponse d'explication (contient le titre avec 📖)
+                    if (data.response.includes('📖')) {
+                        setTimeout(() => {
+                            setMessages(prev => [...prev, {
+                                role: 'bot',
+                                type: 'visualize-prompt',
+                                topicId: currentTopic.id,
+                                content: '',
+                                id: Date.now() + 1
+                            }])
+                        }, 800)
+                    }
+                }
 
                 if (data.completed_topic) {
                     setTopics(prev => prev.map(t =>
@@ -113,9 +133,50 @@ export default function HubPage({ user, onLogout }) {
     }
 
     const handleLogout = async () => {
-        try { await fetch('/api/logout', { method: 'POST' }) } catch { }
+        try { await fetch('/api/logout', { method: 'POST', credentials: 'include' }) } catch { }
         onLogout()
         navigate('/')
+    }
+
+    // Étape 2 : Afficher la visualisation SVG, puis proposer l'interactif
+    const handleShowVisualization = (topicId) => {
+        setMessages(prev => [...prev, {
+            role: 'bot',
+            type: 'svg',
+            topicId: topicId,
+            content: '',
+            id: Date.now()
+        }])
+
+        // Après le SVG, proposer les éléments interactifs si disponibles
+        if (TOPIC_PREVIEWS[topicId]) {
+            setTimeout(() => {
+                setMessages(prev => [...prev, {
+                    role: 'bot',
+                    type: 'interactive-prompt',
+                    topicId: topicId,
+                    content: '',
+                    id: Date.now() + 1
+                }])
+            }, 1000)
+        }
+    }
+
+    // Étape 3 : Afficher la preview interactive
+    const handleShowInteractive = (topicId) => {
+        setMessages(prev => [...prev, {
+            role: 'bot',
+            type: 'interactive-preview',
+            topicId: topicId,
+            content: '',
+            id: Date.now()
+        }])
+    }
+
+    // Étape 4 : L'enfant est prêt pour le quiz → envoyer au backend
+    const handleReadyForQuiz = (topicId) => {
+        const msg = "Je suis prêt pour le quiz !"
+        sendMessage(msg, false)
     }
 
     const completed = topics.filter(t => t.completed).length
@@ -136,7 +197,7 @@ export default function HubPage({ user, onLogout }) {
             {/* Header */}
             <header className="hub-header">
                 <div className="header-left">
-                    <span className="logo-icon"><HiOutlineCpuChip /></span>
+                    <span className="logo-icon"><HiOutlineAcademicCap /></span>
                     <h1>Code<span className="accent">Bot</span></h1>
                 </div>
                 <div className="header-right">
@@ -162,12 +223,20 @@ export default function HubPage({ user, onLogout }) {
                     onSelectTopic={handleSelectTopic}
                     onSelectFinal={handleSelectFinal}
                 />
-                <ChatPanel
-                    messages={messages}
-                    loading={loading}
-                    currentTopic={currentTopic}
-                    onSend={(text) => sendMessage(text, false)}
-                />
+                <div className="chat-with-teacher">
+                    <div className="teacher-side">
+                        <TeacherAvatar loading={loading} />
+                    </div>
+                    <ChatPanel
+                        messages={messages}
+                        loading={loading}
+                        currentTopic={currentTopic}
+                        onSend={(text) => sendMessage(text, false)}
+                        onShowVisualization={handleShowVisualization}
+                        onShowInteractive={handleShowInteractive}
+                        onReadyForQuiz={handleReadyForQuiz}
+                    />
+                </div>
             </main>
 
             {/* Celebration overlay */}

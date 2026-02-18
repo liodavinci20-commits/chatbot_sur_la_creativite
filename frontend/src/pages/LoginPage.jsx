@@ -24,13 +24,14 @@ export default function LoginPage({ onLogin }) {
             const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ name: name.trim(), classe })
             })
             const data = await res.json()
 
             if (data.success) {
                 onLogin({ name: data.name, classe: data.classe })
-                navigate('/intro')
+                navigate('/intro', { replace: true })
             } else {
                 setError(data.error || 'Erreur de connexion')
             }

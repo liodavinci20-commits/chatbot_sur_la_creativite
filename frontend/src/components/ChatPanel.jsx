@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { HiOutlineCpuChip, HiOutlineUser, HiOutlinePaperAirplane } from 'react-icons/hi2'
+import { HiOutlineAcademicCap, HiOutlineUser, HiOutlinePaperAirplane, HiOutlineEye, HiOutlineHandRaised, HiOutlineCheckCircle } from 'react-icons/hi2'
+import TopicVisualization from './TopicVisualizations'
+import InteractivePreview from './InteractivePreview'
 
-export default function ChatPanel({ messages, loading, currentTopic, onSend }) {
+export default function ChatPanel({ messages, loading, currentTopic, onSend, onShowVisualization, onShowInteractive, onReadyForQuiz }) {
     const [input, setInput] = useState('')
     const messagesEndRef = useRef(null)
     const inputRef = useRef(null)
@@ -41,7 +43,7 @@ export default function ChatPanel({ messages, loading, currentTopic, onSend }) {
             {/* Chat header */}
             <div className="chat-header">
                 <div className="chat-header-left">
-                    <div className="bot-avatar-small"><HiOutlineCpuChip /></div>
+                    <div className="bot-avatar-small"><HiOutlineAcademicCap /></div>
                     <div>
                         <span className="bot-name">CodeBot</span>
                         <span className="bot-status">
@@ -67,16 +69,64 @@ export default function ChatPanel({ messages, loading, currentTopic, onSend }) {
                 {messages.map((msg) => (
                     <motion.div
                         key={msg.id}
-                        className={`message ${msg.role === 'bot' ? 'bot' : 'user'}`}
+                        className={`message ${msg.role === 'user' ? 'user' : 'bot'}${msg.type === 'svg' ? ' svg-message' : ''}${msg.type === 'interactive-preview' ? ' interactive-message' : ''}`}
                         initial={{ opacity: 0, y: 15, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ duration: 0.3 }}
                     >
                         <div className="msg-avatar">
-                            {msg.role === 'bot' ? <HiOutlineCpuChip /> : <HiOutlineUser />}
+                            {msg.role === 'user' ? <HiOutlineUser /> : <HiOutlineAcademicCap />}
                         </div>
                         <div className="msg-bubble">
-                            {msg.role === 'bot' ? (
+                            {msg.type === 'visualize-prompt' ? (
+                                <div className="visualize-prompt">
+                                    <p>🎨 Tu veux voir à quoi ça ressemble visuellement ?</p>
+                                    <motion.button
+                                        className="btn-visualize"
+                                        onClick={() => onShowVisualization && onShowVisualization(msg.topicId)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <HiOutlineEye /> Oui, montre-moi !
+                                    </motion.button>
+                                </div>
+                            ) : msg.type === 'svg' ? (
+                                <div className="svg-visualization">
+                                    <p className="svg-label">📊 Voici la visualisation :</p>
+                                    <TopicVisualization topicId={msg.topicId} />
+                                </div>
+                            ) : msg.type === 'interactive-prompt' ? (
+                                <div className="visualize-prompt">
+                                    <p>🖐️ Tu veux essayer par toi-même ? Manipule les vrais éléments HTML !</p>
+                                    <motion.button
+                                        className="btn-visualize interactive"
+                                        onClick={() => onShowInteractive && onShowInteractive(msg.topicId)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <HiOutlineHandRaised /> Oui, je veux essayer !
+                                    </motion.button>
+                                </div>
+                            ) : msg.type === 'interactive-preview' ? (
+                                <div className="interactive-preview-wrapper">
+                                    <InteractivePreview
+                                        topicId={msg.topicId}
+                                        onReadyForQuiz={() => onReadyForQuiz && onReadyForQuiz(msg.topicId)}
+                                    />
+                                </div>
+                            ) : msg.type === 'quiz-prompt' ? (
+                                <div className="visualize-prompt">
+                                    <p>✅ Super ! Tu as bien exploré les éléments. Prêt pour le quiz ?</p>
+                                    <motion.button
+                                        className="btn-visualize quiz"
+                                        onClick={() => onReadyForQuiz && onReadyForQuiz(msg.topicId)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <HiOutlineCheckCircle /> Je suis prêt pour le quiz !
+                                    </motion.button>
+                                </div>
+                            ) : msg.role === 'bot' ? (
                                 <ReactMarkdown
                                     remarkPlugins={[remarkGfm]}
                                     components={{
@@ -107,7 +157,7 @@ export default function ChatPanel({ messages, loading, currentTopic, onSend }) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <div className="msg-avatar"><HiOutlineCpuChip /></div>
+                        <div className="msg-avatar"><HiOutlineAcademicCap /></div>
                         <div className="msg-bubble typing">
                             <div className="typing-dots">
                                 <span /><span /><span />
