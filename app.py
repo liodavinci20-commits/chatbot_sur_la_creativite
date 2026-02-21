@@ -12,7 +12,10 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "chatbot-secret-default")
-CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://localhost:5000"])
+
+# CORS: autoriser le frontend local + le frontend Vercel en production
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5000").split(",")
+CORS(app, supports_credentials=True, origins=allowed_origins)
 
 
 # Initialiser le moteur du chatbot
