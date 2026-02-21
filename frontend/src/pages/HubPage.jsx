@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_BASE_URL } from '../config'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiOutlineAcademicCap, HiOutlineUser, HiOutlineArrowRightOnRectangle } from 'react-icons/hi2'
@@ -27,7 +28,7 @@ export default function HubPage({ user, onLogout }) {
 
     const fetchTopics = async () => {
         try {
-            const res = await fetch('/api/topics', { credentials: 'include' })
+            const res = await fetch(`${API_BASE_URL}/api/topics`, { credentials: 'include' })
             const data = await res.json()
             if (data.error) return
             setTopics(data.topics)
@@ -40,7 +41,7 @@ export default function HubPage({ user, onLogout }) {
 
     const showWelcome = async () => {
         try {
-            const res = await fetch('/api/welcome', { credentials: 'include' })
+            const res = await fetch(`${API_BASE_URL}/api/welcome`, { credentials: 'include' })
             const data = await res.json()
             if (data.message) {
                 setMessages([{ role: 'bot', content: data.message, id: Date.now() }])
@@ -77,7 +78,7 @@ export default function HubPage({ user, onLogout }) {
         setLoading(true)
 
         try {
-            const res = await fetch('/api/chat', {
+            const res = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -133,7 +134,7 @@ export default function HubPage({ user, onLogout }) {
     }
 
     const handleLogout = async () => {
-        try { await fetch('/api/logout', { method: 'POST', credentials: 'include' }) } catch { }
+        try { await fetch(`${API_BASE_URL}/api/logout`, { method: 'POST', credentials: 'include' }) } catch { }
         onLogout()
         navigate('/')
     }

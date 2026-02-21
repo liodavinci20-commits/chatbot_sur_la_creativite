@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { API_BASE_URL } from '../config'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HiOutlineUser, HiOutlineAcademicCap, HiOutlineArrowRight, HiOutlineExclamationTriangle, HiOutlineLightBulb, HiOutlineCpuChip } from 'react-icons/hi2'
@@ -21,7 +22,7 @@ export default function LoginPage({ onLogin }) {
         setError('')
 
         try {
-            const res = await fetch('/api/login', {
+            const res = await fetch(`${API_BASE_URL}/api/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

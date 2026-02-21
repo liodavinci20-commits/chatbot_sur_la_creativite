@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { API_BASE_URL } from '../config'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Lottie from 'lottie-react'
@@ -70,7 +71,7 @@ export default function IntroPage({ user }) {
             // Simulation de délai pour l'animation
             await new Promise(r => setTimeout(r, 1500))
 
-            const res = await fetch('/api/chat', {
+            const res = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
