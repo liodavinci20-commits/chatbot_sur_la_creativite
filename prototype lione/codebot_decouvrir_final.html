@@ -1,0 +1,2330 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  :root {
+    --ink: #0f0f14;
+    --ink2: #1a1a26;
+    --ink3: #13131e;
+    --mt: #6b6b8a;
+    --mt2: #9090aa;
+    --mt3: #c0c0d0;
+    --s: #ffffff;
+    --s2: #f7f7fc;
+    --s3: #efeffa;
+    --teal: #1DB97A;
+    --td: #0e8a5a;
+    --tl: #e0f9ef;
+    --txl: #c8f5e2;
+    --vio: #7c6ff7;
+    --vid: #5a53d4;
+    --vil: #eeecff;
+    --vixl: #dddaff;
+    --coral: #f0624a;
+    --corl: #fdecea;
+    --amb: #e8a020;
+    --ambl: #fef5e0;
+    --g1: linear-gradient(135deg, #1DB97A 0%, #0ea5c4 100%);
+    --g2: linear-gradient(135deg, #7c6ff7 0%, #c16fde 100%);
+    --g3: linear-gradient(135deg, #f0624a 0%, #f0a040 100%);
+    --g4: linear-gradient(135deg, #1a1a26 0%, #1e1832 60%, #1a2030 100%);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  body {
+    background: var(--s3);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    padding: 2vh 2vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: 60px 1fr;
+    width: 100%;
+    max-width: 1400px;
+    height: 95vh;
+    min-height: 800px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 50px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .08)
+  }
+
+  /* ── TOPBAR ── */
+  .tb {
+    grid-column: 1/-1;
+    background: var(--s);
+    border-bottom: .5px solid rgba(0, 0, 0, .07);
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    gap: 16px
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -.4px;
+    color: var(--ink)
+  }
+
+  .bmark {
+    width: 30px;
+    height: 30px;
+    background: var(--g1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(29, 185, 122, .35)
+  }
+
+  .vsep {
+    width: 1px;
+    height: 20px;
+    background: rgba(0, 0, 0, .08);
+    flex-shrink: 0
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--mt);
+    white-space: nowrap;
+    transition: all .18s
+  }
+
+  .step.active {
+    background: linear-gradient(135deg, rgba(29, 185, 122, .1), rgba(14, 165, 196, .07));
+    color: var(--td)
+  }
+
+  .step.active .sn {
+    background: var(--g1);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(29, 185, 122, .35)
+  }
+
+  .sn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--s3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--mt)
+  }
+
+  .sarr {
+    font-size: 9px;
+    color: var(--mt3);
+    margin: 0 -2px
+  }
+
+  .tright {
+    display: flex;
+    align-items: center;
+    gap: 10px
+  }
+
+  .av {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--g2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(124, 111, 247, .3)
+  }
+
+  .avnm {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink)
+  }
+
+  /* ── MAIN ── */
+  .main {
+    background: var(--s);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0
+  }
+
+  .mscroll {
+    flex: 1;
+    overflow-y: auto
+  }
+
+  .mscroll::-webkit-scrollbar {
+    width: 3px
+  }
+
+  .mscroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .07);
+    border-radius: 2px
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    background: var(--ink2)
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--g4);
+    opacity: 1
+  }
+
+  .hero-glow1 {
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29, 185, 122, .25) 0%, transparent 70%)
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    bottom: -30px;
+    right: 60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 111, 247, .2) 0%, transparent 70%)
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    padding: 28px 28px 24px
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px
+  }
+
+  .hero-phase {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(29, 185, 122, .12);
+    border: .5px solid rgba(29, 185, 122, .25);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: rgba(29, 185, 122, .9);
+    letter-spacing: .5px
+  }
+
+  .hero-phase-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s infinite
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1
+    }
+
+    50% {
+      opacity: .3
+    }
+  }
+
+  .hero-xp {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .5)
+  }
+
+  .hero-xp-n {
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--g1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+  }
+
+  .hero-body {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px
+  }
+
+  .hero-txt {
+    flex: 1
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .35);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase
+  }
+
+  .hero-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, .95);
+    letter-spacing: -.7px;
+    line-height: 1.15;
+    margin-bottom: 10px
+  }
+
+  .hero-title .g1t {
+    background: var(--g1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+  }
+
+  .hero-title .g2t {
+    background: var(--g2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-style: italic
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, .45);
+    line-height: 1.65;
+    max-width: 420px
+  }
+
+  .hero-sub strong {
+    color: rgba(255, 255, 255, .7)
+  }
+
+  .hero-bot {
+    flex-shrink: 0
+  }
+
+  .bot-card {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .04);
+    border: 1.5px solid rgba(255, 255, 255, .1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(29, 185, 122, .08), 0 4px 20px rgba(0, 0, 0, .3)
+  }
+
+  .bc-eyes {
+    font-size: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255, 255, 255, .9);
+    line-height: 1;
+    margin-bottom: 3px
+  }
+
+  .bc-mouth {
+    font-size: 10px;
+    color: rgba(29, 185, 122, .8);
+    font-family: 'JetBrains Mono', monospace
+  }
+
+  .bc-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 5px;
+    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 6px rgba(29, 185, 122, .5)
+  }
+
+  /* Progress dots */
+  .hero-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px
+  }
+
+  .pdot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    transition: all .4s cubic-bezier(.4, 0, .2, 1)
+  }
+
+  .pdot.active {
+    width: 24px;
+    border-radius: 3px;
+    background: var(--g1);
+    box-shadow: 0 0 8px rgba(29, 185, 122, .4)
+  }
+
+  .pdot.done {
+    background: rgba(29, 185, 122, .5)
+  }
+
+  /* ── PHASES ── */
+  .phase {
+    display: none;
+    padding: 24px 28px
+  }
+
+  .phase.on {
+    display: block
+  }
+
+  /* ─ PHASE 1 ─ */
+  .p1-q {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -.3px;
+    line-height: 1.4;
+    margin-bottom: 6px
+  }
+
+  .p1-q .g2t {
+    background: var(--g2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+  }
+
+  .p1-sub {
+    font-size: 13px;
+    color: var(--mt);
+    line-height: 1.65;
+    margin-bottom: 22px
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px
+  }
+
+  .acard {
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .25s cubic-bezier(.4, 0, .2, 1);
+    position: relative;
+    border: .5px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .07)
+  }
+
+  .acard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .12)
+  }
+
+  .acard.sel {
+    border-color: rgba(29, 185, 122, .5);
+    box-shadow: 0 0 0 2px rgba(29, 185, 122, .15), 0 6px 20px rgba(29, 185, 122, .15);
+    transform: translateY(-3px)
+  }
+
+  .acard-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    border: 2px solid rgba(255, 255, 255, .4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    transition: all .22s;
+    backdrop-filter: blur(8px)
+  }
+
+  .acard.sel .acard-check {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 2px 10px rgba(29, 185, 122, .5)
+  }
+
+  .reveal-banner {
+    display: none;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(29, 185, 122, .08), rgba(14, 165, 196, .05));
+    border: .5px solid rgba(29, 185, 122, .2);
+    margin-bottom: 20px;
+    animation: fadeIn .4s ease
+  }
+
+  .reveal-banner.show {
+    display: flex
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0)
+    }
+  }
+
+  .rb-face {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--g1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: 0 2px 10px rgba(29, 185, 122, .3)
+  }
+
+  .rb-txt {
+    font-size: 13px;
+    color: var(--td);
+    line-height: 1.7;
+    font-weight: 500
+  }
+
+  .rb-txt strong {
+    font-weight: 800;
+    color: var(--td)
+  }
+
+  .p1-next {
+    display: flex;
+    justify-content: flex-end
+  }
+
+  .nbtn {
+    padding: 10px 22px;
+    border-radius: 11px;
+    background: var(--g1);
+    border: none;
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0 2px 12px rgba(29, 185, 122, .3);
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px
+  }
+
+  .nbtn:hover {
+    box-shadow: 0 4px 20px rgba(29, 185, 122, .45);
+    transform: translateY(-1px)
+  }
+
+  .nbtn:active {
+    transform: translateY(0)
+  }
+
+  .nbtn.off {
+    opacity: .35;
+    pointer-events: none
+  }
+
+  /* ─ PHASE 2 ─ */
+  .situation-intro {
+    font-size: 13.5px;
+    color: var(--mt);
+    line-height: 1.8;
+    margin-bottom: 18px;
+    font-style: italic;
+    padding: 14px 18px;
+    background: var(--s2);
+    border-radius: 12px;
+    border-left: 3px solid var(--teal)
+  }
+
+  .situation-intro strong {
+    color: var(--ink);
+    font-style: normal
+  }
+
+  .browser-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: .5px solid rgba(0, 0, 0, .1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+    margin-bottom: 18px
+  }
+
+  .browser-bar {
+    background: #2d2d2d;
+    padding: 9px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px
+  }
+
+  .b-dots {
+    display: flex;
+    gap: 5px
+  }
+
+  .b-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%
+  }
+
+  .b-url {
+    flex: 1;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, .4);
+    font-family: 'JetBrains Mono', monospace
+  }
+
+  .browser-content {
+    background: var(--s2);
+    padding: 20px
+  }
+
+  .form-card {
+    background: var(--s);
+    border-radius: 14px;
+    border: .5px solid rgba(0, 0, 0, .07);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .06)
+  }
+
+  .fc-head {
+    padding: 14px 20px;
+    background: var(--g1);
+    display: flex;
+    align-items: center;
+    gap: 10px
+  }
+
+  .fc-head-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace
+  }
+
+  .fc-head-txt p {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff
+  }
+
+  .fc-head-txt span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, .75)
+  }
+
+  .fc-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px
+  }
+
+  .fc-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mt);
+    margin-bottom: 5px;
+    letter-spacing: .3px
+  }
+
+  .fc-input {
+    width: 100%;
+    padding: 9px 13px;
+    border-radius: 9px;
+    border: .5px solid rgba(0, 0, 0, .1);
+    background: var(--s2);
+    color: var(--ink);
+    font-size: 12.5px;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+    transition: all .18s
+  }
+
+  .fc-input:focus {
+    border-color: rgba(29, 185, 122, .4);
+    background: var(--s);
+    box-shadow: 0 0 0 3px rgba(29, 185, 122, .07)
+  }
+
+  .fc-field.full {
+    grid-column: 1/-1
+  }
+
+  .radio-opts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap
+  }
+
+  .ropt {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border-radius: 9px;
+    border: .5px solid rgba(0, 0, 0, .09);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mt);
+    transition: all .15s;
+    background: var(--s)
+  }
+
+  .ropt:hover {
+    background: var(--tl);
+    border-color: rgba(29, 185, 122, .25);
+    color: var(--td)
+  }
+
+  .ropt input[type=radio] {
+    accent-color: var(--teal);
+    cursor: pointer
+  }
+
+  .check-opts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap
+  }
+
+  .copt {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border-radius: 9px;
+    border: .5px solid rgba(0, 0, 0, .09);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mt);
+    transition: all .15s;
+    background: var(--s)
+  }
+
+  .copt:hover {
+    background: var(--vil);
+    border-color: rgba(124, 111, 247, .25);
+    color: var(--vid)
+  }
+
+  .copt input[type=checkbox] {
+    accent-color: var(--vio);
+    cursor: pointer
+  }
+
+  .fc-select {
+    width: 100%;
+    padding: 9px 13px;
+    border-radius: 9px;
+    border: .5px solid rgba(0, 0, 0, .1);
+    background: var(--s2);
+    color: var(--ink);
+    font-size: 12.5px;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+    transition: all .18s
+  }
+
+  .fc-select:focus {
+    border-color: rgba(29, 185, 122, .4);
+    background: var(--s)
+  }
+
+  .fc-submit {
+    grid-column: 1/-1;
+    padding: 11px;
+    border-radius: 11px;
+    background: var(--g1);
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0 2px 12px rgba(29, 185, 122, .3);
+    transition: all .2s;
+    margin-top: 4px
+  }
+
+  .fc-submit:hover {
+    box-shadow: 0 4px 18px rgba(29, 185, 122, .45);
+    transform: translateY(-1px)
+  }
+
+  /* MCQ */
+  .mcq-zone {
+    background: linear-gradient(135deg, rgba(124, 111, 247, .06), rgba(193, 111, 222, .04));
+    border: .5px solid rgba(124, 111, 247, .2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 0;
+    display: none;
+    animation: fadeIn .4s ease
+  }
+
+  .mcq-zone.show {
+    display: block
+  }
+
+  .mcq-q {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -.2px;
+    margin-bottom: 16px;
+    line-height: 1.5
+  }
+
+  .mcq-q span {
+    background: var(--g2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+  }
+
+  .mcq-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 9px
+  }
+
+  .mopt {
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: .5px solid rgba(0, 0, 0, .08);
+    background: var(--s);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--mt);
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .04)
+  }
+
+  .mopt:hover {
+    border-color: rgba(124, 111, 247, .3);
+    background: var(--vil);
+    color: var(--vid);
+    transform: translateX(3px)
+  }
+
+  .mopt.correct {
+    background: linear-gradient(135deg, rgba(29, 185, 122, .08), rgba(14, 165, 196, .05));
+    border-color: rgba(29, 185, 122, .4);
+    color: var(--td)
+  }
+
+  .mopt.wrong {
+    background: var(--corl);
+    border-color: rgba(240, 98, 74, .3);
+    color: var(--coral)
+  }
+
+  .mopt.wrong:hover {
+    transform: none
+  }
+
+  .mkey {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--s3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--mt);
+    transition: all .2s
+  }
+
+  .mopt:hover .mkey {
+    background: rgba(124, 111, 247, .15);
+    color: var(--vid)
+  }
+
+  .mopt.correct .mkey {
+    background: var(--g1);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(29, 185, 122, .3)
+  }
+
+  .mopt.wrong .mkey {
+    background: var(--coral);
+    color: #fff
+  }
+
+  /* ─ PHASE 3 : DEFINITION ─ */
+  .def-reveal {
+    display: none;
+    animation: fadeIn .5s ease
+  }
+
+  .def-reveal.show {
+    display: block
+  }
+
+  .def-banner {
+    background: var(--g4);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden
+  }
+
+  .def-glow {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29, 185, 122, .2) 0%, transparent 70%)
+  }
+
+  .def-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(29, 185, 122, .7);
+    letter-spacing: 1.2px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1
+  }
+
+  .def-txt {
+    font-size: 17px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .92);
+    line-height: 1.65;
+    position: relative;
+    z-index: 1
+  }
+
+  .def-txt .hl {
+    background: var(--g1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900
+  }
+
+  .def-txt .hl2 {
+    background: var(--g2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900
+  }
+
+  /* TABS */
+  .tabs-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: .5px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .06)
+  }
+
+  .tabs-nav {
+    display: flex;
+    background: var(--s2);
+    border-bottom: .5px solid rgba(0, 0, 0, .06)
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--mt);
+    border: none;
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+    transition: all .18s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px
+  }
+
+  .tab-btn.on {
+    color: var(--td);
+    border-bottom-color: var(--teal);
+    background: var(--s)
+  }
+
+  .tab-pane {
+    display: none;
+    padding: 20px
+  }
+
+  .tab-pane.on {
+    display: block
+  }
+
+  /* DATA CARD */
+  .data-card {
+    background: var(--s2);
+    border-radius: 14px;
+    padding: 18px;
+    border: .5px solid rgba(0, 0, 0, .06)
+  }
+
+  .dc-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: .5px solid rgba(0, 0, 0, .06)
+  }
+
+  .dc-av {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--g2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(124, 111, 247, .3)
+  }
+
+  .dc-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ink)
+  }
+
+  .dc-role {
+    font-size: 11px;
+    color: var(--mt);
+    margin-top: 2px
+  }
+
+  .dc-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0
+  }
+
+  .dc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: .5px solid rgba(0, 0, 0, .05)
+  }
+
+  .dc-row:last-child {
+    border-bottom: none
+  }
+
+  .dc-key {
+    font-size: 11.5px;
+    color: var(--mt);
+    font-weight: 600
+  }
+
+  .dc-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink)
+  }
+
+  .dc-val.g1 {
+    background: var(--g1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+  }
+
+  .dc-tag {
+    display: inline-flex;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10.5px;
+    font-weight: 700
+  }
+
+  /* OTHER FORMS GRID */
+  .other-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px
+  }
+
+  .of-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: .5px solid rgba(0, 0, 0, .08);
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, .05)
+  }
+
+  .of-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .1)
+  }
+
+  .of-label {
+    padding: 8px 12px;
+    background: var(--s2);
+    border-top: .5px solid rgba(0, 0, 0, .06);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mt);
+    text-align: center
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 0 28px 24px;
+    display: none;
+    animation: fadeIn .5s ease
+  }
+
+  .cta-section.show {
+    display: block
+  }
+
+  .cta-card {
+    background: var(--g1);
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    cursor: pointer;
+    transition: all .22s;
+    box-shadow: 0 4px 24px rgba(29, 185, 122, .3)
+  }
+
+  .cta-card:hover {
+    box-shadow: 0 6px 32px rgba(29, 185, 122, .45);
+    transform: translateY(-2px)
+  }
+
+  .cta-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace
+  }
+
+  .cta-txt p {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 3px
+  }
+
+  .cta-txt span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, .75)
+  }
+
+  .cta-arr {
+    margin-left: auto;
+    font-size: 24px;
+    color: rgba(255, 255, 255, .6)
+  }
+
+  /* ── CHAT ── */
+  .chat {
+    background: var(--ink2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden
+  }
+
+  .chd {
+    padding: 14px 16px;
+    border-bottom: .5px solid rgba(255, 255, 255, .07);
+    background: var(--ink3);
+    display: flex;
+    align-items: center;
+    gap: 11px
+  }
+
+  .bav {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--g1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .07), 0 2px 10px rgba(29, 185, 122, .3);
+    font-size: 9px;
+    line-height: 1.3;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace
+  }
+
+  .bnm {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .9)
+  }
+
+  .bst {
+    font-size: 10.5px;
+    background: var(--g1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600
+  }
+
+  .bchip {
+    margin-left: auto;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(29, 185, 122, .12);
+    color: rgba(29, 185, 122, .85);
+    border: .5px solid rgba(29, 185, 122, .2)
+  }
+
+  .msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+  }
+
+  .msgs::-webkit-scrollbar {
+    width: 2px
+  }
+
+  .msgs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, .08);
+    border-radius: 2px
+  }
+
+  .mg {
+    display: flex;
+    flex-direction: column;
+    gap: 3px
+  }
+
+  .ms {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 0 3px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px
+  }
+
+  .ms.bot {
+    color: rgba(29, 185, 122, .65)
+  }
+
+  .ms.soc {
+    color: rgba(124, 111, 247, .65)
+  }
+
+  .ms.usr {
+    align-self: flex-end;
+    color: rgba(255, 255, 255, .28)
+  }
+
+  .bbl {
+    max-width: 93%;
+    padding: 10px 13px;
+    font-size: 12px;
+    line-height: 1.65;
+    border-radius: 4px 13px 13px 13px
+  }
+
+  .bbl.bot {
+    background: rgba(255, 255, 255, .06);
+    border: .5px solid rgba(255, 255, 255, .08);
+    color: rgba(255, 255, 255, .85);
+    border-left: 2px solid rgba(29, 185, 122, .4)
+  }
+
+  .bbl.soc {
+    background: rgba(124, 111, 247, .1);
+    border: .5px solid rgba(124, 111, 247, .18);
+    color: rgba(180, 170, 255, .95);
+    border-left: 2px solid rgba(124, 111, 247, .45)
+  }
+
+  .bbl.usr {
+    background: var(--g1);
+    color: #fff;
+    align-self: flex-end;
+    border-radius: 13px 4px 13px 12px;
+    margin-left: auto;
+    box-shadow: 0 2px 10px rgba(29, 185, 122, .2)
+  }
+
+  .bbl.sys {
+    background: rgba(255, 255, 255, .04);
+    color: rgba(255, 255, 255, .25);
+    font-size: 10px;
+    border-radius: 8px;
+    padding: 5px 10px;
+    text-align: center;
+    align-self: center;
+    font-style: italic
+  }
+
+  .typbbl {
+    background: rgba(255, 255, 255, .06);
+    border: .5px solid rgba(255, 255, 255, .07);
+    border-left: 2px solid rgba(29, 185, 122, .35);
+    border-radius: 4px 13px 13px 13px;
+    padding: 10px 14px;
+    display: none
+  }
+
+  .typbbl.show {
+    display: flex;
+    gap: 4px;
+    align-items: center
+  }
+
+  .ty {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(29, 185, 122, .45);
+    animation: ty .9s infinite
+  }
+
+  .ty:nth-child(2) {
+    animation-delay: .2s
+  }
+
+  .ty:nth-child(3) {
+    animation-delay: .4s
+  }
+
+  @keyframes ty {
+
+    0%,
+    100% {
+      opacity: .3;
+      transform: translateY(0)
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(-3px)
+    }
+  }
+
+  .chips {
+    padding: 9px 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    border-top: .5px solid rgba(255, 255, 255, .06)
+  }
+
+  .chip {
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: .5px solid rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, .04);
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: rgba(255, 255, 255, .42);
+    font-family: 'Outfit', sans-serif;
+    transition: all .18s;
+    white-space: nowrap
+  }
+
+  .chip:hover {
+    background: rgba(29, 185, 122, .12);
+    border-color: rgba(29, 185, 122, .3);
+    color: rgba(29, 185, 122, .9)
+  }
+
+  .chip.wild {
+    border-color: rgba(124, 111, 247, .2);
+    background: rgba(124, 111, 247, .05);
+    color: rgba(124, 111, 247, .6)
+  }
+
+  .chip.wild:hover {
+    background: rgba(124, 111, 247, .14);
+    border-color: rgba(124, 111, 247, .4);
+    color: rgba(180, 170, 255, .95)
+  }
+
+  .cinwrap {
+    padding: 10px 13px;
+    border-top: .5px solid rgba(255, 255, 255, .06);
+    background: var(--ink3);
+    display: flex;
+    gap: 8px;
+    align-items: flex-end
+  }
+
+  .cin {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: .5px solid rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, .05);
+    color: rgba(255, 255, 255, .9);
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+    resize: none;
+    min-height: 36px;
+    max-height: 72px;
+    line-height: 1.5;
+    transition: all .18s
+  }
+
+  .cin:focus {
+    border-color: rgba(29, 185, 122, .4);
+    background: rgba(29, 185, 122, .04)
+  }
+
+  .cin::placeholder {
+    color: rgba(255, 255, 255, .2)
+  }
+
+  .sndbtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--g1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    flex-shrink: 0;
+    transition: all .18s;
+    box-shadow: 0 2px 10px rgba(29, 185, 122, .3);
+    font-weight: 700
+  }
+
+  .sndbtn:hover {
+    box-shadow: 0 4px 14px rgba(29, 185, 122, .45);
+    transform: translateY(-1px)
+  }
+
+  .sndbtn:active {
+    transform: scale(.93)
+  }
+
+  /* --- GAMIFICATION & X-RAY --- */
+  .show-fields .field-input {
+    animation: pulseField 2s infinite;
+  }
+  @keyframes pulseField {
+    0%, 100% {
+      stroke: rgba(29, 185, 122, 0.4);
+      filter: drop-shadow(0 0 2px rgba(29, 185, 122, 0.2));
+    }
+    50% {
+      stroke: rgba(29, 185, 122, 1);
+      stroke-width: 1.5px;
+      fill: rgba(29, 185, 122, 0.15);
+      filter: drop-shadow(0 0 8px rgba(29, 185, 122, 0.9));
+    }
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes squashStretch {
+    0% { transform: scale(1); }
+    30% { transform: scale(0.96, 1.04); }
+    60% { transform: scale(1.02, 0.98); }
+    100% { transform: scale(1); }
+  }
+  .acard.pop {
+    animation: squashStretch 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .acard-scanner {
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(29, 185, 122, 0.5) 50%, transparent 100%);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .acard.sel .acard-scanner {
+    animation: scanEffect 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes scanEffect {
+    0% { transform: translateY(-100%); opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0.2; }
+  }
+
+  .code-elem {
+    opacity: 0;
+    transition: all 0.4s ease 0.3s;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+  }
+  .ui-text {
+    transition: all 0.4s ease 0.3s;
+  }
+  .acard.sel .code-elem { opacity: 1; }
+  .acard.sel .ui-text { opacity: 0; }
+  .acard.sel .field-input { 
+    stroke: rgba(29, 185, 122, 0.8) !important; 
+    fill: rgba(0, 0, 0, 0.6) !important; 
+    transition: all 0.4s ease 0.3s; 
+  }
+</style>
+
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="tb">
+    <div class="brand">
+      <div class="bmark">&lt;/&gt;</div>CodeBot
+    </div>
+    <div class="vsep"></div>
+    <div class="stepper">
+      <div class="step active">
+        <div class="sn">1</div>Découvrir
+      </div>
+      <div class="sarr">›</div>
+      <div class="step">
+        <div class="sn">2</div>Fondations
+      </div>
+      <div class="sarr">›</div>
+      <div class="step">
+        <div class="sn">3</div>Explorer
+      </div>
+      <div class="sarr">›</div>
+      <div class="step">
+        <div class="sn">4</div>Évaluer
+      </div>
+      <div class="sarr">›</div>
+      <div class="step">
+        <div class="sn">5</div>Créer
+      </div>
+    </div>
+    <div class="tright">
+      <div class="vsep"></div>
+      <div class="av">LM</div>
+      <span class="avnm">Lionel</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-glow1"></div>
+      <div class="hero-glow2"></div>
+      <div class="hero-inner">
+        <div class="hero-top">
+          <div class="hero-phase">
+            <div class="hero-phase-dot"></div>Phase 1 · Découvrir
+          </div>
+          <div class="hero-xp">XP <span class="hero-xp-n" id="xp-disp">0</span></div>
+        </div>
+        <div class="hero-body">
+          <div class="hero-txt">
+            <div class="hero-eyebrow">Bienvenue, Lionel</div>
+            <div class="hero-title">Tu interagis avec eux des dizaines de fois par jour.<br>Sans eux, Internet serait<br><span class="g1t">totalement muet.</span></div>
+            <div class="hero-sub">Aujourd'hui, on soulève le capot de tes apps préférées. <strong>4 activités. Aucun cours.</strong> Tu vas découvrir la mécanique invisible.</div>
+            <div class="hero-dots">
+              <div class="pdot active" id="pd1"></div>
+              <div class="pdot" id="pd2"></div>
+              <div class="pdot" id="pd3"></div>
+              <div class="pdot" id="pd4"></div>
+            </div>
+          </div>
+          <div class="hero-bot">
+            <div class="bot-card">
+              <div class="bc-eyes">^_^</div>
+              <div class="bc-mouth">hello</div>
+              <div class="bc-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mscroll">
+
+      <!-- ══ PHASE 1 : RECONNAISSANCE ══ -->
+      <div class="phase on" id="ph1">
+        <div class="p1-q">Test de reconnaissance :<br>Parmi ces trois écrans, coche ceux dont tu t'es <span
+            class="g2t">réellement servi cette semaine.</span></div>
+        <div class="p1-sub">Faisons un test rapide. Il n'y a aucun piège.
+        </div>
+
+        <div class="app-grid" id="app-grid">
+          <!-- Instagram -->
+          <div class="acard fade-in-up" id="ac1" onclick="pick(1)" style="animation-delay: 0.1s">
+            <div class="acard-scanner"></div>
+            <div class="acard-check" id="ck1"></div>
+            <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+              <defs>
+                <linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#f09433" />
+                  <stop offset="30%" stop-color="#e6683c" />
+                  <stop offset="55%" stop-color="#dc2743" />
+                  <stop offset="80%" stop-color="#cc2366" />
+                  <stop offset="100%" stop-color="#bc1888" />
+                </linearGradient>
+              </defs>
+              <rect width="200" height="155" fill="url(#ig)" />
+              <rect x="0" y="0" width="200" height="155" fill="rgba(0,0,0,.15)" />
+              <!-- Phone frame -->
+              <rect x="55" y="10" width="90" height="135" rx="14" fill="rgba(255,255,255,.08)"
+                stroke="rgba(255,255,255,.15)" stroke-width=".5" />
+              <!-- Logo -->
+              <rect x="80" y="28" width="40" height="40" rx="10" fill="none" stroke="rgba(255,255,255,.85)"
+                stroke-width="2" />
+              <circle cx="100" cy="48" r="10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" />
+              <circle cx="113" cy="36" r="2.5" fill="rgba(255,255,255,.85)" />
+              <!-- Fields -->
+              <rect class="field-input" x="65" y="80" width="70" height="12" rx="6" fill="rgba(255,255,255,.18)"
+                stroke="rgba(255,255,255,.25)" stroke-width=".5" />
+              <text class="ui-text" x="100" y="90" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5"
+                fill="rgba(255,255,255,.7)">Nom d'utilisateur</text>
+              <text class="code-elem" x="100" y="89" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="text"&gt;</text>
+              <rect class="field-input" x="65" y="97" width="70" height="12" rx="6" fill="rgba(255,255,255,.18)"
+                stroke="rgba(255,255,255,.25)" stroke-width=".5" />
+              <text class="ui-text" x="100" y="107" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5"
+                fill="rgba(255,255,255,.7)">Mot de passe</text>
+              <text class="code-elem" x="100" y="106" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="password"&gt;</text>
+              <!-- Button -->
+              <rect x="67" y="114" width="66" height="12" rx="6" fill="rgba(255,255,255,.35)" />
+              <text x="100" y="123.5" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7" fill="#c13584"
+                font-weight="800">Se connecter</text>
+              <text x="100" y="140" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8"
+                fill="rgba(255,255,255,.9)" font-weight="800">Instagram</text>
+            </svg>
+          </div>
+
+          <!-- TikTok -->
+          <div class="acard fade-in-up" id="ac2" onclick="pick(2)" style="animation-delay: 0.2s">
+            <div class="acard-scanner"></div>
+            <div class="acard-check" id="ck2"></div>
+            <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+              <rect width="200" height="155" fill="#010101" />
+              <rect x="55" y="10" width="90" height="135" rx="14" fill="#1a1a1a" stroke="#2a2a2a" stroke-width=".5" />
+              <!-- TikTok logo shape -->
+              <text x="100" y="45" text-anchor="middle" font-family="Outfit,sans-serif" font-size="22" fill="white"
+                font-weight="900">TikTok</text>
+              <rect x="18" y="18" width="8" height="8" rx="2" fill="#fe2c55" opacity=".9" />
+              <rect x="174" y="18" width="8" height="8" rx="2" fill="#25f4ee" opacity=".9" />
+              <!-- Fields -->
+              <rect class="field-input" x="66" y="58" width="68" height="13" rx="6.5" fill="#2a2a2a" stroke="#3a3a3a" stroke-width=".5" />
+              <text class="ui-text" x="100" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5" fill="#666">Téléphone / Email</text>
+              <text class="code-elem" x="100" y="67" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="email"&gt;</text>
+              <rect class="field-input" x="66" y="76" width="68" height="13" rx="6.5" fill="#2a2a2a" stroke="#3a3a3a" stroke-width=".5" />
+              <text class="ui-text" x="100" y="86" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5" fill="#666">Mot de passe</text>
+              <text class="code-elem" x="100" y="85" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="password"&gt;</text>
+              <!-- Connexion btn -->
+              <rect x="68" y="95" width="64" height="13" rx="6.5" fill="#fe2c55" />
+              <text x="100" y="105" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7" fill="white"
+                font-weight="800">Connexion</text>
+              <!-- Separator -->
+              <line x1="70" y1="115" x2="90" y2="115" stroke="#333" stroke-width=".5" />
+              <text x="100" y="119" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7"
+                fill="#555">ou</text>
+              <line x1="110" y1="115" x2="130" y2="115" stroke="#333" stroke-width=".5" />
+              <!-- Social login -->
+              <rect x="68" y="122" width="28" height="10" rx="5" fill="#1877f2" />
+              <rect x="100" y="122" width="28" height="10" rx="5" fill="#1a1a1a" stroke="#333" stroke-width=".5" />
+              <text x="82" y="130" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6"
+                fill="white">Facebook</text>
+              <text x="114" y="130" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6"
+                fill="#555">Google</text>
+              <text x="100" y="148" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5" fill="#444">Pas
+                encore de compte ? S'inscrire</text>
+            </svg>
+          </div>
+
+          <!-- WhatsApp sondage -->
+          <div class="acard fade-in-up" id="ac3" onclick="pick(3)" style="animation-delay: 0.3s">
+            <div class="acard-scanner"></div>
+            <div class="acard-check" id="ck3"></div>
+            <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+              <defs>
+                <linearGradient id="wa" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#075e54" />
+                  <stop offset="100%" stop-color="#1a9e8f" />
+                </linearGradient>
+              </defs>
+              <rect width="200" height="155" fill="#e5ddd5" />
+              <rect x="22" y="14" width="156" height="127" rx="8" fill="white" opacity=".3" />
+              <!-- Chat bubble -->
+              <rect x="32" y="20" width="136" height="115" rx="10" fill="white" />
+              <!-- Header -->
+              <rect x="32" y="20" width="136" height="24" rx="10" fill="url(#wa)" />
+              <rect x="32" y="32" width="136" height="12" fill="url(#wa)" />
+              <circle cx="50" cy="32" r="10" fill="rgba(255,255,255,.2)" />
+              <text x="64" y="29" font-family="Outfit,sans-serif" font-size="7" fill="white" font-weight="700">Groupe
+                Terminale S</text>
+              <text x="64" y="38" font-family="Outfit,sans-serif" font-size="6" fill="rgba(255,255,255,.7)">276
+                membres</text>
+              <!-- Poll -->
+              <rect x="40" y="50" width="120" height="75" rx="8" fill="#dcf8c6" />
+              <text x="100" y="63" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7.5" fill="#075e54"
+                font-weight="800">SONDAGE</text>
+              <text x="100" y="74" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7" fill="#333">Soirée
+                révisions vendredi ?</text>
+              <!-- Options -->
+              <rect class="ui-text" x="46" y="79" width="108" height="13" rx="6.5" fill="#25d366" opacity=".15" />
+              <circle class="field-input" cx="56" cy="85.5" r="4" fill="none" stroke="#25d366" stroke-width="1.5" />
+              <circle class="ui-text" cx="56" cy="85.5" r="2" fill="#25d366" />
+              <text class="ui-text" x="64" y="89" font-family="Outfit,sans-serif" font-size="6.5" fill="#333">Oui ! Je suis là (^_^)</text>
+              <text class="code-elem" x="100" y="88" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="radio" value="oui"&gt;</text>
+              
+              <rect class="ui-text" x="46" y="96" width="108" height="13" rx="6.5" fill="white" stroke="#ddd" stroke-width=".5" />
+              <circle class="field-input" cx="56" cy="102.5" r="4" fill="none" stroke="#999" stroke-width="1.5" />
+              <text class="ui-text" x="64" y="106" font-family="Outfit,sans-serif" font-size="6.5" fill="#666">Non, autre jour</text>
+              <text class="code-elem" x="100" y="105" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="radio" value="non"&gt;</text>
+              
+              <rect class="ui-text" x="46" y="113" width="108" height="13" rx="6.5" fill="white" stroke="#ddd" stroke-width=".5" />
+              <circle class="field-input" cx="56" cy="119.5" r="4" fill="none" stroke="#999" stroke-width="1.5" />
+              <text class="ui-text" x="64" y="123" font-family="Outfit,sans-serif" font-size="6.5" fill="#666">Peut-être...</text>
+              <text class="code-elem" x="100" y="122" text-anchor="middle" font-size="5.5" fill="#1DB97A">&lt;input type="radio" value="maybe"&gt;</text>
+              <text x="100" y="145" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7.5" fill="#075e54"
+                font-weight="700">WhatsApp</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Reveal -->
+        <div class="reveal-banner" id="reveal">
+          <div class="rb-face">!</div>
+          <div class="rb-txt"><span style="display:block;font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:4px;color:rgba(29,185,122,0.8)">L'ILLUSION DE LA SIMPLICITÉ</span>TikTok, Instagram et WhatsApp affichent des designs très différents... mais la mécanique invisible est strictement identique. <strong>Tu viens de manipuler des Formulaires HTML.</strong> C'est l'outil universel pour parler au web, et tu vas apprendre à le construire !</div>
+        </div>
+
+        <div class="p1-next">
+          <button class="nbtn off" id="nb1" onclick="goPhase(2)">Compris ! Je veux voir comment ça marche &nbsp;›</button>
+        </div>
+      </div>
+
+      <!-- ══ PHASE 2 : SITUATION DE VIE + MCQ + DÉFINITION ══ -->
+      <div class="phase" id="ph2">
+
+        <div class="situation-intro">
+          <strong>C'est lundi matin.</strong> Tu arrives au lycée et tu aperçois une affiche sur le panneau
+          d'information : le Club Informatique ouvre les inscriptions en ligne. Tu sortir ton téléphone, tu ouvres le
+          lien... et tu tombes sur ça.
+        </div>
+
+        <!-- Browser -->
+        <div class="browser-wrap">
+          <div class="browser-bar">
+            <div class="b-dots">
+              <div class="b-dot" style="background:#ff6058"></div>
+              <div class="b-dot" style="background:#febc2e"></div>
+              <div class="b-dot" style="background:#28c840"></div>
+            </div>
+            <div class="b-url">lycee-mendel.edu/club-info/inscription</div>
+          </div>
+          <div class="browser-content">
+            <div class="form-card">
+              <div class="fc-head">
+                <div class="fc-head-icon">[+]</div>
+                <div class="fc-head-txt">
+                  <p>Inscription — Club Informatique</p>
+                  <span>Lycée Mendel · Année 2024–2025</span>
+                </div>
+              </div>
+              <div class="fc-body">
+                <div class="fc-field">
+                  <label>Prénom</label>
+                  <input class="fc-input" id="f-prenom" placeholder="Ton prénom..." oninput="checkForm()">
+                </div>
+                <div class="fc-field">
+                  <label>Classe</label>
+                  <input class="fc-input" id="f-classe" placeholder="Ex: 2nde B..." oninput="checkForm()">
+                </div>
+                <div class="fc-field full">
+                  <label>Ton niveau en informatique</label>
+                  <div class="radio-opts">
+                    <label class="ropt"><input type="radio" name="niv" value="Débutant" onchange="checkForm()">
+                      Débutant</label>
+                    <label class="ropt"><input type="radio" name="niv" value="Intermédiaire" onchange="checkForm()">
+                      Intermédiaire</label>
+                    <label class="ropt"><input type="radio" name="niv" value="Expert" onchange="checkForm()">
+                      Expert</label>
+                  </div>
+                </div>
+                <div class="fc-field full">
+                  <label>Ce qui t'intéresse (plusieurs choix)</label>
+                  <div class="check-opts">
+                    <label class="copt"><input type="checkbox" value="Sites web"> Sites web</label>
+                    <label class="copt"><input type="checkbox" value="Jeux vidéo"> Jeux vidéo</label>
+                    <label class="copt"><input type="checkbox" value="Robotique"> Robotique</label>
+                    <label class="copt"><input type="checkbox" value="IA"> Intelligence artificielle</label>
+                  </div>
+                </div>
+                <div class="fc-field">
+                  <label>Disponibilité</label>
+                  <select class="fc-select" id="f-dispo" onchange="checkForm()">
+                    <option value="">Choisir un jour...</option>
+                    <option>Lundi soir</option>
+                    <option>Mercredi après-midi</option>
+                    <option>Vendredi soir</option>
+                    <option>Samedi matin</option>
+                  </select>
+                </div>
+                <div class="fc-field">
+                  <label>Email (pour recevoir les infos)</label>
+                  <input class="fc-input" id="f-email" type="email" placeholder="ton@email.com" oninput="checkForm()">
+                </div>
+                <button class="fc-submit" onclick="submitForm()">Envoyer mon inscription (^_^)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MCQ -->
+        <div class="mcq-zone" id="mcq">
+          <div class="mcq-q">Après cette expérience — <span>comment définirais-tu un formulaire ?</span></div>
+          <div class="mcq-opts">
+            <div class="mopt" onclick="answer(this,false)">
+              <div class="mkey">A</div>Un document papier à remplir pour une administration
+            </div>
+            <div class="mopt" onclick="answer(this,true)">
+              <div class="mkey">B</div>Une zone interactive sur une page web permettant de collecter des informations
+            </div>
+            <div class="mopt" onclick="answer(this,false)">
+              <div class="mkey">C</div>Un programme qui calcule automatiquement des résultats
+            </div>
+          </div>
+        </div>
+
+        <!-- DÉFINITION RÉVÉLÉE -->
+        <div class="def-reveal" id="def-reveal">
+          <div class="def-banner">
+            <div class="def-glow"></div>
+            <div class="def-label">DÉFINITION OFFICIELLE — RÉVÉLÉE PAR L'EXPÉRIENCE</div>
+            <div class="def-txt">Un <span class="hl">formulaire HTML</span> est un espace de saisie permettant de <span
+                class="hl2">collecter des informations</span> auprès des utilisateurs. Il peut contenir des champs
+              texte, des cases à cocher, des boutons radio, des menus déroulants et des boutons d'envoi.</div>
+          </div>
+
+          <!-- TABS VISUALISATION -->
+          <div class="tabs-wrap">
+            <div class="tabs-nav">
+              <button class="tab-btn on" onclick="switchTab('mine',this)">Ce que tu as rempli</button>
+              <button class="tab-btn" onclick="switchTab('others',this)">D'autres formulaires</button>
+            </div>
+
+            <!-- Tab 1 : Données de l'élève -->
+            <div class="tab-pane on" id="tab-mine">
+              <div class="data-card">
+                <div class="dc-head">
+                  <div class="dc-av" id="dc-av">?</div>
+                  <div>
+                    <div class="dc-name" id="dc-name">—</div>
+                    <div class="dc-role">Candidat · Club Informatique 2024</div>
+                  </div>
+                </div>
+                <div class="dc-rows">
+                  <div class="dc-row"><span class="dc-key">Classe</span><span class="dc-val" id="dc-classe">—</span>
+                  </div>
+                  <div class="dc-row"><span class="dc-key">Niveau</span><span class="dc-val g1" id="dc-niv">—</span>
+                  </div>
+                  <div class="dc-row"><span class="dc-key">Intérêts</span><span class="dc-val" id="dc-inter"
+                      style="font-size:11px">—</span></div>
+                  <div class="dc-row"><span class="dc-key">Disponibilité</span><span class="dc-val"
+                      id="dc-dispo">—</span></div>
+                  <div class="dc-row"><span class="dc-key">Email</span><span class="dc-val" id="dc-email"
+                      style="color:var(--td)">—</span></div>
+                </div>
+              </div>
+              <div
+                style="margin-top:12px;padding:11px 14px;background:var(--tl);border-radius:11px;border:.5px solid rgba(29,185,122,.2);font-size:12px;color:var(--td);font-weight:500;line-height:1.6">
+                <strong>(^_^) Voilà !</strong> Ces informations que tu as saisies viennent d'être "collectées" par le
+                formulaire. Dans une vraie page, elles seraient envoyées à un serveur. C'est exactement le rôle d'un
+                formulaire HTML.
+              </div>
+            </div>
+
+            <!-- Tab 2 : Autres formulaires -->
+            <div class="tab-pane" id="tab-others">
+              <div class="other-grid">
+                <!-- Recherche Google SVG -->
+                <div class="of-card">
+                  <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="160" height="100" fill="white" />
+                    <text x="80" y="22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700">
+                      <tspan fill="#4285f4">G</tspan>
+                      <tspan fill="#ea4335">o</tspan>
+                      <tspan fill="#fbbc05">o</tspan>
+                      <tspan fill="#4285f4">g</tspan>
+                      <tspan fill="#34a853">l</tspan>
+                      <tspan fill="#ea4335">e</tspan>
+                    </text>
+                    <rect x="20" y="30" width="120" height="22" rx="11" fill="white" stroke="#ddd" stroke-width="1" />
+                    <circle cx="30" cy="41" r="5" fill="none" stroke="#999" stroke-width="1.5" />
+                    <line x1="34" y1="45" x2="38" y2="49" stroke="#999" stroke-width="1.5" stroke-linecap="round" />
+                    <text x="45" y="45" font-family="Arial" font-size="8" fill="#999">Rechercher...</text>
+                    <rect x="38" y="60" width="36" height="12" rx="6" fill="#f8f9fa" stroke="#ddd" stroke-width=".5" />
+                    <text x="56" y="70" text-anchor="middle" font-family="Arial" font-size="6.5"
+                      fill="#444">Recherche</text>
+                    <rect x="80" y="60" width="40" height="12" rx="6" fill="#f8f9fa" stroke="#ddd" stroke-width=".5" />
+                    <text x="100" y="70" text-anchor="middle" font-family="Arial" font-size="6.5" fill="#444">J'ai de la
+                      chance</text>
+                    <text x="80" y="90" text-anchor="middle" font-family="Arial" font-size="7" fill="#999">France ·
+                      Paramètres</text>
+                  </svg>
+                  <div class="of-label">Recherche Google</div>
+                </div>
+                <!-- Uber Eats SVG -->
+                <div class="of-card">
+                  <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="160" height="100" fill="#1c1c1c" />
+                    <text x="80" y="20" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" fill="white"
+                      font-weight="900">Uber Eats</text>
+                    <rect x="12" y="26" width="136" height="14" rx="7" fill="#2d2d2d" />
+                    <text x="80" y="37" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7"
+                      fill="#666">Adresse de livraison...</text>
+                    <text x="16" y="52" font-family="Outfit,sans-serif" font-size="7" fill="#999">Heure de
+                      livraison</text>
+                    <rect x="12" y="55" width="60" height="11" rx="5.5" fill="#2d2d2d" />
+                    <text x="42" y="64" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5"
+                      fill="#06C167">Dès que possible</text>
+                    <rect x="76" y="55" width="72" height="11" rx="5.5" fill="#2d2d2d" />
+                    <text x="112" y="64" text-anchor="middle" font-family="Outfit,sans-serif" font-size="6.5"
+                      fill="#666">Planifier</text>
+                    <text x="16" y="78" font-family="Outfit,sans-serif" font-size="7" fill="#999">Mode de
+                      paiement</text>
+                    <rect x="12" y="81" width="136" height="12" rx="6" fill="#06C167" />
+                    <text x="80" y="90.5" text-anchor="middle" font-family="Outfit,sans-serif" font-size="7"
+                      fill="white" font-weight="800">Passer commande</text>
+                  </svg>
+                  <div class="of-label">Commande Uber Eats</div>
+                </div>
+                <!-- Contact form SVG -->
+                <div class="of-card">
+                  <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="160" height="100" fill="#f8f9fa" />
+                    <text x="80" y="16" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#333"
+                      font-weight="800">Nous contacter</text>
+                    <text x="16" y="28" font-family="Outfit,sans-serif" font-size="7" fill="#999">Nom</text>
+                    <rect x="12" y="30" width="136" height="11" rx="5.5" fill="white" stroke="#ddd" stroke-width=".5" />
+                    <text x="16" y="50" font-family="Outfit,sans-serif" font-size="7" fill="#999">Email</text>
+                    <rect x="12" y="52" width="136" height="11" rx="5.5" fill="white" stroke="#ddd" stroke-width=".5" />
+                    <text x="16" y="70" font-family="Outfit,sans-serif" font-size="7" fill="#999">Message</text>
+                    <rect x="12" y="72" width="136" height="18" rx="5.5" fill="white" stroke="#ddd" stroke-width=".5" />
+                    <rect x="48" y="93" width="64" height="0" rx="0" fill="#4f46e5" />
+                  </svg>
+                  <div class="of-label">Formulaire de contact</div>
+                </div>
+              </div>
+              <div
+                style="margin-top:12px;padding:11px 14px;background:var(--vil);border-radius:11px;border:.5px solid rgba(124,111,247,.2);font-size:12px;color:var(--vid);font-weight:500;line-height:1.6">
+                <strong>(^_^) Tu les reconnais ?</strong> Recherche, commande, contact... Ce sont tous des formulaires
+                HTML. Même principe, contextes différents. Dans les prochaines phases, tu apprendras à créer les tiens.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;justify-content:flex-end">
+            <button class="nbtn" onclick="unlockCTA()">(^_^) J'ai tout compris — on continue !</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CTA FINAL -->
+      <div class="cta-section" id="cta-final">
+        <div class="cta-card" onclick="celebrate()">
+          <div class="cta-icon">[--&gt;]</div>
+          <div class="cta-txt">
+            <p>C'est compris, on passe aux Fondations !</p>
+            <span>Tu vas maintenant apprendre les balises HTML une par une (^_^)</span>
+          </div>
+          <div class="cta-arr">›</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="chd">
+      <div class="bav">^_^</div>
+      <div>
+        <div class="bnm">CodeBot</div>
+        <div class="bst">Phase Découverte</div>
+      </div>
+      <div class="bchip">( 1 ) Intro</div>
+    </div>
+    <div class="msgs" id="msgs">
+      <div class="bbl sys">Bienvenue, Lionel (^_^)</div>
+      <div class="mg">
+        <div class="ms bot"><span>^_^</span> CodeBot</div>
+        <div class="bbl bot">Salut Lionel ! Pas de cours aujourd'hui.<br><br>Commence par regarder ces 3 interfaces — et
+          coche celles qui te semblent familières. Pas de bonne ou mauvaise réponse. (^_^)</div>
+      </div>
+      <div class="typbbl" id="typing">
+        <div class="ty"></div>
+        <div class="ty"></div>
+        <div class="ty"></div>
+      </div>
+    </div>
+    <div class="chips">
+      <div class="chip" onclick="sc('c\'est quoi un formulaire ?')">C'est quoi un formulaire ?</div>
+      <div class="chip" onclick="sc('j\'ai pas compris')">J'ai pas compris :-/</div>
+      <div class="chip wild" onclick="sc('question folle')">~_~ Question folle</div>
+      <div class="chip" onclick="sc('aide moi')">Aide-moi</div>
+    </div>
+    <div class="cinwrap">
+      <textarea class="cin" id="cin" placeholder="Pose ta question…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+      <button class="sndbtn" onclick="send()">↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const msgs = document.getElementById('msgs');
+  const typing = document.getElementById('typing');
+  let sel = 0, phase = 1, formDone = false, mcqDone = false, xp = 0;
+
+  const wilds = [
+    "Et si tu devais inventer un formulaire pour lire les rêves — quels champs tu mettrais ? (~_~)",
+    "Pourquoi les formulaires web ont-ils presque toujours un champ 'mot de passe' selon toi ? (o_O)",
+    "Si un formulaire pouvait te parler, que te dirait-il quand tu laisses un champ vide ? (*_*)",
+    "Imagine un monde sans formulaires HTML — comment tu créerais un compte sur une appli ? (-_-)"
+  ];
+  const reps = {
+    "c'est quoi un formulaire ?": "(^_^) Un formulaire HTML, c'est une zone interactive sur une page web qui te permet de saisir et d'envoyer des informations. Tu en remplis plusieurs chaque jour : connexion Instagram, recherche Google, commande en ligne... On va découvrir ça ensemble !",
+    "j'ai pas compris": "Pas de souci (^_^) ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
+    "aide moi": "(^_^) Bien sûr ! Tu es sur la Phase 1. Commence par cocher les interfaces qui te semblent familières. Ensuite on remplira un vrai formulaire ensemble — et tu verras exactement à quoi ça sert.",
+    "question folle": null,
+  };
+
+  function addMsg(type, text, d = 0) {
+    setTimeout(() => {
+      if (type === 'bot' || type === 'soc') {
+        typing.classList.add('show'); msgs.scrollTop = msgs.scrollHeight;
+        setTimeout(() => {
+          typing.classList.remove('show');
+          const g = document.createElement('div'); g.className = 'mg';
+          const s = document.createElement('div'); s.className = 'ms ' + (type === 'soc' ? 'soc' : 'bot');
+          s.innerHTML = `<span>${type === 'soc' ? '(?)' : '(^_^)'}</span> CodeBot${type === 'soc' ? ' — Réflexion' : ''}`;
+          const b = document.createElement('div'); b.className = 'bbl ' + (type === 'soc' ? 'soc' : 'bot'); b.innerHTML = text;
+          g.appendChild(s); g.appendChild(b);
+          msgs.insertBefore(g, typing); msgs.scrollTop = msgs.scrollHeight;
+        }, 900);
+      } else {
+        const g = document.createElement('div'); g.className = 'mg'; g.style.alignItems = 'flex-end';
+        const s = document.createElement('div'); s.className = 'ms usr'; s.textContent = 'Lionel';
+        const b = document.createElement('div'); b.className = 'bbl usr'; b.textContent = text;
+        g.appendChild(s); g.appendChild(b);
+        msgs.insertBefore(g, typing); msgs.scrollTop = msgs.scrollHeight;
+      }
+    }, d);
+  }
+  function addSys(t, d = 200) {
+    setTimeout(() => {
+      const d2 = document.createElement('div'); d2.className = 'bbl sys'; d2.textContent = t;
+      msgs.insertBefore(d2, typing); msgs.scrollTop = msgs.scrollHeight;
+    }, d);
+  }
+
+  function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.innerHTML = Math.floor(progress * (end - start) + start);
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  function addXP(n) { 
+    const startObj = document.getElementById('xp-disp');
+    const startVal = parseInt(startObj.textContent) || 0;
+    xp += n; 
+    animateValue(startObj, startVal, xp, 800); 
+  }
+
+  function send() {
+    const el = document.getElementById('cin'); const t = el.value.trim(); if (!t) return; el.value = '';
+    addMsg('usr', t);
+    const k = t.toLowerCase(); const isF = k.includes('folle');
+    let r = reps[k]; if (isF || !r) r = wilds[Math.floor(Math.random() * wilds.length)];
+    addMsg(isF ? 'soc' : 'bot', r || "Très bonne observation ! Continue d'explorer (^_^)", 80);
+  }
+  function sc(t) { document.getElementById('cin').value = t; send(); }
+
+  /* PHASE NAVIGATION */
+  function goPhase(n) {
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('on'));
+    document.getElementById('ph' + n).classList.add('on');
+    phase = n;
+    updateDots(n);
+    document.querySelector('.mscroll').scrollTop = 0;
+    if (n === 2) {
+      addSys('Activité 2 — Situation de vie', 300);
+      addMsg('bot', '(^_^) Parfait ! Maintenant imagine-toi dans cette situation. Lis attentivement, puis remplis le formulaire comme si tu étais vraiment en train de t\'inscrire au club.', 400);
+    }
+  }
+  function updateDots(n) {
+    for (let i = 1; i <= 4; i++) {
+      const d = document.getElementById('pd' + i); if (!d) continue;
+      d.className = 'pdot' + (i < n ? ' done' : i === n ? ' active' : '');
+    }
+  }
+
+  /* PHASE 1 */
+  function pick(n) {
+    const card = document.getElementById('ac' + n);
+    
+    // Squash & Stretch effect
+    card.classList.remove('pop');
+    void card.offsetWidth; // trigger reflow
+    card.classList.add('pop');
+    
+    const ck = document.getElementById('ck' + n);
+    const was = card.classList.contains('sel');
+    card.classList.toggle('sel');
+    ck.textContent = was ? '' : '✓';
+    sel += was ? -1 : 1;
+    if (sel > 0) {
+      document.getElementById('reveal').classList.add('show');
+      document.getElementById('nb1').classList.remove('off');
+      document.getElementById('app-grid').classList.add('show-fields');
+      addXP(was ? -10 : 10);
+      if (sel === 1 && !was) addMsg('bot', '(^_^) Parfait. Tu viens de t\'identifier, de chercher ou de voter. Mais as-tu remarqué ce qui se passe "en dessous" quand tu appuies sur le bouton ? Regarde les zones lumineuses.', 400);
+      if (sel === 2 && !was) addMsg('bot', '(^_^) S\'inscrire, voter, répondre... As-tu remarqué le point commun visuel entre toutes ces actions ?', 400);
+      if (sel === 3 && !was) addMsg('soc', '(?_?) Un sans faute ! Ces 3 écrans n\'ont pourtant rien à voir visuellement, et pourtant, ils cachent exactement la même technologie de base.', 400);
+    } else {
+      document.getElementById('reveal').classList.remove('show');
+      document.getElementById('nb1').classList.add('off');
+      document.getElementById('app-grid').classList.remove('show-fields');
+    }
+  }
+
+  /* PHASE 2 : FORM */
+  function checkForm() {
+    const p = document.getElementById('f-prenom').value.trim();
+    const c = document.getElementById('f-classe').value.trim();
+    const r = document.querySelector('input[name="niv"]:checked');
+    if (p && c && r && !formDone) {
+      formDone = true;
+      addMsg('bot', '(^_^) Tu remplis bien le formulaire ! Continue — pense à choisir ta disponibilité et à mettre ton email.', 300);
+    }
+  }
+
+  function submitForm() {
+    const p = document.getElementById('f-prenom').value.trim() || 'Toi';
+    const c = document.getElementById('f-classe').value.trim() || '—';
+    const r = document.querySelector('input[name="niv"]:checked');
+    const checks = [...document.querySelectorAll('.copt input:checked')].map(x => x.value);
+    const dispo = document.getElementById('f-dispo').value;
+    const email = document.getElementById('f-email').value.trim();
+    document.getElementById('dc-av').textContent = p[0].toUpperCase();
+    document.getElementById('dc-name').textContent = p;
+    document.getElementById('dc-classe').textContent = c || '—';
+    document.getElementById('dc-niv').textContent = r ? r.value : '—';
+    document.getElementById('dc-inter').textContent = checks.length ? checks.join(', ') : '—';
+    document.getElementById('dc-dispo').textContent = dispo || '—';
+    document.getElementById('dc-email').textContent = email || '—';
+    document.getElementById('mcq').classList.add('show');
+    document.querySelector('.mscroll').scrollTop = 99999;
+    addXP(20);
+    addMsg('bot', '(^_^) Tu viens d\'envoyer tes informations ! Dans une vraie page, elles partiraient vers un serveur. Maintenant une petite question — à toi de jouer.', 400);
+  }
+
+  /* MCQ */
+  function answer(btn, correct) {
+    if (mcqDone) return;
+    mcqDone = true;
+    document.querySelectorAll('.mopt').forEach(b => b.style.pointerEvents = 'none');
+    if (correct) {
+      btn.classList.add('correct');
+      addXP(30);
+      setTimeout(() => {
+        document.getElementById('def-reveal').classList.add('show');
+        document.querySelector('.mscroll').scrollTop = 99999;
+      }, 600);
+      addMsg('bot', '(^_^) Exactement ! Un formulaire HTML est bien une zone interactive de collecte d\'informations. Tu viens de découvrir la définition par l\'expérience — c\'est la meilleure façon d\'apprendre.', 300);
+    } else {
+      btn.classList.add('wrong');
+      setTimeout(() => { document.querySelectorAll('.mopt')[1].classList.add('correct') }, 700);
+      addMsg('bot', 'Pas tout à fait ! (-_-) Regarde la réponse B — un formulaire HTML est une zone <em>interactive sur le web</em>. Ce n\'est pas du papier, et ce n\'est pas un programme qui calcule. Regarde maintenant la définition complète !', 300);
+      setTimeout(() => {
+        document.getElementById('def-reveal').classList.add('show');
+        document.querySelector('.mscroll').scrollTop = 99999;
+      }, 1200);
+    }
+  }
+
+  /* TABS */
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('tab-' + name).classList.add('on');
+    if (name === 'others') addMsg('bot', '(^_^) Tu vois — recherche Google, Uber Eats, formulaire de contact... Même principe partout ! Dans les prochaines phases tu apprendras à construire ça toi-même.', 300);
+  }
+
+  /* UNLOCK CTA */
+  function unlockCTA() {
+    document.getElementById('cta-final').classList.add('show');
+    document.querySelector('.mscroll').scrollTop = 99999;
+    addXP(20);
+    addSys('(^_^) Phase 1 complète ! +' + xp + ' XP', 300);
+    addMsg('bot', '(^_^) Félicitations Lionel ! Tu as :<br>• Reconnu des formulaires dans ta vie quotidienne<br>• Rempli un vrai formulaire interactif<br>• Trouvé toi-même la définition<br>• Visualisé d\'autres exemples<br><br>Tu es prêt pour la Phase 2 — les Fondations HTML !', 500);
+  }
+
+  function celebrate() {
+    addMsg('bot', '(^_^) C\'est parti pour les Fondations HTML ! Tu vas voir les balises une par une — avec des visualisations et des défis. La magie commence maintenant !');
+    setTimeout(() => {
+      window.location.href = 'codebot_fondations_premium.html';
+    }, 1500);
+  }
+</script>

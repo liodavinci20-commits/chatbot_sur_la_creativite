@@ -12,19 +12,19 @@ const TOPIC_ICONS = {
 
 export default function TopicsSidebar({ topics, currentTopic, allCompleted, finalComplete, onSelectTopic, onSelectFinal }) {
     return (
-        <aside className="sidebar">
-            <div className="sidebar-header">
+        <aside className="hub-sidebar">
+            <div className="hub-sidebar-header">
                 <HiOutlineBookOpen />
                 <h2 className="sidebar-title">Ton parcours</h2>
             </div>
 
-            <div className="topics-list">
+            <div className="hub-topics-list">
                 {topics.map((topic, i) => {
                     const IconComp = TOPIC_ICONS[topic.id] || TbForms
                     return (
                         <motion.button
                             key={topic.id}
-                            className={`topic-card ${topic.completed ? 'completed' : ''} ${currentTopic?.id === topic.id ? 'active' : ''}`}
+                            className={`hub-topic-card ${topic.completed ? 'completed' : ''} ${currentTopic?.id === topic.id ? 'active' : ''}`}
                             onClick={() => onSelectTopic(topic)}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -32,13 +32,13 @@ export default function TopicsSidebar({ topics, currentTopic, allCompleted, fina
                             whileHover={{ x: 4, scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <div className="topic-icon-wrap">
+                            <div className="hub-topic-icon-wrap">
                                 <span className="topic-icon"><IconComp /></span>
                                 {topic.completed && <span className="check-badge">✓</span>}
                             </div>
-                            <div className="topic-info">
-                                <span className="topic-name">{topic.title.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}️]\s*/u, '')}</span>
-                                <span className={`topic-status ${topic.completed ? 'done' : ''}`}>
+                            <div className="hub-topic-info">
+                                <span className="hub-topic-name">{topic.title.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}️]\s*/u, '')}</span>
+                                <span className={`hub-topic-status ${topic.completed ? 'done' : ''}`}>
                                     {topic.completed ? (
                                         <><HiOutlineCheckCircle /> Complété</>
                                     ) : (
@@ -52,7 +52,7 @@ export default function TopicsSidebar({ topics, currentTopic, allCompleted, fina
 
                 {/* Défi Final */}
                 <motion.button
-                    className={`topic-card final ${finalComplete ? 'completed' : allCompleted ? 'unlocked' : 'locked'} ${currentTopic?.id === 'final' ? 'active' : ''}`}
+                    className={`hub-topic-card final ${finalComplete ? 'completed' : allCompleted ? 'unlocked' : 'locked'} ${currentTopic?.id === 'final' ? 'active' : ''}`}
                     onClick={onSelectFinal}
                     disabled={!allCompleted && !finalComplete}
                     initial={{ opacity: 0, x: -20 }}
@@ -60,12 +60,12 @@ export default function TopicsSidebar({ topics, currentTopic, allCompleted, fina
                     transition={{ delay: topics.length * 0.08, duration: 0.4 }}
                     whileHover={allCompleted || finalComplete ? { x: 4, scale: 1.01 } : {}}
                 >
-                    <div className="topic-icon-wrap">
+                    <div className="hub-topic-icon-wrap">
                         <span className="topic-icon"><HiOutlineTrophy /></span>
                     </div>
-                    <div className="topic-info">
-                        <span className="topic-name">Défi Final</span>
-                        <span className={`topic-status ${finalComplete ? 'done' : allCompleted ? 'ready' : ''}`}>
+                    <div className="hub-topic-info">
+                        <span className="hub-topic-name">Défi Final</span>
+                        <span className={`hub-topic-status ${finalComplete ? 'done' : allCompleted ? 'ready' : ''}`}>
                             {finalComplete ? (
                                 <><HiOutlineSparkles /> Terminé !</>
                             ) : allCompleted ? (

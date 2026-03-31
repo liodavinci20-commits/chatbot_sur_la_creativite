@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeBot — Connexion</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1DB97A;--teal-d:#0e8a5a;--teal-l:#e0f9ef;
+  --vio:#7c6ff7;--vio-d:#5a53d4;
+  --ink:#0a0a12;--ink2:#12121e;--ink3:#1a1a2e;
+  --g1:linear-gradient(135deg,#1DB97A 0%,#0ea5c4 100%);
+  --g2:linear-gradient(135deg,#7c6ff7 0%,#c16fde 100%);
+}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--ink);color:#fff;overflow:hidden}
+
+/* ── BACKGROUND ── */
+.bg{position:fixed;inset:0;z-index:0}
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(29,185,122,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(29,185,122,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridshift 20s linear infinite;
+}
+@keyframes gridshift{from{background-position:0 0}to{background-position:60px 60px}}
+.bg-glow1{position:absolute;top:-20%;left:-10%;width:60%;height:70%;border-radius:50%;background:radial-gradient(ellipse,rgba(29,185,122,.12) 0%,transparent 65%);animation:glow1 8s ease-in-out infinite alternate}
+.bg-glow2{position:absolute;bottom:-20%;right:-10%;width:55%;height:65%;border-radius:50%;background:radial-gradient(ellipse,rgba(124,111,247,.1) 0%,transparent 65%);animation:glow2 10s ease-in-out infinite alternate}
+.bg-glow3{position:absolute;top:40%;left:40%;width:30%;height:40%;border-radius:50%;background:radial-gradient(ellipse,rgba(14,165,196,.07) 0%,transparent 65%);animation:glow1 6s ease-in-out infinite alternate-reverse}
+@keyframes glow1{from{transform:scale(1) translate(0,0)}to{transform:scale(1.15) translate(3%,3%)}}
+@keyframes glow2{from{transform:scale(1) translate(0,0)}to{transform:scale(1.1) translate(-3%,-2%)}}
+
+/* Floating particles */
+.particles{position:absolute;inset:0;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite}
+@keyframes float{
+  0%{transform:translateY(110vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:.5}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+
+/* Scan line */
+.scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:1}
+
+/* ── LAYOUT ── */
+.page{position:relative;z-index:2;display:grid;grid-template-columns:1fr 480px;height:100vh}
+
+/* ── LEFT PANEL ── */
+.left{display:flex;flex-direction:column;justify-content:space-between;padding:48px 56px;position:relative;overflow:hidden}
+.left::after{content:'';position:absolute;right:0;top:10%;bottom:10%;width:1px;background:linear-gradient(to bottom,transparent,rgba(29,185,122,.3) 30%,rgba(29,185,122,.3) 70%,transparent)}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:12px;animation:slideDown .8s cubic-bezier(.4,0,.2,1) both}
+.brand-mark{width:44px;height:44px;background:var(--g1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;color:#fff;font-weight:600;box-shadow:0 4px 20px rgba(29,185,122,.4);position:relative}
+.brand-mark::after{content:'';position:absolute;inset:-2px;border-radius:14px;border:1px solid rgba(29,185,122,.3);animation:brandpulse 2s ease-in-out infinite}
+@keyframes brandpulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+.brand-name{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.brand-name span{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-tag{font-size:11px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:1px;margin-left:2px;margin-top:2px}
+
+/* Hero text */
+.hero-content{animation:slideUp .9s cubic-bezier(.4,0,.2,1) .2s both}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:20px;background:rgba(29,185,122,.1);border:.5px solid rgba(29,185,122,.25);font-size:11px;font-weight:700;color:rgba(29,185,122,.9);letter-spacing:.8px;margin-bottom:24px}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(29,185,122,.5)}70%{opacity:.7;box-shadow:0 0 0 8px rgba(29,185,122,0)}}
+.hero-title{font-size:52px;font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px}
+.hero-title .line1{color:rgba(255,255,255,.95);display:block}
+.hero-title .line2{display:block}
+.hero-title .g1{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title .g2{background:var(--g2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.42);line-height:1.75;max-width:380px;font-weight:400}
+.hero-sub strong{color:rgba(255,255,255,.65);font-weight:600}
+
+/* Stats row */
+.stats-row{display:flex;gap:24px;animation:slideUp .9s cubic-bezier(.4,0,.2,1) .4s both}
+.stat-item{display:flex;flex-direction:column;gap:4px}
+.stat-n{font-size:28px;font-weight:800;letter-spacing:-.5px;background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-l{font-size:11px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.8px}
+.stat-sep{width:1px;background:rgba(255,255,255,.08);align-self:stretch}
+
+/* Features */
+.features{display:flex;flex-direction:column;gap:14px;animation:slideUp .9s cubic-bezier(.4,0,.2,1) .35s both}
+.feat{display:flex;align-items:center;gap:14px}
+.feat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;position:relative}
+.feat-icon.t{background:rgba(29,185,122,.1);border:.5px solid rgba(29,185,122,.2);color:rgba(29,185,122,.9)}
+.feat-icon.v{background:rgba(124,111,247,.1);border:.5px solid rgba(124,111,247,.2);color:rgba(124,111,247,.9)}
+.feat-icon.c{background:rgba(240,98,74,.1);border:.5px solid rgba(240,98,74,.2);color:rgba(240,98,74,.9)}
+.feat-body{}
+.feat-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.85)}
+.feat-sub{font-size:11.5px;color:rgba(255,255,255,.35);margin-top:2px}
+
+/* ── RIGHT PANEL ── */
+.right{display:flex;flex-direction:column;justify-content:center;padding:48px 56px 48px 48px;position:relative}
+
+/* Form card */
+.form-card{position:relative;animation:slideUp 1s cubic-bezier(.4,0,.2,1) .15s both}
+.form-card-bg{position:absolute;inset:0;border-radius:24px;background:rgba(255,255,255,.03);border:.5px solid rgba(255,255,255,.08);backdrop-filter:blur(20px)}
+.form-card-glow{position:absolute;inset:-1px;border-radius:25px;background:linear-gradient(135deg,rgba(29,185,122,.15),transparent 50%,rgba(124,111,247,.1));opacity:0;transition:opacity .4s}
+.form-card:hover .form-card-glow{opacity:1}
+.form-inner{position:relative;z-index:1;padding:40px}
+
+/* Form header */
+.form-hd{margin-bottom:36px}
+.form-bot{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative;overflow:hidden}
+.form-bot::before{content:'';position:absolute;inset:0;background:var(--g1);opacity:.06}
+.form-bot-eyes{font-size:18px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.9);line-height:1;animation:blink 4s ease-in-out infinite}
+@keyframes blink{0%,96%,100%{transform:scaleY(1)}97%,99%{transform:scaleY(.05)}}
+.form-bot-mouth{font-size:10px;color:rgba(29,185,122,.8);font-family:'JetBrains Mono',monospace;margin-top:3px}
+.form-bot-pulse{position:absolute;bottom:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite;box-shadow:0 0 6px rgba(29,185,122,.5)}
+.form-title{font-size:22px;font-weight:800;color:rgba(255,255,255,.95);letter-spacing:-.4px;margin-bottom:6px}
+.form-sub{font-size:13px;color:rgba(255,255,255,.35);line-height:1.6}
+
+/* Step indicator */
+.step-ind{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+.si-dot{width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.1);transition:all .4s}
+.si-dot.active{background:var(--g1);box-shadow:0 0 8px rgba(29,185,122,.4);width:36px}
+.si-dot.done{background:rgba(29,185,122,.4)}
+
+/* STEPS */
+.step-panel{display:none;animation:fadeSlide .4s cubic-bezier(.4,0,.2,1)}
+.step-panel.on{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeSlideBack{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.step-panel.back{animation:fadeSlideBack .4s cubic-bezier(.4,0,.2,1)}
+
+/* Fields */
+.field{margin-bottom:16px}
+.field-label{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.field-label-dot{width:4px;height:4px;border-radius:50%;background:var(--teal)}
+.field-wrap{position:relative}
+.field-input{
+  width:100%;padding:14px 18px;
+  border-radius:12px;
+  border:.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.9);
+  font-size:14px;font-family:'Outfit',sans-serif;font-weight:500;
+  outline:none;transition:all .25s;
+}
+.field-input::placeholder{color:rgba(255,255,255,.2)}
+.field-input:focus{
+  border-color:rgba(29,185,122,.5);
+  background:rgba(29,185,122,.04);
+  box-shadow:0 0 0 3px rgba(29,185,122,.08);
+}
+.field-input.error{border-color:rgba(240,98,74,.5);background:rgba(240,98,74,.04)}
+.field-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.2);pointer-events:none;transition:color .25s}
+.field-input:focus+.field-icon{color:rgba(29,185,122,.6)}
+
+/* Select fields */
+.field-select{
+  width:100%;padding:14px 18px;
+  border-radius:12px;
+  border:.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.9);
+  font-size:14px;font-family:'Outfit',sans-serif;font-weight:500;
+  outline:none;transition:all .25s;
+  appearance:none;cursor:pointer;
+}
+.field-select:focus{border-color:rgba(29,185,122,.5);background:rgba(29,185,122,.04);box-shadow:0 0 0 3px rgba(29,185,122,.08)}
+.field-select option{background:#1a1a2e;color:#fff}
+
+/* Two cols */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Submit button */
+.submit-btn{
+  width:100%;padding:16px;border-radius:13px;
+  background:var(--g1);border:none;
+  color:#fff;font-size:14px;font-weight:800;
+  font-family:'Outfit',sans-serif;cursor:pointer;
+  letter-spacing:.3px;
+  box-shadow:0 4px 24px rgba(29,185,122,.35);
+  transition:all .25s;position:relative;overflow:hidden;
+  margin-top:8px;
+}
+.submit-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:opacity .25s;
+}
+.submit-btn:hover{box-shadow:0 6px 32px rgba(29,185,122,.55);transform:translateY(-2px)}
+.submit-btn:hover::before{opacity:1}
+.submit-btn:active{transform:translateY(0);box-shadow:0 2px 12px rgba(29,185,122,.3)}
+
+/* Secondary btn */
+.sec-btn{
+  width:100%;padding:14px;border-radius:13px;
+  background:rgba(255,255,255,.05);
+  border:.5px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.65);font-size:13.5px;font-weight:600;
+  font-family:'Outfit',sans-serif;cursor:pointer;
+  transition:all .25s;margin-top:10px;
+}
+.sec-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.9)}
+
+/* Back link */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;transition:color .2s;margin-bottom:20px;background:none;border:none;font-family:'Outfit',sans-serif}
+.back-link:hover{color:rgba(29,185,122,.8)}
+.back-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Progress bar on btn */
+.btn-progress{position:absolute;bottom:0;left:0;height:2px;background:rgba(255,255,255,.3);border-radius:0 0 13px 13px;width:0;transition:width .05s linear}
+
+/* Error message */
+.err-msg{font-size:11.5px;color:#f0624a;margin-top:6px;display:none;font-weight:600}
+.err-msg.show{display:block;animation:fadeIn .3s ease}
+
+/* Success state */
+.success-state{display:none;text-align:center;padding:20px 0}
+.success-state.show{display:block;animation:fadeSlide .5s ease}
+.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(29,185,122,.1);border:1.5px solid rgba(29,185,122,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'JetBrains Mono',monospace;font-size:22px;color:rgba(29,185,122,.9);animation:successPop .6s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes successPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-size:20px;font-weight:800;color:rgba(255,255,255,.95);margin-bottom:8px}
+.success-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+.progress-ring{width:40px;height:40px;margin:20px auto 0}
+.progress-ring circle{fill:none;stroke-width:3;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
+.pr-bg{stroke:rgba(255,255,255,.08)}
+.pr-fill{stroke:url(#pr-grad);stroke-dasharray:100;stroke-dashoffset:100;animation:ring 3s linear .5s forwards}
+@keyframes ring{to{stroke-dashoffset:0}}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0}
+.divider-line{flex:1;height:.5px;background:rgba(255,255,255,.08)}
+.divider-txt{font-size:11px;color:rgba(255,255,255,.25);font-weight:600;letter-spacing:.5px}
+
+/* Bottom note */
+.bottom-note{margin-top:20px;text-align:center;font-size:11.5px;color:rgba(255,255,255,.25);line-height:1.6}
+.bottom-note a{color:rgba(29,185,122,.7);text-decoration:none;font-weight:600;transition:color .2s}
+.bottom-note a:hover{color:rgba(29,185,122,1)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:rgba(29,185,122,.12);border:.5px solid rgba(29,185,122,.3);
+  padding:12px 20px;border-radius:12px;
+  font-size:12.5px;font-weight:600;color:rgba(29,185,122,.95);
+  transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;
+  backdrop-filter:blur(16px);z-index:100;opacity:0;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 24px rgba(0,0,0,.3);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast-icon{font-family:'JetBrains Mono',monospace;font-size:14px}
+
+/* Animations */
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Cursor trail */
+.cursor-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(29,185,122,.6);
+  position:fixed;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform .1s;
+}
+.cursor-ring{
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid rgba(29,185,122,.25);
+  position:fixed;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:all .12s ease-out;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .left{display:none}
+  .page{grid-template-columns:1fr}
+  .right{padding:32px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cdot"></div>
+<div class="cursor-ring" id="cring"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">(^_^)</span>
+  <span id="toast-msg">Bienvenue dans CodeBot !</span>
+</div>
+
+<!-- BG -->
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-glow1"></div>
+  <div class="bg-glow2"></div>
+  <div class="bg-glow3"></div>
+  <div class="particles" id="particles"></div>
+  <div class="scanline"></div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-mark">&lt;/&gt;</div>
+      <div>
+        <div class="brand-name">Code<span>Bot</span></div>
+        <div class="brand-tag">PLATEFORME ÉDUCATIVE</div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>Apprentissage nouvelle génération</div>
+      <div class="hero-title">
+        <span class="line1">Apprends à coder</span>
+        <span class="line2"><span class="g1">différemment.</span></span>
+        <span class="line2"><span class="g2">Vraiment.</span></span>
+      </div>
+      <div class="hero-sub">
+        Pas de cours magistraux. Pas de texte à recopier.<br>
+        <strong>Tu découvres, tu expérimentes, tu crées</strong> — accompagné par un chatbot qui te guide sans jamais te donner les réponses.
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon t">[?]</div>
+        <div class="feat-body">
+          <div class="feat-title">Apprentissage socratique</div>
+          <div class="feat-sub">Le bot questionne, toi tu découvres (^_^)</div>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon v">( o )</div>
+        <div class="feat-body">
+          <div class="feat-title">Visualisation en temps réel</div>
+          <div class="feat-sub">Vois immédiatement ce que ton code produit</div>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon c">[*]</div>
+        <div class="feat-body">
+          <div class="feat-title">Défis créatifs contextuels</div>
+          <div class="feat-sub">Crée des projets qui te ressemblent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-n">5</div>
+        <div class="stat-l">PHASES</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-n">20+</div>
+        <div class="stat-l">ACTIVITÉS</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-n">100%</div>
+        <div class="stat-l">INTERACTIF</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="form-card">
+      <div class="form-card-bg"></div>
+      <div class="form-card-glow"></div>
+      <div class="form-inner">
+
+        <!-- Bot avatar -->
+        <div class="form-bot">
+          <div class="form-bot-eyes">^_^</div>
+          <div class="form-bot-mouth">hello</div>
+          <div class="form-bot-pulse"></div>
+        </div>
+
+        <div class="form-hd">
+          <div class="form-title" id="form-title">Content de te voir !</div>
+          <div class="form-sub" id="form-sub">Entre tes informations pour commencer l'aventure.</div>
+        </div>
+
+        <div class="step-ind">
+          <div class="si-dot active" id="si1"></div>
+          <div class="si-dot" id="si2"></div>
+          <div class="si-dot" id="si3"></div>
+        </div>
+
+        <!-- STEP 1 : Identité -->
+        <div class="step-panel on" id="step1">
+          <div class="two-col">
+            <div class="field">
+              <div class="field-label"><div class="field-label-dot"></div>Prénom</div>
+              <div class="field-wrap">
+                <input class="field-input" id="prenom" placeholder="Ton prénom..." autocomplete="given-name" oninput="checkStep1()">
+                <span class="field-icon">[_]</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label"><div class="field-label-dot"></div>Nom</div>
+              <div class="field-wrap">
+                <input class="field-input" id="nom" placeholder="Ton nom..." autocomplete="family-name" oninput="checkStep1()">
+                <span class="field-icon">[_]</span>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label"><div class="field-label-dot"></div>Classe</div>
+            <div class="field-wrap">
+              <select class="field-select" id="classe" onchange="checkStep1()">
+                <option value="">Sélectionne ta classe...</option>
+                <option>6ème</option><option>5ème</option><option>4ème</option><option>3ème</option>
+                <option>Seconde</option><option>Première</option><option>Terminale</option>
+                <option>BTS / IUT</option><option>Autre</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label"><div class="field-label-dot"></div>Établissement</div>
+            <div class="field-wrap">
+              <input class="field-input" id="etab" placeholder="Nom de ton lycée / collège..." oninput="checkStep1()">
+              <span class="field-icon">[^]</span>
+            </div>
+          </div>
+          <button class="submit-btn" id="btn1" onclick="nextStep(2)" style="opacity:.4;pointer-events:none">
+            Continuer &nbsp;›
+          </button>
+        </div>
+
+        <!-- STEP 2 : Compte -->
+        <div class="step-panel" id="step2">
+          <button class="back-link" onclick="goStep(1)">
+            <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+            Retour
+          </button>
+          <div class="field">
+            <div class="field-label"><div class="field-label-dot"></div>Adresse email</div>
+            <div class="field-wrap">
+              <input class="field-input" id="email" type="email" placeholder="ton@email.com" autocomplete="email" oninput="checkStep2()">
+              <span class="field-icon">(@)</span>
+            </div>
+            <div class="err-msg" id="email-err">Format d'email invalide (-_-)</div>
+          </div>
+          <div class="field">
+            <div class="field-label"><div class="field-label-dot"></div>Mot de passe</div>
+            <div class="field-wrap">
+              <input class="field-input" id="password" type="password" placeholder="Minimum 6 caractères..." autocomplete="new-password" oninput="checkStep2()">
+              <span class="field-icon" id="eye-icon" style="cursor:pointer;pointer-events:all" onclick="togglePwd()">[o]</span>
+            </div>
+            <div id="pwd-strength" style="display:none;margin-top:8px">
+              <div style="display:flex;gap:4px;margin-bottom:4px">
+                <div style="flex:1;height:3px;border-radius:2px;transition:background .3s" id="ps1"></div>
+                <div style="flex:1;height:3px;border-radius:2px;transition:background .3s" id="ps2"></div>
+                <div style="flex:1;height:3px;border-radius:2px;transition:background .3s" id="ps3"></div>
+              </div>
+              <div style="font-size:10.5px;font-weight:600" id="ps-label"></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label"><div class="field-label-dot"></div>Confirmer le mot de passe</div>
+            <div class="field-wrap">
+              <input class="field-input" id="password2" type="password" placeholder="Répète ton mot de passe..." autocomplete="new-password" oninput="checkStep2()">
+              <span class="field-icon">[=]</span>
+            </div>
+            <div class="err-msg" id="pwd-err">Les mots de passe ne correspondent pas (-_-)</div>
+          </div>
+          <button class="submit-btn" id="btn2" onclick="nextStep(3)" style="opacity:.4;pointer-events:none">
+            Créer mon compte &nbsp;›
+          </button>
+          <div class="divider"><div class="divider-line"></div><div class="divider-txt">déjà inscrit ?</div><div class="divider-line"></div></div>
+          <button class="sec-btn" onclick="showLogin()">Se connecter à mon compte</button>
+        </div>
+
+        <!-- STEP 3 : Succès -->
+        <div class="step-panel" id="step3">
+          <div class="success-state show">
+            <div class="success-icon">(^_^)</div>
+            <div class="success-title" id="success-title">Bienvenue dans CodeBot !</div>
+            <div class="success-sub">Ton profil est créé. La Phase 1 t'attend — on commence par découvrir les formulaires HTML. Prêt ?</div>
+            <svg class="progress-ring" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="pr-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1DB97A"/>
+                  <stop offset="100%" stop-color="#0ea5c4"/>
+                </linearGradient>
+              </defs>
+              <circle class="pr-bg" cx="20" cy="20" r="16"/>
+              <circle class="pr-fill" cx="20" cy="20" r="16"/>
+            </svg>
+            <button class="submit-btn" style="margin-top:20px" onclick="enterApp()">
+              Commencer l'aventure (^_^)
+            </button>
+          </div>
+        </div>
+
+        <!-- BOTTOM NOTE -->
+        <div class="bottom-note" id="bottom-note">
+          En créant un compte, tu acceptes nos <a href="#">conditions d'utilisation</a> et notre <a href="#">politique de confidentialité</a>.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── PARTICLES ── */
+(function(){
+  const container=document.getElementById('particles');
+  const colors=['rgba(29,185,122,','rgba(124,111,247,','rgba(14,165,196,'];
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*3+1.5;
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    const opacity=Math.random()*.5+.2;
+    const left=Math.random()*100;
+    const duration=Math.random()*12+8;
+    const delay=Math.random()*12;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${left}%;
+      background:${color}${opacity});
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+      box-shadow:0 0 ${size*3}px ${color}.6);
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ── CURSOR ── */
+const cdot=document.getElementById('cdot');
+const cring=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cdot.style.left=mx+'px';cdot.style.top=my+'px';
+});
+(function animCursor(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  cring.style.left=rx+'px';cring.style.top=ry+'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('input,select,button,.submit-btn,.sec-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cring.style.width='48px';cring.style.height='48px';cring.style.borderColor='rgba(29,185,122,.5)'});
+  el.addEventListener('mouseleave',()=>{cring.style.width='32px';cring.style.height='32px';cring.style.borderColor='rgba(29,185,122,.25)'});
+});
+
+/* ── TOAST ── */
+function showToast(msg,delay=0){
+  setTimeout(()=>{
+    document.getElementById('toast-msg').textContent=msg;
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3200);
+  },delay);
+}
+
+/* ── STEP LOGIC ── */
+let currentStep=1;
+let userData={};
+
+function goStep(n,back=false){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('on','back'));
+  const panel=document.getElementById('step'+n);
+  panel.classList.add('on');
+  if(back) panel.classList.add('back');
+  currentStep=n;
+  // Update dots
+  for(let i=1;i<=3;i++){
+    const d=document.getElementById('si'+i);
+    if(!d)continue;
+    d.className='si-dot'+(i<n?' done':i===n?' active':'');
+  }
+  // Update header
+  const titles=['','Content de te voir !','Crée ton accès','Tout est prêt (^_^)'];
+  const subs=['','Entre tes informations pour commencer l\'aventure.','Choisis un email et un mot de passe sécurisé.','Ton profil CodeBot est prêt.'];
+  document.getElementById('form-title').textContent=titles[n];
+  document.getElementById('form-sub').textContent=subs[n];
+  document.getElementById('bottom-note').style.display=n===3?'none':'block';
+}
+
+function nextStep(n){goStep(n);}
+
+/* STEP 1 validation */
+function checkStep1(){
+  const p=document.getElementById('prenom').value.trim();
+  const nom=document.getElementById('nom').value.trim();
+  const cl=document.getElementById('classe').value;
+  const et=document.getElementById('etab').value.trim();
+  const btn=document.getElementById('btn1');
+  const ok=p&&nom&&cl&&et;
+  btn.style.opacity=ok?'1':'.4';
+  btn.style.pointerEvents=ok?'all':'none';
+  if(ok){userData.prenom=p;userData.nom=nom;userData.classe=cl;userData.etab=et;}
+}
+
+/* STEP 2 validation */
+function checkStep2(){
+  const email=document.getElementById('email').value.trim();
+  const pwd=document.getElementById('password').value;
+  const pwd2=document.getElementById('password2').value;
+  const btn=document.getElementById('btn2');
+  const emailErr=document.getElementById('email-err');
+  const pwdErr=document.getElementById('pwd-err');
+  const pwdStr=document.getElementById('pwd-strength');
+  
+  // Email check
+  const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length===0;
+  emailErr.classList.toggle('show',!emailOk&&email.length>0);
+  document.getElementById('email').classList.toggle('error',!emailOk&&email.length>0);
+
+  // Password strength
+  if(pwd.length>0){
+    pwdStr.style.display='block';
+    const s=pwdStrength(pwd);
+    const colors=['rgba(240,98,74,.7)','rgba(232,160,32,.8)','rgba(29,185,122,.8)'];
+    const labels=[['(-_-) Trop court','rgba(240,98,74,.8)'],['(~_~) Moyen','rgba(232,160,32,.9)'],['(^_^) Solide !','rgba(29,185,122,.9)']];
+    ['ps1','ps2','ps3'].forEach((id,i)=>{
+      document.getElementById(id).style.background=i<s?colors[s-1]:'rgba(255,255,255,.1)';
+    });
+    const lbl=document.getElementById('ps-label');
+    lbl.textContent=labels[s-1][0];lbl.style.color=labels[s-1][1];
+  } else {pwdStr.style.display='none';}
+
+  // Match
+  const match=pwd===pwd2||pwd2.length===0;
+  pwdErr.classList.toggle('show',!match&&pwd2.length>0);
+  document.getElementById('password2').classList.toggle('error',!match&&pwd2.length>0);
+
+  const ok=emailOk&&email.length>0&&pwd.length>=6&&match&&pwd2.length>0;
+  btn.style.opacity=ok?'1':'.4';
+  btn.style.pointerEvents=ok?'all':'none';
+  if(ok){userData.email=email;}
+}
+
+function pwdStrength(pwd){
+  let s=0;
+  if(pwd.length>=6)s=1;
+  if(pwd.length>=8&&/[A-Z]/.test(pwd))s=2;
+  if(pwd.length>=10&&/[A-Z]/.test(pwd)&&/[0-9]/.test(pwd))s=3;
+  return s||1;
+}
+
+function togglePwd(){
+  const i=document.getElementById('password');
+  const icon=document.getElementById('eye-icon');
+  if(i.type==='password'){i.type='text';icon.textContent='[-]';}
+  else{i.type='password';icon.textContent='[o]';}
+}
+
+/* LOGIN mode */
+function showLogin(){
+  document.getElementById('form-title').textContent='Content de te revoir !';
+  document.getElementById('form-sub').textContent='Connecte-toi pour reprendre là où tu t\'es arrêté.';
+  const s2=document.getElementById('step2');
+  s2.innerHTML=`
+    <button class="back-link" onclick="goStep(1)">
+      <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+      Retour
+    </button>
+    <div class="field">
+      <div class="field-label"><div class="field-label-dot"></div>Adresse email</div>
+      <div class="field-wrap">
+        <input class="field-input" id="lemail" type="email" placeholder="ton@email.com" oninput="checkLogin()">
+        <span class="field-icon">(@)</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label"><div class="field-label-dot"></div>Mot de passe</div>
+      <div class="field-wrap">
+        <input class="field-input" id="lpwd" type="password" placeholder="Ton mot de passe..." oninput="checkLogin()">
+        <span class="field-icon" style="cursor:pointer;pointer-events:all" onclick="this.textContent=this.textContent==='[o]'?'[-]':'[o]';const i=document.getElementById('lpwd');i.type=i.type==='password'?'text':'password'">[o]</span>
+      </div>
+    </div>
+    <div style="text-align:right;margin:-8px 0 14px">
+      <a href="#" style="font-size:11.5px;color:rgba(29,185,122,.7);font-weight:600;text-decoration:none">(?) Mot de passe oublié</a>
+    </div>
+    <button class="submit-btn" id="lbtn" onclick="loginAction()" style="opacity:.4;pointer-events:none">
+      Se connecter (^_^)
+    </button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-txt">pas encore inscrit ?</div><div class="divider-line"></div></div>
+    <button class="sec-btn" onclick="location.reload()">Créer un compte</button>
+  `;
+}
+function checkLogin(){
+  const e=document.getElementById('lemail')?.value.trim();
+  const p=document.getElementById('lpwd')?.value;
+  const btn=document.getElementById('lbtn');
+  if(btn){const ok=e&&p&&p.length>=4;btn.style.opacity=ok?'1':'.4';btn.style.pointerEvents=ok?'all':'none';}
+}
+function loginAction(){
+  const prenom=userData.prenom||'toi';
+  userData.prenom=document.getElementById('lemail')?.value.split('@')[0]||prenom;
+  goStep(3);
+  showToast(`(^_^) Ravi de te revoir !`,300);
+}
+
+/* ENTER APP */
+function enterApp(){
+  showToast(`(^_^) Chargement de ta session, ${userData.prenom||''}...`);
+  setTimeout(() => {
+    window.location.href = 'codebot_decouvrir_final.html';
+  }, 1200);
+}
+
+/* AUTO-TOAST on load */
+setTimeout(()=>showToast('(^_^) Bienvenue sur CodeBot — Apprendre autrement.',800),600);
+</script>
+</body>
+</html>

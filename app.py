@@ -25,9 +25,33 @@ chatbot = ChatbotEngine()
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
+
+    # Support both legacy (name+classe) and new (email+password) login
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
     name = data.get("name", "").strip()
     classe = data.get("classe", "").strip()
 
+    # New login flow: email + password
+    if email and password:
+        # For now, accept any valid-looking credentials (no DB yet)
+        # In production, this would check against a database
+        if len(password) < 4:
+            return jsonify({"error": "Mot de passe trop court"}), 400
+
+        # Derive name from email if not provided
+        display_name = name or email.split("@")[0].capitalize()
+        session["student_name"] = display_name
+        session["student_class"] = classe or "Non spécifiée"
+        session["student_email"] = email
+        session["progress"] = {key: False for key in LESSONS}
+        session["final_complete"] = False
+        session["chat_history"] = []
+        session["conversation_state"] = {"current_topic": None, "state": "idle"}
+
+        return jsonify({"success": True, "name": display_name, "classe": session["student_class"]})
+
+    # Legacy login flow: name + classe
     if not name or not classe:
         return jsonify({"error": "Nom et classe requis"}), 400
 
@@ -39,6 +63,45 @@ def login():
     session["conversation_state"] = {"current_topic": None, "state": "idle"}
 
     return jsonify({"success": True, "name": name, "classe": classe})
+
+
+@app.route("/api/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    prenom = data.get("prenom", "").strip()
+    nom = data.get("nom", "").strip()
+    classe = data.get("classe", "").strip()
+    etablissement = data.get("etablissement", "").strip()
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
+
+    # Validation
+    if not prenom or not nom or not classe or not etablissement:
+        return jsonify({"error": "Tous les champs d'identité sont requis"}), 400
+    if not email or "@" not in email:
+        return jsonify({"error": "Email invalide"}), 400
+    if not password or len(password) < 6:
+        return jsonify({"error": "Le mot de passe doit contenir au moins 6 caractères"}), 400
+
+    # Store in session (in production, save to database)
+    display_name = f"{prenom} {nom}"
+    session["student_name"] = display_name
+    session["student_prenom"] = prenom
+    session["student_nom"] = nom
+    session["student_class"] = classe
+    session["student_etablissement"] = etablissement
+    session["student_email"] = email
+    session["progress"] = {key: False for key in LESSONS}
+    session["final_complete"] = False
+    session["chat_history"] = []
+    session["conversation_state"] = {"current_topic": None, "state": "idle"}
+
+    return jsonify({
+        "success": True,
+        "name": display_name,
+        "prenom": prenom,
+        "classe": classe
+    })
 
 
 @app.route("/api/chat", methods=["POST"])

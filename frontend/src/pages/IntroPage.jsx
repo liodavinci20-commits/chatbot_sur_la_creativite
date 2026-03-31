@@ -1,438 +1,611 @@
-import { useState } from 'react'
-import { API_BASE_URL } from '../config'
+// IntroPage.jsx — Page Découvrir (Phase 1) — New design matching codebot_decouvrir_final.html
+// Structured as a multi-phase interactive discovery experience
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import Lottie from 'lottie-react'
-import { HiOutlineEye, HiOutlineXMark, HiOutlineArrowRight, HiOutlineQuestionMarkCircle, HiOutlineLightBulb } from 'react-icons/hi2'
-import helloAnimation from '../assets/animations/hello-robot.json'
-import ThinkingRobot from '../components/ThinkingRobot'
+import AppShell from '../components/AppShell'
+import ChatPanel2 from '../components/ChatPanel2'
 
-// SVG du menu de restaurant
-function MenuSVG() {
+// ── Réponses locales pour le chat panel ──
+const CHAT_RESPONSES = {
+    "c'est quoi un formulaire ?": "(^_^) Un formulaire HTML, c'est une zone interactive sur une page web qui te permet de saisir et d'envoyer des informations. Tu en remplis plusieurs chaque jour : connexion Instagram, recherche Google, commande en ligne... On va découvrir ça ensemble !",
+    "j'ai pas compris": "Pas de souci (^_^) ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
+    "j'ai pas compris :-/": "Pas de souci (^_^) ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
+    "aide moi": "(^_^) Bien sûr ! Tu es sur la Phase 1. Commence par cocher les interfaces qui te semblent familières. Ensuite on remplira un vrai formulaire ensemble — et tu verras exactement à quoi ça sert.",
+    "c'est quoi html ?": "HTML, c'est le langage qui décrit la structure de toutes les pages web. Si une page web était une maison, HTML serait les murs et les portes. Les formulaires, ce sont les boîtes aux lettres — elles reçoivent et envoient des infos ! (^_^)",
+}
+
+const WILD_QUESTIONS = [
+    "Et si tu devais inventer un formulaire pour lire les rêves — quels champs tu mettrais ? (~_~)",
+    "Pourquoi les formulaires web ont-ils presque toujours un champ 'mot de passe' selon toi ? (o_O)",
+    "Si un formulaire pouvait te parler, que te dirait-il quand tu laisses un champ vide ? (*_*)",
+    "Imagine un monde sans formulaires HTML — comment tu créerais un compte sur une appli ? (-_-)",
+]
+
+const CHAT_CHIPS = [
+    { label: "C'est quoi un formulaire ?", text: "c'est quoi un formulaire ?" },
+    { label: "J'ai pas compris :-/", text: "j'ai pas compris :-/" },
+    { label: '~_~ Question folle', text: 'question folle', wild: true },
+    { label: 'Aide-moi', text: 'aide moi' },
+]
+
+// ── Audio Helper ──
+const speakText = (htmlText) => {
+    if (!('speechSynthesis' in window)) return
+    const cleanText = htmlText.replace(/<[^>]+>/g, '').replace(/\(.*?_.*?\)/g, '')
+    window.speechSynthesis.cancel()
+    const msg = new SpeechSynthesisUtterance(cleanText)
+    msg.lang = 'fr-FR'
+    msg.rate = 1.05
+    msg.pitch = 1.1
+    const voices = window.speechSynthesis.getVoices()
+    const frVoice = voices.find(v => v.lang.startsWith('fr') && v.name.includes('Google')) ||
+        voices.find(v => v.lang.startsWith('fr'))
+    if (frVoice) msg.voice = frVoice
+    window.speechSynthesis.speak(msg)
+}
+
+// ── SVG App Cards ──
+function InstagramCard() {
     return (
-        <svg viewBox="0 0 280 360" className="menu-svg" xmlns="http://www.w3.org/2000/svg">
-            {/* Fond de la carte */}
-            <rect x="0" y="0" width="280" height="360" rx="16" fill="#FFF8F0" stroke="#E8D5B7" strokeWidth="2" />
-            <rect x="0" y="0" width="280" height="60" rx="16" fill="#8B4513" />
-            <rect x="0" y="16" width="280" height="44" fill="#8B4513" />
-
-            {/* Titre */}
-            <text x="140" y="38" textAnchor="middle" fill="#FFF8F0" fontSize="18" fontWeight="bold" fontFamily="serif">🍽️ MENU DU JOUR</text>
-
-            {/* Section Entrées - comme les Radio buttons */}
-            <text x="20" y="85" fill="#8B4513" fontSize="13" fontWeight="bold">ENTRÉE (1 seul choix) 🔘</text>
-            <circle cx="30" cy="105" r="6" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <circle cx="30" cy="105" r="3" fill="#D4A574" />
-            <text x="45" y="109" fill="#5D3A1A" fontSize="11">Salade César</text>
-            <circle cx="30" cy="128" r="6" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <text x="45" y="132" fill="#5D3A1A" fontSize="11">Soupe du jour</text>
-            <circle cx="30" cy="151" r="6" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <text x="45" y="155" fill="#5D3A1A" fontSize="11">Bruschetta</text>
-
-            {/* Section Accompagnements - comme les Checkboxes */}
-            <text x="20" y="185" fill="#8B4513" fontSize="13" fontWeight="bold">ACCOMPAGNEMENTS (plusieurs) ☑️</text>
-            <rect x="24" y="195" width="14" height="14" rx="3" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <text x="24" y="207" fill="#D4A574" fontSize="12" fontWeight="bold">✓</text>
-            <text x="45" y="207" fill="#5D3A1A" fontSize="11">Frites</text>
-            <rect x="24" y="218" width="14" height="14" rx="3" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <text x="24" y="230" fill="#D4A574" fontSize="12" fontWeight="bold">✓</text>
-            <text x="45" y="230" fill="#5D3A1A" fontSize="11">Légumes grillés</text>
-            <rect x="24" y="241" width="14" height="14" rx="3" fill="none" stroke="#D4A574" strokeWidth="2" />
-            <text x="45" y="253" fill="#5D3A1A" fontSize="11">Riz basmati</text>
-
-            {/* Section Boisson - comme un Select */}
-            <text x="20" y="283" fill="#8B4513" fontSize="13" fontWeight="bold">BOISSON (liste) 📋</text>
-            <rect x="24" y="292" width="200" height="28" rx="6" fill="#FFF" stroke="#D4A574" strokeWidth="1.5" />
-            <text x="32" y="310" fill="#5D3A1A" fontSize="11">Jus d'orange ▾</text>
-
-            {/* Section Demande spéciale - comme un Textarea */}
-            <text x="20" y="340" fill="#8B4513" fontSize="13" fontWeight="bold">DEMANDE SPÉCIALE ✏️</text>
-            <rect x="24" y="345" width="232" height="5" rx="2" fill="#F5EDE0" stroke="#D4A574" strokeWidth="1" />
+        <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <defs>
+                <linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#f09433" /><stop offset="30%" stopColor="#e6683c" />
+                    <stop offset="55%" stopColor="#dc2743" /><stop offset="80%" stopColor="#cc2366" />
+                    <stop offset="100%" stopColor="#bc1888" />
+                </linearGradient>
+            </defs>
+            <rect width="200" height="155" fill="url(#ig)" />
+            <rect x="0" y="0" width="200" height="155" fill="rgba(0,0,0,.15)" />
+            <rect x="55" y="10" width="90" height="135" rx="14" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.15)" strokeWidth=".5" />
+            <rect x="80" y="28" width="40" height="40" rx="10" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="2" />
+            <circle cx="100" cy="48" r="10" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="2" />
+            <circle cx="113" cy="36" r="2.5" fill="rgba(255,255,255,.85)" />
+            <rect className="field-input" x="65" y="80" width="70" height="12" rx="6" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.25)" strokeWidth=".5" />
+            <text className="ui-text" x="100" y="90" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="rgba(255,255,255,.7)">Nom d'utilisateur</text>
+            <text className="code-elem" x="100" y="89" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="text"&gt;</text>
+            <rect className="field-input" x="65" y="97" width="70" height="12" rx="6" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.25)" strokeWidth=".5" />
+            <text className="ui-text" x="100" y="107" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="rgba(255,255,255,.7)">Mot de passe</text>
+            <text className="code-elem" x="100" y="106" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="password"&gt;</text>
+            <rect x="67" y="114" width="66" height="12" rx="6" fill="rgba(255,255,255,.35)" />
+            <text x="100" y="123.5" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="#c13584" fontWeight="800">Se connecter</text>
+            <text x="100" y="140" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="8" fill="rgba(255,255,255,.9)" fontWeight="800">Instagram</text>
         </svg>
     )
 }
 
+function TikTokCard() {
+    return (
+        <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <rect width="200" height="155" fill="#010101" />
+            <rect x="55" y="10" width="90" height="135" rx="14" fill="#1a1a1a" stroke="#2a2a2a" strokeWidth=".5" />
+            <text x="100" y="45" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="22" fill="white" fontWeight="900">TikTok</text>
+            <rect x="18" y="18" width="8" height="8" rx="2" fill="#fe2c55" opacity=".9" />
+            <rect x="174" y="18" width="8" height="8" rx="2" fill="#25f4ee" opacity=".9" />
+            <rect className="field-input" x="66" y="58" width="68" height="13" rx="6.5" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth=".5" />
+            <text className="ui-text" x="100" y="68" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#666">Téléphone / Email</text>
+            <text className="code-elem" x="100" y="67" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="email"&gt;</text>
+            <rect className="field-input" x="66" y="76" width="68" height="13" rx="6.5" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth=".5" />
+            <text className="ui-text" x="100" y="86" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#666">Mot de passe</text>
+            <text className="code-elem" x="100" y="85" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="password"&gt;</text>
+            <rect x="68" y="95" width="64" height="13" rx="6.5" fill="#fe2c55" />
+            <text x="100" y="105" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="white" fontWeight="800">Connexion</text>
+            <line x1="70" y1="115" x2="90" y2="115" stroke="#333" strokeWidth=".5" />
+            <text x="100" y="119" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="#555">ou</text>
+            <line x1="110" y1="115" x2="130" y2="115" stroke="#333" strokeWidth=".5" />
+            <rect x="68" y="122" width="28" height="10" rx="5" fill="#1877f2" />
+            <rect x="100" y="122" width="28" height="10" rx="5" fill="#1a1a1a" stroke="#333" strokeWidth=".5" />
+            <text x="82" y="130" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6" fill="white">Facebook</text>
+            <text x="114" y="130" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6" fill="#555">Google</text>
+            <text x="100" y="148" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#444">Pas encore de compte ? S'inscrire</text>
+        </svg>
+    )
+}
+
+function WhatsAppCard() {
+    return (
+        <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <defs>
+                <linearGradient id="wa" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#075e54" /><stop offset="100%" stopColor="#1a9e8f" />
+                </linearGradient>
+            </defs>
+            <rect width="200" height="155" fill="#e5ddd5" />
+            <rect x="32" y="20" width="136" height="115" rx="10" fill="white" />
+            <rect x="32" y="20" width="136" height="24" rx="10" fill="url(#wa)" />
+            <rect x="32" y="32" width="136" height="12" fill="url(#wa)" />
+            <circle cx="50" cy="32" r="10" fill="rgba(255,255,255,.2)" />
+            <text x="64" y="29" fontFamily="Outfit,sans-serif" fontSize="7" fill="white" fontWeight="700">Groupe Terminale S</text>
+            <text x="64" y="38" fontFamily="Outfit,sans-serif" fontSize="6" fill="rgba(255,255,255,.7)">276 membres</text>
+            <rect x="40" y="50" width="120" height="75" rx="8" fill="#dcf8c6" />
+            <text x="100" y="63" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7.5" fill="#075e54" fontWeight="800">SONDAGE</text>
+            <text x="100" y="74" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="#333">Soirée révisions vendredi ?</text>
+            <rect className="ui-text" x="46" y="79" width="108" height="13" rx="6.5" fill="#25d366" opacity=".15" />
+            <circle className="field-input" cx="56" cy="85.5" r="4" fill="none" stroke="#25d366" strokeWidth="1.5" />
+            <circle className="ui-text" cx="56" cy="85.5" r="2" fill="#25d366" />
+            <text className="ui-text" x="64" y="89" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#333">Oui ! Je suis là (^_^)</text>
+            <text className="code-elem" x="100" y="88" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="radio" value="oui"&gt;</text>
+            <rect className="ui-text" x="46" y="96" width="108" height="13" rx="6.5" fill="white" stroke="#ddd" strokeWidth=".5" />
+            <circle className="field-input" cx="56" cy="102.5" r="4" fill="none" stroke="#999" strokeWidth="1.5" />
+            <text className="ui-text" x="64" y="106" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#666">Non, autre jour</text>
+            <text className="code-elem" x="100" y="105" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="radio" value="non"&gt;</text>
+            <rect className="ui-text" x="46" y="113" width="108" height="13" rx="6.5" fill="white" stroke="#ddd" strokeWidth=".5" />
+            <circle className="field-input" cx="56" cy="119.5" r="4" fill="none" stroke="#999" strokeWidth="1.5" />
+            <text className="ui-text" x="64" y="123" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#666">Peut-être...</text>
+            <text className="code-elem" x="100" y="122" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="radio" value="maybe"&gt;</text>
+            <text x="100" y="145" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7.5" fill="#075e54" fontWeight="700">WhatsApp</text>
+        </svg>
+    )
+}
+
+// ── Main IntroPage ──
 export default function IntroPage({ user }) {
-    const [showPopup, setShowPopup] = useState(false)
-    const [showSimpleExplanation, setShowSimpleExplanation] = useState(false)
-    const [question, setQuestion] = useState('')
-    const [answer, setAnswer] = useState(null)
-    const [robotState, setRobotState] = useState('idle')
     const navigate = useNavigate()
+    const scrollRef = useRef(null)
 
-    const handleAsk = async (e) => {
-        e.preventDefault()
-        if (!question.trim()) return
+    // ── State ──
+    const [phase, setPhase] = useState(1)
+    const [selected, setSelected] = useState(new Set())
+    const [xp, setXp] = useState(0)
+    const [formDone, setFormDone] = useState(false)
+    const [mcqDone, setMcqDone] = useState(false)
+    const [defRevealed, setDefRevealed] = useState(false)
+    const [ctaVisible, setCtaVisible] = useState(false)
+    const [activeTab, setActiveTab] = useState('mine')
 
-        setRobotState('thinking')
-        setAnswer(null)
+    // Form fields
+    const [fPrenom, setFPrenom] = useState('')
+    const [fClasse, setFClasse] = useState('')
+    const [fNiveau, setFNiveau] = useState('')
+    const [fInterets, setFInterets] = useState([])
+    const [fDispo, setFDispo] = useState('')
+    const [fEmail, setFEmail] = useState('')
+    const [formSubmitted, setFormSubmitted] = useState(false)
 
-        try {
-            // Simulation de délai pour l'animation
-            await new Promise(r => setTimeout(r, 1500))
+    // MCQ
+    const [mcqAnswer, setMcqAnswer] = useState(null)
 
-            const res = await fetch(`${API_BASE_URL}/api/chat`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ message: question })
-            })
-            const data = await res.json()
+    // Chat
+    const [chatMessages, setChatMessages] = useState([
+        { type: 'system', text: `Bienvenue ${user?.name || 'toi'} ! (^_^)` },
+        { type: 'bot', html: `Salut ${user?.name || 'toi'} ! Pas de cours aujourd'hui.<br><br>Commence par regarder ces 3 interfaces — et coche celles qui te semblent familières. Pas de bonne ou mauvaise réponse. (^_^)` },
+    ])
+    const [chatLoading, setChatLoading] = useState(false)
 
-            setAnswer(data.response)
-            setRobotState('speaking')
+    // ── Helpers ──
+    const addXP = useCallback((n) => setXp(prev => prev + n), [])
 
-            // Revenir à idle après avoir parlé
-            setTimeout(() => setRobotState('idle'), 5000)
+    const addChatMsg = useCallback((msg) => {
+        setChatMessages(prev => [...prev, msg])
+    }, [])
 
-        } catch (err) {
-            console.error(err)
-            setAnswer("Oups, je n'arrive pas à réfléchir... Réessaie plus tard ! 🤯")
-            setRobotState('idle')
+    const addBotResponse = useCallback((text, isSoc = false) => {
+        setChatLoading(true)
+        setTimeout(() => {
+            setChatLoading(false)
+            addChatMsg({ type: isSoc ? 'soc' : 'bot', html: text })
+            speakText(text)
+        }, 900)
+    }, [addChatMsg])
+
+    const handleChatSend = useCallback((text) => {
+        addChatMsg({ type: 'user', text })
+        const key = text.toLowerCase()
+        const isFolle = key.includes('folle')
+        let response = CHAT_RESPONSES[key]
+        if (isFolle || !response) {
+            response = WILD_QUESTIONS[Math.floor(Math.random() * WILD_QUESTIONS.length)]
+        }
+        addBotResponse(response || "Très bonne observation ! Continue d'explorer (^_^)", isFolle)
+    }, [addChatMsg, addBotResponse])
+
+    // ── Phase Navigation ──
+    const goPhase = (n) => {
+        setPhase(n)
+        if (scrollRef.current) scrollRef.current.scrollTop = 0
+        if (n === 2) {
+            addChatMsg({ type: 'system', text: 'Activité 2 — Situation de vie' })
+            addBotResponse("(^_^) Parfait ! Maintenant imagine-toi dans cette situation. Lis attentivement, puis remplis le formulaire comme si tu étais vraiment en train de t'inscrire au club.")
         }
     }
 
-    const handleContinue = () => {
-        navigate('/foundations')
+    // ── Phase 1: App card selection ──
+    const handlePick = (n) => {
+        setSelected(prev => {
+            const next = new Set(prev)
+            const wasSelected = next.has(n)
+            if (wasSelected) { next.delete(n); addXP(-10) }
+            else { next.add(n); addXP(10) }
+
+            if (next.size === 1 && !wasSelected) {
+                addBotResponse("(^_^) Parfait. Tu viens de t'identifier, de chercher ou de voter. Mais as-tu remarqué ce qui se passe \"en dessous\" quand tu appuies sur le bouton ? Regarde les zones lumineuses.")
+            }
+            if (next.size === 2 && !wasSelected) {
+                addBotResponse("(^_^) S'inscrire, voter, répondre... As-tu remarqué le point commun visuel entre toutes ces actions ?")
+            }
+            if (next.size === 3 && !wasSelected) {
+                addBotResponse("(?_?) Un sans faute ! Ces 3 écrans n'ont pourtant rien à voir visuellement, et pourtant, ils cachent exactement la même technologie de base.", true)
+            }
+            return next
+        })
     }
 
-    const fadeUp = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
+    // ── Phase 2: Form ──
+    const handleFormSubmit = () => {
+        setFormSubmitted(true)
+        addXP(20)
+        addBotResponse("(^_^) Tu viens d'envoyer tes informations ! Dans une vraie page, elles partiraient vers un serveur. Maintenant une petite question — à toi de jouer.")
     }
 
-    const stagger = {
-        visible: { transition: { staggerChildren: 0.15 } }
+    const handleInteretToggle = (val) => {
+        setFInterets(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val])
     }
 
+    // ── MCQ ──
+    const handleMCQ = (idx, correct) => {
+        if (mcqDone) return
+        setMcqDone(true)
+        setMcqAnswer({ idx, correct })
+        if (correct) {
+            addXP(30)
+            setTimeout(() => setDefRevealed(true), 600)
+            addBotResponse("(^_^) Exactement ! Un formulaire HTML est bien une zone interactive de collecte d'informations. Tu viens de découvrir la définition par l'expérience — c'est la meilleure façon d'apprendre.")
+        } else {
+            setTimeout(() => setDefRevealed(true), 1200)
+            addBotResponse("Pas tout à fait ! (-_-) Regarde la réponse B — un formulaire HTML est une zone <em>interactive sur le web</em>. Ce n'est pas du papier, et ce n'est pas un programme qui calcule. Regarde maintenant la définition complète !")
+        }
+    }
+
+    // ── Unlock CTA ──
+    const handleUnlockCTA = () => {
+        setCtaVisible(true)
+        addXP(20)
+        addChatMsg({ type: 'system', text: `(^_^) Phase 1 complète ! +${xp + 20} XP` })
+        addBotResponse(`(^_^) Félicitations ${user?.name || 'toi'} ! Tu as :<br>• Reconnu des formulaires dans ta vie quotidienne<br>• Rempli un vrai formulaire interactif<br>• Trouvé toi-même la définition<br>• Visualisé d'autres exemples<br><br>Tu es prêt pour la Phase 2 — les Fondations HTML !`)
+    }
+
+    const handleCelebrate = () => {
+        addBotResponse("(^_^) C'est parti pour les Fondations HTML ! Tu vas voir les balises une par une — avec des visualisations et des défis. La magie commence maintenant !")
+        setTimeout(() => navigate('/foundations'), 1500)
+    }
+
+    // Tab switch
+    const handleTabSwitch = (name) => {
+        setActiveTab(name)
+        if (name === 'others') {
+            addBotResponse("(^_^) Tu vois — recherche Google, Uber Eats, formulaire de contact... Même principe partout ! Dans les prochaines phases tu apprendras à construire ça toi-même.")
+        }
+    }
+
+    // ── Render ──
     return (
-        <div className="intro-page">
-            {/* Particules de fond */}
-            <div className="particles">
-                {[...Array(10)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="particle"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            width: `${3 + Math.random() * 4}px`,
-                            height: `${3 + Math.random() * 4}px`,
-                        }}
-                        animate={{
-                            y: [0, -40 - Math.random() * 60, 0],
-                            opacity: [0.1, 0.3, 0.1],
-                        }}
-                        transition={{
-                            duration: 8 + Math.random() * 8,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                            delay: Math.random() * 4,
-                        }}
-                    />
-                ))}
-            </div>
-
-            <div className="intro-content">
-                {/* ═══════════════════════════════════════
-                   SECTION 1 — Accueil animé
-                   ═══════════════════════════════════════ */}
-                <motion.section
-                    className="intro-section intro-welcome"
-                    initial="hidden"
-                    animate="visible"
-                    variants={fadeUp}
-                >
-                    <div className="intro-welcome-inner">
-                        <div className="lottie-container">
-                            <Lottie
-                                animationData={helloAnimation}
-                                loop={true}
-                                style={{ width: '100%', maxWidth: 260 }}
-                            />
+        <AppShell
+            user={user}
+            currentStep={1}
+            completedSteps={[]}
+            chatContent={
+                <ChatPanel2
+                    messages={chatMessages}
+                    loading={chatLoading}
+                    phaseLabel="Phase Découverte"
+                    userName={user?.name || 'Élève'}
+                    chips={CHAT_CHIPS}
+                    onSend={handleChatSend}
+                />
+            }
+        >
+            {/* ═══ HERO ═══ */}
+            <div className="disc-hero">
+                <div className="disc-hero-bg" />
+                <div className="disc-hero-glow1" />
+                <div className="disc-hero-glow2" />
+                <div className="disc-hero-inner">
+                    <div className="disc-hero-top">
+                        <div className="disc-hero-phase">
+                            <div className="disc-hero-phase-dot" />Phase 1 · Découvrir
                         </div>
-                        <div className="intro-welcome-text">
-                            <motion.h1
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.5, duration: 0.7 }}
-                            >
-                                Salut <span className="accent">{user?.name || 'toi'}</span> ! 👋
-                            </motion.h1>
-                            <motion.p
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.8, duration: 0.7 }}
-                            >
-                                Avant de commencer, cherchons d'abord à savoir...
-                            </motion.p>
-                            <motion.h2
-                                className="intro-question"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 1.2, duration: 0.6 }}
-                            >
-                                Qu'est-ce qu'un <span className="highlight">formulaire</span> ?
-                            </motion.h2>
-                        </div>
+                        <div className="disc-hero-xp">XP <span className="disc-hero-xp-n">{xp}</span></div>
                     </div>
-                </motion.section>
-
-                {/* ═══════════════════════════════════════
-                   SECTION 2 — Définition + bouton Visualiser
-                   ═══════════════════════════════════════ */}
-                <motion.section
-                    className="intro-section intro-definition"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: '-50px' }}
-                    variants={fadeUp}
-                >
-                    <div className="definition-card">
-                        <div className="definition-icon">📖</div>
-                        <motion.p
-                            className="definition-text"
-                            variants={fadeUp}
-                        >
-                            Un <strong>formulaire</strong> est un espace de saisie qui permet de
-                            <strong> collecter des informations</strong> auprès d'un utilisateur.
-                            Il peut contenir différents types de champs, tels que des
-                            <strong> zones de texte</strong>, des <strong>cases à cocher</strong> ou
-                            des <strong>menus déroulants</strong>, pour faciliter la saisie et
-                            l'organisation des données.
-                        </motion.p>
-                        <motion.p className="definition-cta" variants={fadeUp}>
-                            Pour visualiser, clique sur le bouton ci-dessous 👇
-                        </motion.p>
-                        <motion.button
-                            className="btn-visualize"
-                            onClick={() => setShowPopup(true)}
-                            whileHover={{ scale: 1.05, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            variants={fadeUp}
-                        >
-                            <HiOutlineEye /> Visualiser un exemple
-                        </motion.button>
-                    </div>
-
-                    {/* Bouton "J'ai pas compris" */}
-                    <motion.button
-                        className="btn-not-understood"
-                        onClick={() => setShowSimpleExplanation(!showSimpleExplanation)}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        variants={fadeUp}
-                    >
-                        <HiOutlineQuestionMarkCircle />
-                        {showSimpleExplanation ? "OK merci, j'ai compris !" : "J'ai pas compris 🤔"}
-                    </motion.button>
-
-                    <AnimatePresence>
-                        {showSimpleExplanation && (
-                            <motion.div
-                                className="simple-explanation"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.4 }}
-                            >
-                                <HiOutlineLightBulb className="bulb-icon" />
-                                <div>
-                                    <p><strong>En plus simple :</strong></p>
-                                    <p>
-                                        Tu connais quand tu crées un compte sur Instagram ou TikTok ?
-                                        On te demande ton <strong>nom</strong>, ton <strong>e-mail</strong>,
-                                        ton <strong>mot de passe</strong>... 📱
-                                    </p>
-                                    <p>
-                                        Eh bien, <strong>tout ça c'est un formulaire !</strong> C'est
-                                        juste une page web avec des cases à remplir pour envoyer des
-                                        informations. Et toi, tu vas apprendre à <strong>créer ça
-                                            toi-même</strong> avec du code HTML ! 💻
-                                    </p>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.section>
-
-                {/* ═══════════════════════════════════════
-                   SECTION 3 — Analogie du restaurant
-                   ═══════════════════════════════════════ */}
-                <motion.section
-                    className="intro-section intro-analogy"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: '-50px' }}
-                    variants={fadeUp}
-                >
-                    <motion.h2 className="analogy-title" variants={fadeUp}>
-                        🍽️ Un formulaire, c'est comme un <span className="highlight">menu de restaurant</span> !
-                    </motion.h2>
-
-                    <div className="analogy-content">
-                        <div className="analogy-text">
-                            <motion.p variants={fadeUp}>
-                                Tout comme un menu permet au client de <strong>choisir ce qu'il souhaite
-                                    manger</strong> parmi différentes options (entrée, plat, dessert, boisson),
-                                un formulaire permet à l'utilisateur de <strong>fournir des informations</strong> dans
-                                différents champs.
-                            </motion.p>
-
-                            <motion.div className="analogy-mapping" variants={stagger}>
-                                <motion.div className="mapping-item" variants={fadeUp}>
-                                    <span className="mapping-menu">🔘 Entrée (1 seul choix)</span>
-                                    <span className="mapping-arrow">→</span>
-                                    <span className="mapping-form">Boutons radio</span>
-                                </motion.div>
-                                <motion.div className="mapping-item" variants={fadeUp}>
-                                    <span className="mapping-menu">☑️ Accompagnements (plusieurs)</span>
-                                    <span className="mapping-arrow">→</span>
-                                    <span className="mapping-form">Cases à cocher</span>
-                                </motion.div>
-                                <motion.div className="mapping-item" variants={fadeUp}>
-                                    <span className="mapping-menu">📋 Boisson (liste déroulante)</span>
-                                    <span className="mapping-arrow">→</span>
-                                    <span className="mapping-form">Menu déroulant (select)</span>
-                                </motion.div>
-                                <motion.div className="mapping-item" variants={fadeUp}>
-                                    <span className="mapping-menu">✏️ Demande spéciale</span>
-                                    <span className="mapping-arrow">→</span>
-                                    <span className="mapping-form">Zone de texte</span>
-                                </motion.div>
-                            </motion.div>
-                        </div>
-
-                        <motion.div
-                            className="analogy-image"
-                            variants={fadeUp}
-                        >
-                            <MenuSVG />
-                        </motion.div>
-                    </div>
-                </motion.section>
-
-                {/* ═══════════════════════════════════════
-                   SECTION Q&A — Pose une question
-                   ═══════════════════════════════════════ */}
-                <motion.section
-                    className="intro-section intro-qa"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: '-50px' }}
-                    variants={fadeUp}
-                >
-                    <div className="qa-container">
-                        <div className="qa-robot">
-                            <ThinkingRobot state={robotState} />
-                        </div>
-                        <div className="qa-content">
-                            <h3>Une question ? Demande à CodeBot ! 🤖</h3>
-                            <p>Essaie : "C'est quoi un formulaire ?", "Qui l'a inventé ?", "À quoi ça sert ?"</p>
-
-                            <form onSubmit={handleAsk} className="qa-form">
-                                <input
-                                    type="text"
-                                    value={question}
-                                    onChange={(e) => setQuestion(e.target.value)}
-                                    placeholder="Pose ta question ici..."
-                                    disabled={robotState !== 'idle'}
-                                />
-                                <button type="submit" disabled={robotState !== 'idle' || !question.trim()}>
-                                    {robotState === 'thinking' ? '...' : 'Demander'}
-                                </button>
-                            </form>
-
-                            <AnimatePresence>
-                                {answer && (
-                                    <motion.div
-                                        className="qa-answer"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                    >
-                                        <div className="qa-bubble">
-                                            {answer.split('\n').map((line, i) => (
-                                                <p key={i}>{line}</p>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-                </motion.section>
-
-                {/* ═══════════════════════════════════════
-                   SECTION 4 — CTA final
-                   ═══════════════════════════════════════ */}
-                <motion.section
-                    className="intro-section intro-cta"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: '-50px' }}
-                    variants={fadeUp}
-                >
-                    <motion.div className="cta-card" variants={fadeUp}>
-                        <h2>Prêt à apprendre ? 🚀</h2>
-                        <p>
-                            Maintenant que tu sais ce qu'est un formulaire, on va apprendre
-                            à en <strong>créer un toi-même</strong> avec du code HTML !
-                        </p>
-                        <motion.button
-                            className="btn-start"
-                            onClick={handleContinue}
-                            whileHover={{ scale: 1.05, y: -3 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <span>C'est compris, on commence !</span>
-                            <HiOutlineArrowRight />
-                        </motion.button>
-                    </motion.div>
-                </motion.section>
-            </div>
-
-            {/* ═══════════════════════════════════════
-               POPUP — Exemple de formulaire
-               ═══════════════════════════════════════ */}
-            <AnimatePresence>
-                {showPopup && (
-                    <motion.div
-                        className="popup-overlay"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setShowPopup(false)}
-                    >
-                        <motion.div
-                            className="popup-content"
-                            initial={{ opacity: 0, scale: 0.85, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.85, y: 30 }}
-                            transition={{ duration: 0.35 }}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button className="popup-close" onClick={() => setShowPopup(false)}>
-                                <HiOutlineXMark />
-                            </button>
-                            <h3>📋 Exemple de formulaire</h3>
-                            <p className="popup-desc">
-                                Voici à quoi ressemble un formulaire sur un site web :
-                            </p>
-                            <div className="popup-image-wrap">
-                                <img
-                                    src="/images/formulaire exemple.jpeg"
-                                    alt="Exemple de formulaire HTML"
-                                />
+                    <div className="disc-hero-body">
+                        <div className="disc-hero-txt">
+                            <div className="disc-hero-eyebrow">Bienvenue, {user?.name || 'toi'}</div>
+                            <div className="disc-hero-title">
+                                Tu interagis avec eux des dizaines de fois par jour.<br />
+                                Sans eux, Internet serait<br />
+                                <span className="disc-g1t">totalement muet.</span>
                             </div>
-                            <p className="popup-note">
-                                👆 Tu vois les champs à remplir ? C'est exactement ce que tu vas
-                                apprendre à créer !
-                            </p>
-                        </motion.div>
-                    </motion.div>
+                            <div className="disc-hero-sub">
+                                Aujourd'hui, on soulève le capot de tes apps préférées. <strong>4 activités. Aucun cours.</strong> Tu vas découvrir la mécanique invisible.
+                            </div>
+                            {/* Progress dots */}
+                            <div className="disc-hero-dots">
+                                <div className={`disc-pdot ${phase === 1 ? 'active' : phase > 1 ? 'done' : ''}`} />
+                                <div className={`disc-pdot ${phase === 2 ? 'active' : phase > 2 ? 'done' : ''}`} />
+                                <div className={`disc-pdot ${defRevealed ? 'active' : ''}`} />
+                                <div className={`disc-pdot ${ctaVisible ? 'active' : ''}`} />
+                            </div>
+                        </div>
+                        <div className="disc-bot-card">
+                            <div className="disc-bc-eyes">^_^</div>
+                            <div className="disc-bc-mouth">hello</div>
+                            <div className="disc-bc-dot" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="disc-scroll" ref={scrollRef}>
+                {/* ═══ PHASE 1 — App Recognition ═══ */}
+                {phase === 1 && (
+                    <div className="disc-phase">
+                        <div className="disc-p1-q">
+                            Test de reconnaissance :<br />
+                            Parmi ces trois écrans, coche ceux dont tu t'es <span className="disc-g2t">réellement servi cette semaine.</span>
+                        </div>
+                        <div className="disc-p1-sub">Faisons un test rapide. Il n'y a aucun piège.</div>
+
+                        <div className={`disc-app-grid ${selected.size > 0 ? 'show-fields' : ''}`}>
+                            {[
+                                { id: 1, Card: InstagramCard },
+                                { id: 2, Card: TikTokCard },
+                                { id: 3, Card: WhatsAppCard },
+                            ].map(({ id, Card }) => (
+                                <div
+                                    key={id}
+                                    className={`disc-acard ${selected.has(id) ? 'sel' : ''}`}
+                                    onClick={() => handlePick(id)}
+                                >
+                                    <div className="disc-acard-scanner" />
+                                    <div className="disc-acard-check">{selected.has(id) ? '✓' : ''}</div>
+                                    <Card />
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Reveal banner */}
+                        {selected.size > 0 && (
+                            <div className="disc-reveal-banner">
+                                <div className="disc-rb-face">!</div>
+                                <div className="disc-rb-txt">
+                                    <span className="disc-rb-eyebrow">L'ILLUSION DE LA SIMPLICITÉ</span>
+                                    TikTok, Instagram et WhatsApp affichent des designs très différents... mais la mécanique invisible est strictement identique. <strong>Tu viens de manipuler des Formulaires HTML.</strong> C'est l'outil universel pour parler au web, et tu vas apprendre à le construire !
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="disc-p1-next">
+                            <button
+                                className={`disc-nbtn ${selected.size === 0 ? 'off' : ''}`}
+                                onClick={() => goPhase(2)}
+                                disabled={selected.size === 0}
+                            >
+                                Compris ! Je veux voir comment ça marche &nbsp;›
+                            </button>
+                        </div>
+                    </div>
                 )}
-            </AnimatePresence>
-        </div>
+
+                {/* ═══ PHASE 2 — Form + MCQ + Definition ═══ */}
+                {phase === 2 && (
+                    <div className="disc-phase">
+                        <div className="disc-situation-intro">
+                            <strong>C'est lundi matin.</strong> Tu arrives au lycée et tu aperçois une affiche sur le panneau d'information : le Club Informatique ouvre les inscriptions en ligne. Tu sors ton téléphone, tu ouvres le lien... et tu tombes sur ça.
+                        </div>
+
+                        {/* Browser mockup */}
+                        <div className="disc-browser-wrap">
+                            <div className="disc-browser-bar">
+                                <div className="disc-b-dots">
+                                    <div className="disc-b-dot" style={{ background: '#ff6058' }} />
+                                    <div className="disc-b-dot" style={{ background: '#febc2e' }} />
+                                    <div className="disc-b-dot" style={{ background: '#28c840' }} />
+                                </div>
+                                <div className="disc-b-url">lycee-mendel.edu/club-info/inscription</div>
+                            </div>
+                            <div className="disc-browser-content">
+                                <div className="disc-form-card">
+                                    <div className="disc-fc-head">
+                                        <div className="disc-fc-head-icon">[+]</div>
+                                        <div className="disc-fc-head-txt">
+                                            <p>Inscription — Club Informatique</p>
+                                            <span>Lycée Mendel · Année 2024–2025</span>
+                                        </div>
+                                    </div>
+                                    <div className="disc-fc-body">
+                                        <div className="disc-fc-field">
+                                            <label>Prénom</label>
+                                            <input className="disc-fc-input" placeholder="Ton prénom..." value={fPrenom} onChange={e => setFPrenom(e.target.value)} />
+                                        </div>
+                                        <div className="disc-fc-field">
+                                            <label>Classe</label>
+                                            <input className="disc-fc-input" placeholder="Ex: 2nde B..." value={fClasse} onChange={e => setFClasse(e.target.value)} />
+                                        </div>
+                                        <div className="disc-fc-field full">
+                                            <label>Ton niveau en informatique</label>
+                                            <div className="disc-radio-opts">
+                                                {['Débutant', 'Intermédiaire', 'Expert'].map(niv => (
+                                                    <label className="disc-ropt" key={niv}>
+                                                        <input type="radio" name="niv" value={niv} checked={fNiveau === niv} onChange={() => setFNiveau(niv)} />
+                                                        {niv}
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="disc-fc-field full">
+                                            <label>Ce qui t'intéresse (plusieurs choix)</label>
+                                            <div className="disc-check-opts">
+                                                {['Sites web', 'Jeux vidéo', 'Robotique', 'Intelligence artificielle'].map(item => (
+                                                    <label className="disc-copt" key={item}>
+                                                        <input type="checkbox" checked={fInterets.includes(item)} onChange={() => handleInteretToggle(item)} />
+                                                        {item}
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="disc-fc-field">
+                                            <label>Disponibilité</label>
+                                            <select className="disc-fc-select" value={fDispo} onChange={e => setFDispo(e.target.value)}>
+                                                <option value="">Choisir un jour...</option>
+                                                <option>Lundi soir</option>
+                                                <option>Mercredi après-midi</option>
+                                                <option>Vendredi soir</option>
+                                                <option>Samedi matin</option>
+                                            </select>
+                                        </div>
+                                        <div className="disc-fc-field">
+                                            <label>Email</label>
+                                            <input className="disc-fc-input" type="email" placeholder="ton@email.com" value={fEmail} onChange={e => setFEmail(e.target.value)} />
+                                        </div>
+                                        <button className="disc-fc-submit" onClick={handleFormSubmit}>
+                                            Envoyer mon inscription (^_^)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* MCQ Zone */}
+                        {formSubmitted && (
+                            <div className="disc-mcq-zone">
+                                <div className="disc-mcq-q">Après cette expérience — <span className="disc-g2t">comment définirais-tu un formulaire ?</span></div>
+                                <div className="disc-mcq-opts">
+                                    {[
+                                        { key: 'A', text: "Un document papier à remplir pour une administration", correct: false },
+                                        { key: 'B', text: "Une zone interactive sur une page web permettant de collecter des informations", correct: true },
+                                        { key: 'C', text: "Un programme qui calcule automatiquement des résultats", correct: false },
+                                    ].map((opt, idx) => {
+                                        let cls = 'disc-mopt'
+                                        if (mcqAnswer) {
+                                            if (mcqAnswer.idx === idx && mcqAnswer.correct) cls += ' correct'
+                                            else if (mcqAnswer.idx === idx && !mcqAnswer.correct) cls += ' wrong'
+                                            else if (opt.correct && mcqDone) cls += ' correct'
+                                        }
+                                        return (
+                                            <button
+                                                key={opt.key}
+                                                className={cls}
+                                                onClick={() => handleMCQ(idx, opt.correct)}
+                                                disabled={mcqDone}
+                                            >
+                                                <div className="disc-mkey">{opt.key}</div>
+                                                {opt.text}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Definition reveal */}
+                        {defRevealed && (
+                            <div className="disc-def-reveal">
+                                <div className="disc-def-banner">
+                                    <div className="disc-def-glow" />
+                                    <div className="disc-def-label">DÉFINITION OFFICIELLE — RÉVÉLÉE PAR L'EXPÉRIENCE</div>
+                                    <div className="disc-def-txt">
+                                        Un <span className="disc-hl">formulaire HTML</span> est un espace de saisie permettant de <span className="disc-hl2">collecter des informations</span> auprès des utilisateurs. Il peut contenir des champs texte, des cases à cocher, des boutons radio, des menus déroulants et des boutons d'envoi.
+                                    </div>
+                                </div>
+
+                                {/* Tabs */}
+                                <div className="disc-tabs-wrap">
+                                    <div className="disc-tabs-nav">
+                                        <button className={`disc-tab-btn ${activeTab === 'mine' ? 'on' : ''}`} onClick={() => handleTabSwitch('mine')}>Ce que tu as rempli</button>
+                                        <button className={`disc-tab-btn ${activeTab === 'others' ? 'on' : ''}`} onClick={() => handleTabSwitch('others')}>D'autres formulaires</button>
+                                    </div>
+
+                                    {activeTab === 'mine' && (
+                                        <div className="disc-tab-pane">
+                                            <div className="disc-data-card">
+                                                <div className="disc-dc-head">
+                                                    <div className="disc-dc-av">{(fPrenom || '?')[0].toUpperCase()}</div>
+                                                    <div>
+                                                        <div className="disc-dc-name">{fPrenom || '—'}</div>
+                                                        <div className="disc-dc-role">Candidat · Club Informatique 2024</div>
+                                                    </div>
+                                                </div>
+                                                <div className="disc-dc-rows">
+                                                    <div className="disc-dc-row"><span className="disc-dc-key">Classe</span><span className="disc-dc-val">{fClasse || '—'}</span></div>
+                                                    <div className="disc-dc-row"><span className="disc-dc-key">Niveau</span><span className="disc-dc-val disc-g1t">{fNiveau || '—'}</span></div>
+                                                    <div className="disc-dc-row"><span className="disc-dc-key">Intérêts</span><span className="disc-dc-val" style={{ fontSize: '11px' }}>{fInterets.length > 0 ? fInterets.join(', ') : '—'}</span></div>
+                                                    <div className="disc-dc-row"><span className="disc-dc-key">Disponibilité</span><span className="disc-dc-val">{fDispo || '—'}</span></div>
+                                                    <div className="disc-dc-row"><span className="disc-dc-key">Email</span><span className="disc-dc-val" style={{ color: 'var(--teal-dark)' }}>{fEmail || '—'}</span></div>
+                                                </div>
+                                            </div>
+                                            <div className="disc-info-note teal">
+                                                <strong>(^_^) Voilà !</strong> Ces informations que tu as saisies viennent d'être "collectées" par le formulaire. Dans une vraie page, elles seraient envoyées à un serveur.
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'others' && (
+                                        <div className="disc-tab-pane">
+                                            <div className="disc-other-grid">
+                                                <div className="disc-of-card">
+                                                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                                                        <rect width="160" height="100" fill="white" />
+                                                        <text x="80" y="22" textAnchor="middle" fontFamily="Arial" fontSize="14" fontWeight="700">
+                                                            <tspan fill="#4285f4">G</tspan><tspan fill="#ea4335">o</tspan><tspan fill="#fbbc05">o</tspan><tspan fill="#4285f4">g</tspan><tspan fill="#34a853">l</tspan><tspan fill="#ea4335">e</tspan>
+                                                        </text>
+                                                        <rect x="20" y="30" width="120" height="22" rx="11" fill="white" stroke="#ddd" strokeWidth="1" />
+                                                        <text x="45" y="45" fontFamily="Arial" fontSize="8" fill="#999">Rechercher...</text>
+                                                    </svg>
+                                                    <div className="disc-of-label">Recherche Google</div>
+                                                </div>
+                                                <div className="disc-of-card">
+                                                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                                                        <rect width="160" height="100" fill="#1c1c1c" />
+                                                        <text x="80" y="20" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="13" fill="white" fontWeight="900">Uber Eats</text>
+                                                        <rect x="12" y="26" width="136" height="14" rx="7" fill="#2d2d2d" />
+                                                        <text x="80" y="37" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="#666">Adresse de livraison...</text>
+                                                        <rect x="12" y="81" width="136" height="12" rx="6" fill="#06C167" />
+                                                        <text x="80" y="90.5" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="7" fill="white" fontWeight="800">Passer commande</text>
+                                                    </svg>
+                                                    <div className="disc-of-label">Commande Uber Eats</div>
+                                                </div>
+                                                <div className="disc-of-card">
+                                                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" width="100%">
+                                                        <rect width="160" height="100" fill="#f8f9fa" />
+                                                        <text x="80" y="16" textAnchor="middle" fontFamily="Outfit,sans-serif" fontSize="9" fill="#333" fontWeight="800">Nous contacter</text>
+                                                        <text x="16" y="28" fontFamily="Outfit,sans-serif" fontSize="7" fill="#999">Nom</text>
+                                                        <rect x="12" y="30" width="136" height="11" rx="5.5" fill="white" stroke="#ddd" strokeWidth=".5" />
+                                                        <text x="16" y="50" fontFamily="Outfit,sans-serif" fontSize="7" fill="#999">Email</text>
+                                                        <rect x="12" y="52" width="136" height="11" rx="5.5" fill="white" stroke="#ddd" strokeWidth=".5" />
+                                                        <text x="16" y="70" fontFamily="Outfit,sans-serif" fontSize="7" fill="#999">Message</text>
+                                                        <rect x="12" y="72" width="136" height="18" rx="5.5" fill="white" stroke="#ddd" strokeWidth=".5" />
+                                                    </svg>
+                                                    <div className="disc-of-label">Formulaire de contact</div>
+                                                </div>
+                                            </div>
+                                            <div className="disc-info-note viola">
+                                                <strong>(^_^) Tu les reconnais ?</strong> Recherche, commande, contact... Ce sont tous des formulaires HTML. Même principe, contextes différents.
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+                                    <button className="disc-nbtn" onClick={handleUnlockCTA}>(^_^) J'ai tout compris — on continue !</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* CTA Final */}
+                        {ctaVisible && (
+                            <div className="disc-cta-section">
+                                <div className="disc-cta-card" onClick={handleCelebrate}>
+                                    <div className="disc-cta-icon">[→]</div>
+                                    <div className="disc-cta-txt">
+                                        <p>C'est compris, on passe aux Fondations !</p>
+                                        <span>Tu vas maintenant apprendre les balises HTML une par une (^_^)</span>
+                                    </div>
+                                    <div className="disc-cta-arr">›</div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </AppShell>
     )
 }

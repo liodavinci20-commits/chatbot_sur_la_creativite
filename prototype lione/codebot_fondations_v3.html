@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeBot — Fondations HTML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0d18;--ink2:#1a1a28;--ink3:#111120;
+  --mt:#7a7a9a;--mt2:#a0a0be;
+  --s:#ffffff;--s2:#f5f5fa;--s3:#eeeef8;
+  --teal:#18c97a;--td:#0a7a4a;--tl:#e2faf0;--tld:#c0f0db;
+  --vio:#7b6ff8;--vid:#4a3ec8;--vil:#eeeaff;
+  --coral:#f05848;--corl:#fdecea;
+  --amb:#e09818;--ambl:#fef4dc;
+  --g1:linear-gradient(135deg,#18c97a,#0cb4d4);
+  --g2:linear-gradient(135deg,#7b6ff8,#c06fd8);
+  --g3:linear-gradient(135deg,#f05848,#f09838);
+  --gdark:linear-gradient(160deg,#13131f 0%,#1a1830 55%,#131e2c 100%);
+  --shadow:0 4px 24px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.05);
+  --shadow-md:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
+  font-family:'Outfit',sans-serif;
+}
+
+html,body{height:100%;background:var(--s2);color:var(--ink);font-family:'Outfit',sans-serif;overflow:hidden}
+
+/* ═══════════════════════════════════════════
+   APP SHELL — 2 columns, no sidebar
+═══════════════════════════════════════════ */
+.app{
+  display:grid;
+  grid-template-rows:56px 1fr;
+  grid-template-columns:1fr 380px;
+  height:100vh;
+  max-width:1160px;
+  margin:0 auto;
+  background:var(--s);
+  box-shadow:var(--shadow-md);
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;grid-template-rows:56px 1fr auto}
+}
+
+/* ═══════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════ */
+.tb{
+  grid-column:1/-1;
+  background:var(--s);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;gap:16px;
+  position:relative;z-index:10;
+}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--ink);letter-spacing:-.3px;flex-shrink:0}
+.bmark{
+  width:30px;height:30px;background:var(--g1);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:#fff;font-weight:700;
+  box-shadow:0 2px 10px rgba(24,201,122,.3);
+}
+
+/* Progress dots in topbar */
+.prog-dots{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
+.pdot-wrap{display:flex;align-items:center;gap:6px}
+.pdot{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  font-size:11px;font-weight:700;cursor:pointer;
+  transition:all .25s;color:var(--mt);
+}
+.pdot:not(.locked):hover{background:var(--s3)}
+.pdot.done{color:var(--td)}
+.pdot.active{background:rgba(24,201,122,.1);color:var(--td)}
+.pdot.locked{opacity:.3;cursor:default}
+.pd-circle{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800;flex-shrink:0;transition:all .3s;
+}
+.pdot.done .pd-circle{background:var(--g1);color:#fff;box-shadow:0 2px 8px rgba(24,201,122,.35)}
+.pdot.active .pd-circle{background:var(--g1);color:#fff;box-shadow:0 0 0 3px rgba(24,201,122,.2),0 2px 8px rgba(24,201,122,.3);animation:ringPulse 2s infinite}
+.pdot.locked .pd-circle{background:var(--s3);border:1.5px solid rgba(0,0,0,.08);color:var(--mt)}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 3px rgba(24,201,122,.2),0 2px 8px rgba(24,201,122,.3)}50%{box-shadow:0 0 0 6px rgba(24,201,122,.08),0 2px 8px rgba(24,201,122,.3)}}
+.pd-arrow{font-size:9px;color:var(--mt2)}
+.pd-label{font-size:10.5px;white-space:nowrap}
+
+.tb-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.xp-pill{
+  display:flex;align-items:center;gap:6px;padding:4px 10px;
+  border-radius:20px;background:rgba(24,201,122,.08);
+  border:1px solid rgba(24,201,122,.15);
+  font-size:11px;font-weight:800;
+}
+.xp-pill .xp-n{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.xp-pill .xp-lbl{color:var(--mt);font-size:10px;font-weight:600}
+.av{width:30px;height:30px;border-radius:50%;background:var(--g2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+
+/* ═══════════════════════════════════════════
+   CONTENT ZONE — single column, scrollable
+═══════════════════════════════════════════ */
+.content{
+  overflow-y:auto;
+  background:var(--s2);
+  display:flex;flex-direction:column;
+}
+.content::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb{background:rgba(0,0,0,.08);border-radius:2px}
+
+/* Hero — compact */
+.hero{
+  background:var(--gdark);padding:20px 28px;position:relative;overflow:hidden;flex-shrink:0;
+}
+.hero::before{content:'';position:absolute;top:-60px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(24,201,122,.16) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-40px;right:10px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(123,111,248,.12) 0%,transparent 65%);pointer-events:none}
+.hero-inner{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:20px;background:rgba(24,201,122,.12);border:.5px solid rgba(24,201,122,.25);font-size:10px;font-weight:700;color:rgba(24,201,122,.9);letter-spacing:.5px;margin-bottom:8px}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero-title{font-size:19px;font-weight:900;color:#fff;letter-spacing:-.4px;margin-bottom:4px}
+.hero-title em{font-style:normal;background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.38);line-height:1.6}
+.hero-sub strong{color:rgba(255,255,255,.65)}
+
+/* Concept panels */
+.concept-panel{display:none;flex-direction:column;gap:0;animation:slideIn .35s cubic-bezier(.4,0,.2,1)}
+.concept-panel.on{display:flex}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* Concept card wrapper */
+.cp-card{
+  margin:16px 20px;background:var(--s);border-radius:16px;overflow:hidden;
+  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.055);
+}
+
+/* Concept header (always visible) */
+.cp-head{
+  padding:18px 22px 16px;border-bottom:1px solid var(--s3);
+  display:flex;align-items:flex-start;gap:14px;
+}
+.cp-num{
+  width:32px;height:32px;border-radius:10px;background:var(--g1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;flex-shrink:0;
+  box-shadow:0 2px 10px rgba(24,201,122,.3);
+}
+.cp-info{}
+.cp-eyebrow{font-size:10px;font-weight:700;color:var(--mt);letter-spacing:.8px;margin-bottom:4px}
+.cp-title{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.3px;line-height:1.3}
+.cp-title code{font-family:'JetBrains Mono',monospace;font-size:14px;padding:2px 7px;border-radius:5px;font-weight:600}
+.cp-title code.t{background:rgba(24,201,122,.12);color:var(--td)}
+.cp-title code.v{background:rgba(123,111,248,.12);color:var(--vid)}
+.cp-title code.c{background:rgba(240,88,72,.12);color:var(--coral)}
+
+/* Explain section */
+.cp-explain{padding:18px 22px}
+.exp-p{font-size:13px;color:var(--mt);line-height:1.75;margin-bottom:14px}
+.exp-p strong{color:var(--ink);font-weight:700}
+
+/* Analogy pill */
+.analogy{
+  display:flex;gap:12px;align-items:flex-start;padding:13px 16px;
+  border-radius:12px;background:linear-gradient(135deg,rgba(123,111,248,.07),rgba(192,111,216,.04));
+  border:1px solid rgba(123,111,248,.14);margin-bottom:14px;
+}
+.an-ico{
+  width:30px;height:30px;border-radius:8px;background:var(--g2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;box-shadow:0 2px 8px rgba(123,111,248,.25);
+}
+.an-txt{font-size:12px;color:var(--vid);line-height:1.65}
+.an-txt strong{font-weight:800}
+
+/* Attr list — clickable */
+.attr-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.attr-item{
+  display:flex;align-items:center;gap:10px;padding:10px 13px;
+  border-radius:10px;background:var(--s2);border:1px solid rgba(0,0,0,.055);
+  cursor:pointer;transition:all .18s;
+}
+.attr-item:hover,.attr-item.hi{transform:translateX(5px);border-color:rgba(24,201,122,.28);background:var(--tl)}
+.attr-item.hi-v:hover,.attr-item.hi-v.hi{border-color:rgba(123,111,248,.28);background:var(--vil)}
+.ai-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;flex-shrink:0}
+.ai-badge.t{background:rgba(24,201,122,.14);color:var(--td)}
+.ai-badge.v{background:rgba(123,111,248,.14);color:var(--vid)}
+.ai-badge.c{background:rgba(240,88,72,.14);color:var(--coral)}
+.ai-badge.a{background:rgba(224,152,24,.14);color:var(--amb)}
+.ai-desc{font-size:12px;color:var(--mt);font-weight:500}
+
+/* Code section */
+.cp-code{padding:0 22px 18px}
+.code-tip{
+  display:flex;align-items:center;gap:7px;margin-bottom:8px;
+  font-size:11px;color:var(--mt);font-weight:600;
+}
+.tip-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 1.5s infinite}
+.code-block{background:#0d0d1a;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.055)}
+.code-topbar{
+  background:#080814;padding:8px 14px;display:flex;align-items:center;gap:6px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.cb-dot{width:9px;height:9px;border-radius:50%}
+.cb-lbl{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.18);letter-spacing:.8px;font-family:'JetBrains Mono',monospace;margin-left:6px}
+.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.95}
+.cl{display:flex;align-items:center;gap:8px;transition:all .18s;border-radius:5px;padding:1px 5px;margin:-1px -5px}
+.cl.clickable{cursor:pointer}
+.cl.clickable:hover{background:rgba(255,255,255,.04)}
+.cl.hl{background:rgba(24,201,122,.1)!important}
+.cl.hl-v{background:rgba(123,111,248,.1)!important}
+.ann{display:none;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;margin-left:auto}
+.cl.hl .ann,.cl.hl-v .ann{display:inline-flex}
+.ann.t{background:rgba(24,201,122,.18);color:rgba(24,201,122,.95)}
+.ann.v{background:rgba(123,111,248,.18);color:rgba(123,111,248,.95)}
+.ann.c{background:rgba(240,88,72,.18);color:rgba(240,88,72,.95)}
+.ann.a{background:rgba(224,152,24,.18);color:rgba(224,152,24,.95)}
+/* Syntax colors */
+.ct{color:#5cd88a}.ca{color:#f0c06a}.cv{color:#ff8a60}.cc{color:#3e3e60}.cw{color:#e0e0f0}
+
+/* Live preview */
+.lp-box{background:var(--s2);border-radius:10px;padding:12px 14px;margin-top:10px;border:1px solid rgba(0,0,0,.055)}
+.lp-hdr{font-size:10px;font-weight:700;color:var(--mt);letter-spacing:.7px;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.lp-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+
+/* Type tabs */
+.type-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.ttab{
+  padding:5px 13px;border-radius:8px;border:1px solid rgba(0,0,0,.07);
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;
+  cursor:pointer;color:var(--mt);background:var(--s2);transition:all .18s;
+}
+.ttab:hover{background:var(--tl);border-color:rgba(24,201,122,.25);color:var(--td)}
+.ttab.on{background:rgba(24,201,122,.12);border-color:rgba(24,201,122,.35);color:var(--td)}
+.type-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
+  border-radius:20px;background:var(--tl);font-size:11px;font-weight:700;color:var(--td);
+  margin-top:6px;
+}
+
+/* Challenge section — locked until code explored */
+.cp-challenge{padding:0 22px 20px;position:relative}
+.challenge-lock{
+  text-align:center;padding:18px;border-radius:12px;
+  background:var(--s3);border:1.5px dashed rgba(0,0,0,.1);
+  color:var(--mt);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .2s;
+}
+.challenge-lock:hover{background:var(--tl);border-color:rgba(24,201,122,.3);color:var(--td)}
+.lock-icon{font-size:20px;display:block;margin-bottom:6px;opacity:.4}
+.cz-card{
+  background:linear-gradient(135deg,rgba(224,152,24,.06),rgba(240,152,56,.03));
+  border:1px solid rgba(224,152,24,.18);border-radius:14px;padding:16px;
+  animation:slideIn .3s cubic-bezier(.4,0,.2,1);
+}
+.cz-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cz-ico{
+  width:32px;height:32px;border-radius:9px;
+  background:linear-gradient(135deg,#e09818,#f05848);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;box-shadow:0 2px 8px rgba(224,152,24,.25);
+}
+.cz-ttl{font-size:13px;font-weight:800;color:var(--amb)}
+.cz-sub{font-size:12.5px;color:#7a5000;line-height:1.65;margin-bottom:12px}
+
+/* Fill in blank */
+.fitb{
+  background:var(--s);border-radius:10px;padding:13px;
+  border:1px solid rgba(224,152,24,.14);
+  font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2.2;color:#333;
+}
+.blank{
+  display:inline-block;border:none;border-bottom:2px solid var(--teal);
+  min-width:72px;text-align:center;padding:0 5px;outline:none;
+  color:var(--td);font-weight:600;font-family:'JetBrains Mono',monospace;
+  font-size:12px;background:transparent;transition:all .18s;
+}
+.blank:focus{border-bottom-color:var(--vio);color:var(--vid)}
+.blank.ok{border-bottom-color:var(--teal);color:var(--td);background:rgba(24,201,122,.08);border-radius:4px 4px 0 0}
+.blank.err{border-bottom-color:var(--coral);color:var(--coral);animation:jitter .3s}
+@keyframes jitter{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.fitb-actions{display:flex;gap:8px;margin-top:11px}
+.btn-check{
+  padding:8px 18px;border-radius:9px;background:var(--g1);border:none;color:#fff;
+  font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;
+  box-shadow:0 2px 8px rgba(24,201,122,.25);transition:all .18s;
+}
+.btn-check:hover{box-shadow:0 4px 16px rgba(24,201,122,.4);transform:translateY(-1px)}
+.btn-hint{
+  padding:8px 14px;border-radius:9px;border:1px solid rgba(0,0,0,.09);
+  background:var(--s);color:var(--mt);font-size:12px;font-weight:600;
+  cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;
+}
+.btn-hint:hover{background:var(--s2)}
+.cz-fb{font-size:12px;margin-top:10px;padding:9px 13px;border-radius:9px;display:none;font-weight:600;line-height:1.5}
+.cz-fb.ok{background:var(--tl);color:var(--td);display:block;border:1px solid rgba(24,201,122,.2)}
+.cz-fb.nope{background:var(--corl);color:var(--coral);display:block;border:1px solid rgba(240,88,72,.2)}
+
+/* RT hint */
+.rt-hint{font-size:11px;margin-top:7px;padding:6px 10px;border-radius:7px;display:none;background:rgba(24,201,122,.07);color:var(--td);font-weight:600;border-left:2px solid rgba(24,201,122,.3)}
+.rt-hint.on{display:block}
+
+/* MCQ */
+.mcq{display:flex;flex-direction:column;gap:7px}
+.mopt{
+  padding:10px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.07);
+  background:var(--s);font-size:12.5px;font-weight:500;cursor:pointer;
+  color:var(--mt);text-align:left;font-family:'Outfit',sans-serif;
+  transition:all .18s;display:flex;align-items:center;gap:10px;
+}
+.mopt:not([disabled]):hover{border-color:rgba(24,201,122,.3);background:var(--tl);color:var(--td)}
+.mopt.ok{background:var(--tl);border-color:rgba(24,201,122,.4);color:var(--td)}
+.mopt.err{background:var(--corl);border-color:rgba(240,88,72,.3);color:var(--coral)}
+.mk{
+  width:22px;height:22px;border-radius:6px;background:var(--s3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;color:var(--mt);
+}
+.mopt.ok .mk{background:var(--g1);color:#fff}
+.mopt.err .mk{background:var(--coral);color:#fff}
+
+/* Unlock button */
+.unlock-btn{
+  width:100%;padding:12px;border-radius:12px;background:var(--g1);border:none;
+  color:#fff;font-size:13.5px;font-weight:800;cursor:pointer;
+  font-family:'Outfit',sans-serif;box-shadow:0 2px 14px rgba(24,201,122,.3);
+  transition:all .2s;margin-top:12px;display:none;
+}
+.unlock-btn.on{display:block;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.unlock-btn:hover{box-shadow:0 6px 24px rgba(24,201,122,.45);transform:translateY(-2px)}
+@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+
+/* Select/Textarea preview */
+.fp-lbl{display:block;font-size:11px;font-weight:700;color:var(--mt);margin-bottom:5px}
+.fp-sel{
+  width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.09);
+  background:var(--s2);font-size:12px;font-family:'Outfit',sans-serif;color:var(--ink);
+  outline:none;margin-bottom:10px;transition:border-color .18s;
+}
+.fp-sel:focus{border-color:rgba(24,201,122,.4)}
+.fp-ta{
+  width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.09);
+  background:var(--s2);font-size:12px;font-family:'Outfit',sans-serif;color:var(--ink);
+  outline:none;resize:none;height:62px;transition:border-color .18s;
+}
+.fp-ta:focus{border-color:rgba(24,201,122,.4)}
+
+/* Final celebration */
+.cel-card{
+  margin:0 20px 20px;background:var(--gdark);border-radius:16px;padding:24px;
+  text-align:center;display:none;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+}
+.cel-card.on{display:block}
+.cel-card::before{content:'';position:absolute;top:-50px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(24,201,122,.2) 0%,transparent 65%)}
+.cel-emoji{font-size:40px;margin-bottom:10px;display:block;position:relative}
+.cel-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.3px;position:relative}
+.cel-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;position:relative}
+.cel-sub strong{color:rgba(255,255,255,.75)}
+
+/* ═══════════════════════════════════════════
+   CHAT — primary guide, right column
+═══════════════════════════════════════════ */
+.chat{
+  background:var(--ink2);display:flex;flex-direction:column;
+  border-left:1px solid rgba(255,255,255,.04);
+}
+.chat-hd{
+  padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);
+  background:var(--ink3);display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.bot-av{
+  width:38px;height:38px;border-radius:50%;background:var(--g1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+  box-shadow:0 0 0 2px rgba(255,255,255,.07),0 2px 12px rgba(24,201,122,.35);
+}
+.bot-nm{font-size:13.5px;font-weight:800;color:rgba(255,255,255,.92)}
+.bot-st{font-size:10.5px;color:rgba(24,201,122,.8);font-weight:600;margin-top:1px}
+.chat-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:rgba(24,201,122,.7)}
+.st-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite}
+
+/* Messages */
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msgs::-webkit-scrollbar{width:2px}
+.msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+.mg{display:flex;flex-direction:column;gap:3px}
+.ms{font-size:9.5px;font-weight:700;padding:0 4px;margin-bottom:1px;display:flex;align-items:center;gap:4px;color:rgba(24,201,122,.55)}
+.ms.usr{align-self:flex-end;color:rgba(255,255,255,.25)}
+.bbl{
+  max-width:92%;padding:10px 13px;font-size:12px;line-height:1.65;
+  border-radius:4px 13px 13px 13px;
+}
+.bbl.bot{
+  background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.08);
+  color:rgba(255,255,255,.88);border-left:2px solid rgba(24,201,122,.45);
+}
+.bbl.usr{
+  background:var(--g1);color:#fff;
+  align-self:flex-end;border-radius:13px 4px 13px 13px;margin-left:auto;
+}
+.bbl.sys{
+  background:rgba(255,255,255,.03);color:rgba(255,255,255,.22);font-size:10px;
+  border-radius:8px;padding:4px 10px;text-align:center;align-self:center;font-style:italic;
+}
+.typing-bbl{
+  background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.07);
+  border-left:2px solid rgba(24,201,122,.35);border-radius:4px 13px 13px 13px;
+  padding:10px 14px;display:none;
+}
+.typing-bbl.on{display:flex;gap:4px;align-items:center}
+.ty{width:5px;height:5px;border-radius:50%;background:rgba(24,201,122,.5);animation:ty .9s infinite}
+.ty:nth-child(2){animation-delay:.18s}.ty:nth-child(3){animation-delay:.36s}
+@keyframes ty{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+
+/* Chips — contextual */
+.chips{
+  padding:8px 12px;display:flex;flex-wrap:wrap;gap:5px;
+  border-top:1px solid rgba(255,255,255,.05);min-height:44px;
+}
+.chip{
+  padding:4px 11px;border-radius:20px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.035);font-size:10px;font-weight:600;cursor:pointer;
+  color:rgba(255,255,255,.4);font-family:'Outfit',sans-serif;transition:all .18s;white-space:nowrap;
+}
+.chip:hover{background:rgba(24,201,122,.12);border-color:rgba(24,201,122,.3);color:rgba(24,201,122,.9)}
+.chip.wild{border-color:rgba(123,111,248,.2);background:rgba(123,111,248,.04);color:rgba(123,111,248,.6)}
+.chip.wild:hover{background:rgba(123,111,248,.14);color:rgba(175,165,255,.95)}
+
+/* Input zone */
+.cinwrap{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.055);
+  background:var(--ink3);display:flex;gap:7px;align-items:flex-end;flex-shrink:0;
+}
+.cin{
+  flex:1;padding:9px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.045);color:rgba(255,255,255,.92);font-size:12px;
+  font-family:'Outfit',sans-serif;outline:none;resize:none;min-height:36px;max-height:72px;
+  line-height:1.5;transition:all .18s;
+}
+.cin:focus{border-color:rgba(24,201,122,.4);background:rgba(24,201,122,.04)}
+.cin::placeholder{color:rgba(255,255,255,.18)}
+.sndbtn{
+  width:34px;height:34px;border-radius:10px;background:var(--g1);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:15px;flex-shrink:0;transition:all .18s;
+  box-shadow:0 2px 10px rgba(24,201,122,.35);
+}
+.sndbtn:hover{box-shadow:0 4px 16px rgba(24,201,122,.5);transform:translateY(-1px)}
+
+/* ═══ CANVAS + XP NOTIF ═══ */
+#confetti-cvs{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+.xp-notif{
+  position:fixed;z-index:9998;pointer-events:none;
+  font-size:13px;font-weight:800;padding:5px 13px;border-radius:20px;
+  background:var(--g1);color:#fff;box-shadow:0 4px 16px rgba(24,201,122,.4);
+  opacity:0;animation:xpFloat 1.7s ease-out forwards;
+}
+@keyframes xpFloat{
+  0%{opacity:0;transform:translateY(0) scale(.8)}
+  15%{opacity:1;transform:translateY(-10px) scale(1)}
+  70%{opacity:1;transform:translateY(-32px)}
+  100%{opacity:0;transform:translateY(-50px) scale(.9)}
+}
+</style>
+
+<canvas id="confetti-cvs"></canvas>
+
+<div class="app">
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="tb">
+  <div class="brand"><div class="bmark">&lt;/&gt;</div>CodeBot</div>
+
+  <nav class="prog-dots" id="prog-dots">
+    <!-- rendered by JS -->
+  </nav>
+
+  <div class="tb-right">
+    <div class="xp-pill"><span class="xp-n" id="xp-val">0</span><span class="xp-lbl">XP</span></div>
+    <div class="av">LM</div>
+  </div>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content" id="content">
+
+  <!-- Hero compact -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><div class="hero-dot"></div>Phase 2 · Fondations HTML</div>
+      <div class="hero-title">Super <em>Lionel</em> — on construit (^_^)</div>
+      <div class="hero-sub">5 concepts, 5 défis. <strong>Un seul à la fois</strong> — explore le code, relève le défi, passe au suivant.</div>
+    </div>
+  </div>
+
+  <!-- ══ CONCEPT 1 : FORM ══ -->
+  <div class="concept-panel on" id="cp1">
+    <div class="cp-card">
+      <div class="cp-head">
+        <div class="cp-num">1</div>
+        <div class="cp-info">
+          <div class="cp-eyebrow">CONCEPT 1 / 5</div>
+          <div class="cp-title">La balise <code class="t">&lt;form&gt;</code> — Le conteneur</div>
+        </div>
+      </div>
+      <div class="cp-explain">
+        <p class="exp-p">Tout formulaire HTML commence par <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(24,201,122,.12);color:var(--td);padding:1px 5px;border-radius:4px">&lt;form&gt;</code> et se termine par <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(240,88,72,.12);color:var(--coral);padding:1px 5px;border-radius:4px">&lt;/form&gt;</code>. C'est le <strong>conteneur qui regroupe tous les champs</strong>.</p>
+        <div class="analogy">
+          <div class="an-ico">🍽️</div>
+          <div class="an-txt"><strong>Analogie</strong> — C'est comme le <strong>plateau du serveur au restaurant</strong>. Sans plateau, impossible de transporter tous les plats en cuisine !</div>
+        </div>
+      </div>
+      <div class="cp-code">
+        <div class="code-tip"><div class="tip-dot"></div>Clique sur <strong>action=</strong> ou <strong>method=</strong> pour voir leur rôle</div>
+        <div class="code-block">
+          <div class="code-topbar">
+            <div class="cb-dot" style="background:#ff5f57"></div><div class="cb-dot" style="background:#febc2e"></div><div class="cb-dot" style="background:#28c840"></div>
+            <div class="cb-lbl">FORMULAIRE.HTML</div>
+          </div>
+          <div class="code-body">
+            <div class="cl"><span class="ct">&lt;form</span></div>
+            <div class="cl clickable" id="c1-action" onclick="hlForm('action')" style="padding-left:18px">
+              <span class="ca">action=</span><span class="cv">"inscription.php"</span>
+              <span class="ann t">URL de destination</span>
+            </div>
+            <div class="cl clickable" id="c1-method" onclick="hlForm('method')" style="padding-left:18px">
+              <span class="ca">method=</span><span class="cv">"post"</span>
+              <span class="ann v">Mode d'envoi</span>
+            </div>
+            <div class="cl"><span class="ct">&gt;</span></div>
+            <div class="cl" style="padding-left:18px"><span class="cc">/* tes champs ici */</span></div>
+            <div class="cl"><span class="ct">&lt;/form&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /cp-card -->
+
+    <div class="cp-challenge" id="chal1">
+      <!-- Lock overlay initially -->
+      <div class="challenge-lock" id="lock1" onclick="revealChallenge(1)">
+        <span class="lock-icon">🔒</span>
+        Explore le code ci-dessus d'abord — puis clique ici pour débloquer le défi !
+      </div>
+      <!-- Challenge content (hidden until explored) -->
+      <div class="cz-card" id="cz1" style="display:none">
+        <div class="cz-hd"><div class="cz-ico">⚡</div><div class="cz-ttl">Mini-défi — Complète le code</div></div>
+        <div class="cz-sub">Remplis les blancs pour créer une balise form valide qui envoie les données en mode POST.</div>
+        <div class="fitb">
+          <span class="ct">&lt;</span><input class="blank" id="fb1a" placeholder="???" style="width:48px" oninput="rtH1()" onkeydown="if(event.key==='Enter')checkC1()">
+          <span class="ca"> action=</span><span class="cv">"/"</span>
+          <span class="ca"> method=</span><span class="cv">"</span><input class="blank" id="fb1b" placeholder="???" style="width:44px" oninput="rtH1()" onkeydown="if(event.key==='Enter')checkC1()"><span class="cv">"</span><span class="ct">&gt;</span><br>
+          <span style="padding-left:18px"><span class="cc">/* contenu */</span></span><br>
+          <span class="ct">&lt;/</span><input class="blank" id="fb1c" placeholder="???" style="width:48px" oninput="rtH1()" onkeydown="if(event.key==='Enter')checkC1()"><span class="ct">&gt;</span>
+        </div>
+        <div class="rt-hint" id="rt1"></div>
+        <div class="fitb-actions">
+          <button class="btn-check" onclick="checkC1()">Vérifier ✓</button>
+          <button class="btn-hint" onclick="addMsg('bot','(^_^) Indice : le conteneur de formulaire s\'appelle simplement <strong>form</strong>. Et pour envoyer de façon sécurisée — sans que les données apparaissent dans l\'URL — c\'est <strong>post</strong>.')">Indice 💡</button>
+        </div>
+        <div class="cz-fb" id="fb1"></div>
+        <button class="unlock-btn" id="ul1" onclick="unlock(2)">Concept suivant : &lt;input&gt; →</button>
+      </div>
+    </div>
+  </div><!-- /cp1 -->
+
+  <!-- ══ CONCEPT 2 : INPUT ══ -->
+  <div class="concept-panel" id="cp2">
+    <div class="cp-card">
+      <div class="cp-head">
+        <div class="cp-num">2</div>
+        <div class="cp-info">
+          <div class="cp-eyebrow">CONCEPT 2 / 5</div>
+          <div class="cp-title">L'élément <code class="v">&lt;input&gt;</code> — Le champ de saisie</div>
+        </div>
+      </div>
+      <div class="cp-explain">
+        <p class="exp-p">L'élément <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(123,111,248,.12);color:var(--vid);padding:1px 5px;border-radius:4px">&lt;input&gt;</code> crée les <strong>champs à remplir</strong>. Il a plusieurs attributs importants — clique sur chacun pour voir son effet en direct.</p>
+        <div class="attr-list">
+          <div class="attr-item" onclick="hlAttr('type')"><span class="ai-badge t">type</span><span class="ai-desc">Le type de champ (texte, email...)</span></div>
+          <div class="attr-item hi-v" onclick="hlAttr('name')"><span class="ai-badge v">name</span><span class="ai-desc">L'identifiant du champ côté serveur</span></div>
+          <div class="attr-item" onclick="hlAttr('placeholder')"><span class="ai-badge a">placeholder</span><span class="ai-desc">Le texte d'aide grisé à l'intérieur</span></div>
+          <div class="attr-item" onclick="hlAttr('required')"><span class="ai-badge c">required</span><span class="ai-desc">Rend le champ obligatoire</span></div>
+        </div>
+      </div>
+      <div class="cp-code">
+        <div class="code-block">
+          <div class="code-topbar">
+            <div class="cb-dot" style="background:#ff5f57"></div><div class="cb-dot" style="background:#febc2e"></div><div class="cb-dot" style="background:#28c840"></div>
+            <div class="cb-lbl">INPUT.HTML</div>
+          </div>
+          <div class="code-body">
+            <div class="cl"><span class="ct">&lt;input</span></div>
+            <div class="cl clickable" id="il-type" style="padding-left:18px" onclick="hlAttr('type')"><span class="ca">type=</span><span class="cv">"text"</span><span class="ann t">Type de champ</span></div>
+            <div class="cl clickable" id="il-name" style="padding-left:18px" onclick="hlAttr('name')"><span class="ca">name=</span><span class="cv">"prenom"</span><span class="ann v">Identifiant</span></div>
+            <div class="cl clickable" id="il-ph" style="padding-left:18px" onclick="hlAttr('placeholder')"><span class="ca">placeholder=</span><span class="cv">"Ton prénom"</span><span class="ann a">Texte d'aide</span></div>
+            <div class="cl clickable" id="il-req" style="padding-left:18px" onclick="hlAttr('required')"><span class="ca">required</span><span class="ann c">Obligatoire !</span></div>
+            <div class="cl"><span class="ct">/&gt;</span></div>
+          </div>
+        </div>
+        <div class="lp-box">
+          <div class="lp-hdr"><div class="lp-dot"></div>RENDU EN DIRECT</div>
+          <input id="live-inp" type="text" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:var(--s2);font-size:12.5px;font-family:'Outfit',sans-serif;color:var(--ink);outline:none;transition:all .2s" placeholder="Ton prénom">
+          <div id="lp-hint" style="font-size:10.5px;color:var(--mt);margin-top:6px;font-style:italic">(^_^) Clique sur un attribut pour voir ce qu'il fait</div>
+        </div>
+      </div>
+    </div>
+    <div class="cp-challenge" id="chal2">
+      <div class="challenge-lock" id="lock2" onclick="revealChallenge(2)">
+        <span class="lock-icon">🔒</span>
+        Clique sur les attributs dans le code ci-dessus, puis débloque le défi !
+      </div>
+      <div class="cz-card" id="cz2" style="display:none">
+        <div class="cz-hd"><div class="cz-ico">⚡</div><div class="cz-ttl">Mini-défi — QCM</div></div>
+        <div class="cz-sub">Quel attribut de &lt;input&gt; rend un champ obligatoire ?</div>
+        <div class="mcq">
+          <div class="mopt" onclick="mcq2(this,false)"><div class="mk">A</div>placeholder</div>
+          <div class="mopt" onclick="mcq2(this,false)"><div class="mk">B</div>name</div>
+          <div class="mopt" onclick="mcq2(this,true)"><div class="mk">C</div>required</div>
+        </div>
+        <div class="cz-fb" id="fb2"></div>
+        <button class="unlock-btn" id="ul2" onclick="unlock(3)">Concept suivant : &lt;label&gt; →</button>
+      </div>
+    </div>
+  </div><!-- /cp2 -->
+
+  <!-- ══ CONCEPT 3 : LABEL ══ -->
+  <div class="concept-panel" id="cp3">
+    <div class="cp-card">
+      <div class="cp-head">
+        <div class="cp-num">3</div>
+        <div class="cp-info">
+          <div class="cp-eyebrow">CONCEPT 3 / 5</div>
+          <div class="cp-title">La balise <code class="t">&lt;label&gt;</code> — L'étiquette</div>
+        </div>
+      </div>
+      <div class="cp-explain">
+        <p class="exp-p">Le <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(24,201,122,.12);color:var(--td);padding:1px 5px;border-radius:4px">&lt;label&gt;</code> donne un <strong>nom visible</strong> à chaque champ. Quand on clique dessus, le curseur saute automatiquement dans le champ lié !</p>
+        <div class="analogy">
+          <div class="an-ico">🗂️</div>
+          <div class="an-txt"><strong>Analogie</strong> — C'est comme les <strong>étiquettes sur les tiroirs</strong>. Sans étiquette, impossible de savoir où ranger chaque chose !</div>
+        </div>
+      </div>
+      <div class="cp-code">
+        <div class="code-tip"><div class="tip-dot"></div>Essaie de cliquer sur le label dans le rendu — le curseur saute dans le champ !</div>
+        <div class="code-block">
+          <div class="code-topbar">
+            <div class="cb-dot" style="background:#ff5f57"></div><div class="cb-dot" style="background:#febc2e"></div><div class="cb-dot" style="background:#28c840"></div>
+            <div class="cb-lbl">LABEL.HTML</div>
+          </div>
+          <div class="code-body">
+            <div class="cl"><span class="ct">&lt;label</span> <span class="ca">for=</span><span class="cv">"prenom"</span><span class="ct">&gt;</span></div>
+            <div class="cl" style="padding-left:18px"><span class="cw">Ton prénom :</span></div>
+            <div class="cl"><span class="ct">&lt;/label&gt;</span></div>
+            <br>
+            <div class="cl"><span class="ct">&lt;input</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ca">id=</span><span class="cv">"prenom"</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ca">type=</span><span class="cv">"text"</span></div>
+            <div class="cl"><span class="ct">/&gt;</span></div>
+          </div>
+        </div>
+        <div class="lp-box">
+          <div class="lp-hdr"><div class="lp-dot"></div>CLIQUE SUR LE LABEL</div>
+          <label for="lp-prenom" style="font-size:13px;font-weight:700;color:var(--teal);cursor:pointer;display:block;margin-bottom:7px">Ton prénom :</label>
+          <input id="lp-prenom" type="text" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:var(--s2);font-size:12.5px;font-family:'Outfit',sans-serif;outline:none;transition:all .2s" placeholder="Clique sur le label pour activer ce champ...">
+        </div>
+      </div>
+    </div>
+    <div class="cp-challenge" id="chal3">
+      <div class="challenge-lock" id="lock3" onclick="revealChallenge(3)">
+        <span class="lock-icon">🔒</span>
+        Clique sur le label dans le rendu, puis débloque le défi !
+      </div>
+      <div class="cz-card" id="cz3" style="display:none">
+        <div class="cz-hd"><div class="cz-ico">⚡</div><div class="cz-ttl">Mini-défi — QCM</div></div>
+        <div class="cz-sub">Quel attribut du &lt;label&gt; doit avoir la même valeur que l'attribut <code style="font-family:'JetBrains Mono',monospace">id</code> de l'input pour les lier ?</div>
+        <div class="mcq">
+          <div class="mopt" onclick="mcq3(this,false)"><div class="mk">A</div>name</div>
+          <div class="mopt" onclick="mcq3(this,true)"><div class="mk">B</div>for</div>
+          <div class="mopt" onclick="mcq3(this,false)"><div class="mk">C</div>class</div>
+        </div>
+        <div class="cz-fb" id="fb3"></div>
+        <button class="unlock-btn" id="ul3" onclick="unlock(4)">Concept suivant : les types d'input →</button>
+      </div>
+    </div>
+  </div><!-- /cp3 -->
+
+  <!-- ══ CONCEPT 4 : TYPES ══ -->
+  <div class="concept-panel" id="cp4">
+    <div class="cp-card">
+      <div class="cp-head">
+        <div class="cp-num">4</div>
+        <div class="cp-info">
+          <div class="cp-eyebrow">CONCEPT 4 / 5</div>
+          <div class="cp-title">L'attribut <code class="c">type=</code> — Chaque champ a son rôle</div>
+        </div>
+      </div>
+      <div class="cp-explain">
+        <p class="exp-p">L'attribut <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(240,88,72,.12);color:var(--coral);padding:1px 5px;border-radius:4px">type</code> change complètement le <strong>comportement du champ</strong>. Clique sur chaque type pour voir le résultat en direct.</p>
+        <div class="analogy">
+          <div class="an-ico">🔧</div>
+          <div class="an-txt"><strong>Analogie</strong> — C'est comme des <strong>ustensiles différents</strong> en cuisine. Une fourchette pour les pâtes, une cuillère pour la soupe — chaque outil a son usage !</div>
+        </div>
+      </div>
+      <div class="cp-code">
+        <div class="type-tabs">
+          <div class="ttab on" onclick="switchType('text','Texte normal visible',this)">text</div>
+          <div class="ttab" onclick="switchType('password','Texte masqué avec des ●',this)">password</div>
+          <div class="ttab" onclick="switchType('email','Vérifie la présence d\'un @',this)">email</div>
+          <div class="ttab" onclick="switchType('number','Accepte uniquement les chiffres',this)">number</div>
+        </div>
+        <div class="code-block">
+          <div class="code-topbar">
+            <div class="cb-dot" style="background:#ff5f57"></div><div class="cb-dot" style="background:#febc2e"></div><div class="cb-dot" style="background:#28c840"></div>
+            <div class="cb-lbl">TYPES.HTML</div>
+          </div>
+          <div class="code-body">
+            <div class="cl"><span class="ct">&lt;input</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ca">type=</span><span class="cv">"<span id="type-disp">text</span>"</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ca">placeholder=</span><span class="cv">"Essaie de taper..."</span></div>
+            <div class="cl"><span class="ct">/&gt;</span></div>
+          </div>
+        </div>
+        <div class="lp-box">
+          <div class="lp-hdr"><div class="lp-dot"></div>RÉSULTAT EN DIRECT</div>
+          <input id="type-prev" type="text" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:var(--s2);font-size:12.5px;font-family:'Outfit',sans-serif;color:var(--ink);outline:none;transition:all .2s;margin-bottom:8px" placeholder="Essaie de taper...">
+          <div class="type-pill" id="type-pill">(^_^) Texte normal visible</div>
+        </div>
+      </div>
+    </div>
+    <div class="cp-challenge" id="chal4">
+      <div class="challenge-lock" id="lock4" onclick="revealChallenge(4)">
+        <span class="lock-icon">🔒</span>
+        Essaie les 4 types ci-dessus, puis débloque le défi !
+      </div>
+      <div class="cz-card" id="cz4" style="display:none">
+        <div class="cz-hd"><div class="cz-ico">⚡</div><div class="cz-ttl">Mini-défi — Complète le code</div></div>
+        <div class="cz-sub">Tu veux un champ mot de passe qui masque les caractères. Quel type ?</div>
+        <div class="fitb" style="font-size:12.5px">
+          <span class="ct">&lt;input</span> <span class="ca">type=</span><span class="cv">"</span><input class="blank" id="fb4a" placeholder="???" style="width:82px" oninput="rtH4()" onkeydown="if(event.key==='Enter')checkC4()"><span class="cv">"</span> <span class="ct">/&gt;</span>
+        </div>
+        <div class="rt-hint" id="rt4"></div>
+        <div class="fitb-actions">
+          <button class="btn-check" onclick="checkC4()">Vérifier ✓</button>
+          <button class="btn-hint" onclick="addMsg('bot','(^_^) Indice : ce type cache les caractères avec des points ●●●. C\'est un mot anglais qui commence par <strong>P</strong>... pense à la sécurité !')">Indice 💡</button>
+        </div>
+        <div class="cz-fb" id="fb4"></div>
+        <button class="unlock-btn" id="ul4" onclick="unlock(5)">&lt;select&gt; et &lt;textarea&gt; →</button>
+      </div>
+    </div>
+  </div><!-- /cp4 -->
+
+  <!-- ══ CONCEPT 5 : SELECT + TEXTAREA ══ -->
+  <div class="concept-panel" id="cp5">
+    <div class="cp-card">
+      <div class="cp-head">
+        <div class="cp-num">5</div>
+        <div class="cp-info">
+          <div class="cp-eyebrow">CONCEPT 5 / 5 · DERNIER !</div>
+          <div class="cp-title"><code class="t">&lt;select&gt;</code> et <code class="v">&lt;textarea&gt;</code></div>
+        </div>
+      </div>
+      <div class="cp-explain">
+        <p class="exp-p"><code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(24,201,122,.12);color:var(--td);padding:1px 5px;border-radius:4px">&lt;select&gt;</code> crée une <strong>liste déroulante</strong>. <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(123,111,248,.12);color:var(--vid);padding:1px 5px;border-radius:4px">&lt;textarea&gt;</code> offre une <strong>grande zone de texte</strong> pour les messages longs.</p>
+        <div class="analogy">
+          <div class="an-ico">🍜</div>
+          <div class="an-txt"><strong>&lt;select&gt;</strong> = le menu du restaurant — tu choisis parmi ce qui est proposé. <strong>&lt;textarea&gt;</strong> = une page blanche — tu écris ce que tu veux !</div>
+        </div>
+      </div>
+      <div class="cp-code">
+        <div style="background:var(--s);border-radius:10px;padding:12px 14px;border:1px solid rgba(0,0,0,.055);margin-bottom:12px">
+          <span class="fp-lbl">&lt;select&gt; — Liste déroulante :</span>
+          <select class="fp-sel"><option>Choisir ta classe...</option><option>Seconde</option><option>Première</option><option>Terminale</option></select>
+          <span class="fp-lbl">&lt;textarea&gt; — Zone de texte libre :</span>
+          <textarea class="fp-ta" placeholder="Écris ton message ici..."></textarea>
+        </div>
+        <div class="code-block">
+          <div class="code-topbar">
+            <div class="cb-dot" style="background:#ff5f57"></div><div class="cb-dot" style="background:#febc2e"></div><div class="cb-dot" style="background:#28c840"></div>
+            <div class="cb-lbl">SELECT-TEXTAREA.HTML</div>
+          </div>
+          <div class="code-body" style="font-size:11px">
+            <div class="cl"><span class="ct">&lt;select</span> <span class="ca">name=</span><span class="cv">"classe"</span><span class="ct">&gt;</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ct">&lt;option&gt;</span><span class="cw">Seconde</span><span class="ct">&lt;/option&gt;</span></div>
+            <div class="cl"><span class="ct">&lt;/select&gt;</span></div>
+            <br>
+            <div class="cl"><span class="ct">&lt;textarea</span> <span class="ca">rows=</span><span class="cv">"4"</span></div>
+            <div class="cl" style="padding-left:18px"><span class="ca">placeholder=</span><span class="cv">"Ton message..."</span></div>
+            <div class="cl"><span class="ct">&gt;&lt;/textarea&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cp-challenge" id="chal5">
+      <div class="challenge-lock" id="lock5" onclick="revealChallenge(5)">
+        <span class="lock-icon">🔒</span>
+        Essaie les éléments interactifs ci-dessus, puis débloque le défi final !
+      </div>
+      <div class="cz-card" id="cz5" style="display:none">
+        <div class="cz-hd"><div class="cz-ico">🏆</div><div class="cz-ttl">Défi final — Pour les champs multi-lignes ?</div></div>
+        <div class="cz-sub">Pour un grand champ de texte libre (commentaire, message long), quelle balise utilise-t-on ?</div>
+        <div class="mcq">
+          <div class="mopt" onclick="mcq5(this,false)"><div class="mk">A</div>&lt;input type="text"&gt;</div>
+          <div class="mopt" onclick="mcq5(this,false)"><div class="mk">B</div>&lt;select&gt;</div>
+          <div class="mopt" onclick="mcq5(this,true)"><div class="mk">C</div>&lt;textarea&gt;</div>
+        </div>
+        <div class="cz-fb" id="fb5"></div>
+        <button class="unlock-btn" id="ul5" onclick="celebrate()" style="background:var(--g2)">🎉 Terminer les Fondations !</button>
+      </div>
+    </div>
+  </div><!-- /cp5 -->
+
+  <!-- Celebrate card -->
+  <div class="cel-card" id="cel">
+    <span class="cel-emoji">🏆</span>
+    <div class="cel-title">Fondations HTML maîtrisées !</div>
+    <div class="cel-sub">Tu connais maintenant <strong>&lt;form&gt;</strong>, <strong>&lt;input&gt;</strong>, <strong>&lt;label&gt;</strong>, les <strong>types</strong>, <strong>&lt;select&gt;</strong> et <strong>&lt;textarea&gt;</strong>.<br><br>Phase 3 — Explorer — t'attend !</div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- ═══ CHAT ═══ -->
+<div class="chat">
+  <div class="chat-hd">
+    <div class="bot-av">🤖</div>
+    <div>
+      <div class="bot-nm">CodeBot</div>
+      <div class="bot-st">Fondations HTML</div>
+    </div>
+    <div class="chat-status"><div class="st-dot"></div>En ligne</div>
+  </div>
+
+  <div class="msgs" id="msgs">
+    <div class="bbl sys">Phase 2 démarrée ✓</div>
+    <div class="mg">
+      <div class="ms"><span>🤖</span> CodeBot</div>
+      <div class="bbl bot">Hey <strong>Lionel</strong> ! 👋<br><br>Je suis <strong>CodeBot</strong>, ton prof HTML. Je suis là pour t'aider à chaque étape.<br><br>Commence par explorer le concept à gauche — clique sur les éléments du code — puis pose-moi tes questions ici !</div>
+    </div>
+    <div class="typing-bbl" id="typing"><div class="ty"></div><div class="ty"></div><div class="ty"></div></div>
+  </div>
+
+  <div class="chips" id="chips">
+    <!-- Contextual chips rendered by JS per concept -->
+  </div>
+
+  <div class="cinwrap">
+    <textarea class="cin" id="cin" placeholder="Pose ta question à CodeBot…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+    <button class="sndbtn" onclick="send()" title="Envoyer">↑</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let xp=0, doneCount=0, currentConcept=1;
+const maxConcepts=5;
+const explored={1:false,2:false,3:false,4:false,5:false};
+const challenged={1:false,2:false,3:false,4:false,5:false};
+const solved={1:false,2:false,3:false,4:false,5:false};
+
+/* ═══════════════════════════════════════
+   PROGRESS DOTS — rendered in topbar
+═══════════════════════════════════════ */
+const dotLabels=['&lt;form&gt;','&lt;input&gt;','&lt;label&gt;','type=','&lt;select&gt;'];
+const dotIcons=['📋','✏️','🏷️','🔧','📝'];
+
+function renderDots(){
+  const nav=document.getElementById('prog-dots');
+  nav.innerHTML='';
+  for(let i=1;i<=maxConcepts;i++){
+    if(i>1){const arr=document.createElement('div');arr.className='pd-arrow';arr.textContent='›';nav.appendChild(arr);}
+    const dot=document.createElement('div');
+    const isDone=solved[i];
+    const isActive=i===currentConcept;
+    const isLocked=i>currentConcept&&!isDone;
+    dot.className='pdot'+(isDone&&!isActive?' done':'')+(isActive?' active':'')+(isLocked?' locked':'');
+    dot.innerHTML=`<div class="pd-circle">${isDone&&!isActive?'✓':i}</div><span class="pd-label">${dotLabels[i-1]}</span>`;
+    if(!isLocked){dot.onclick=()=>showConcept(i,false);}
+    nav.appendChild(dot);
+  }
+}
+
+/* ═══════════════════════════════════════
+   CONTEXTUAL CHIPS PER CONCEPT
+═══════════════════════════════════════ */
+const chipsPerConcept={
+  1:[
+    {t:"C'est quoi action= ?",m:"c'est quoi action"},
+    {t:"GET vs POST ?",m:"get vs post"},
+    {t:"Analogie (^_^)",m:"analogie"},
+    {t:"J'ai pas compris",m:"j'ai pas compris",w:false},
+    {t:"~_~ Question folle",m:"question folle",w:true},
+  ],
+  2:[
+    {t:"C'est quoi name= ?",m:"c'est quoi name"},
+    {t:"required sans valeur ?",m:"required sans valeur"},
+    {t:"J'ai pas compris",m:"j'ai pas compris"},
+    {t:"~_~ Question folle",m:"question folle",w:true},
+  ],
+  3:[
+    {t:"Pourquoi for= ?",m:"pourquoi for"},
+    {t:"label sans for ?",m:"label sans for"},
+    {t:"J'ai pas compris",m:"j'ai pas compris"},
+    {t:"~_~ Question folle",m:"question folle",w:true},
+  ],
+  4:[
+    {t:"Quand utiliser email ?",m:"quand utiliser email"},
+    {t:"Autres types ?",m:"autres types input"},
+    {t:"J'ai pas compris",m:"j'ai pas compris"},
+    {t:"~_~ Question folle",m:"question folle",w:true},
+  ],
+  5:[
+    {t:"select vs input ?",m:"select vs input"},
+    {t:"textarea vs input ?",m:"textarea vs input"},
+    {t:"J'ai pas compris",m:"j'ai pas compris"},
+    {t:"~_~ Question folle",m:"question folle",w:true},
+  ],
+};
+
+function renderChips(n){
+  const c=document.getElementById('chips');c.innerHTML='';
+  (chipsPerConcept[n]||[]).forEach(({t,m,w})=>{
+    const el=document.createElement('div');
+    el.className='chip'+(w?' wild':'');
+    el.textContent=t;
+    el.onclick=()=>sc(m);
+    c.appendChild(el);
+  });
+}
+
+/* ═══════════════════════════════════════
+   CHAT
+═══════════════════════════════════════ */
+const msgs_el=document.getElementById('msgs');
+const typing_el=document.getElementById('typing');
+
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+
+const replies={
+  "j'ai pas compris":"(^_^) Aucun souci ! Sur quel point tu bloques ? La balise &lt;form&gt;, les attributs, ou autre chose ? Dis-moi et je t'explique différemment.",
+  "jai pas compris":"(^_^) Aucun souci ! Sur quel point tu bloques ? Dis-moi et je t'explique différemment.",
+  "analogie":"(^_^) Imagine une maison : <strong>&lt;form&gt;</strong> = les murs de la pièce. <strong>&lt;input&gt;</strong> = les fenêtres et portes. <strong>&lt;label&gt;</strong> = les panneaux 'Entrée / Sortie'. Et <strong>type=</strong> = le matériau de chaque ouverture !",
+  "get vs post":"(^_^) <strong>GET</strong> ajoute les données dans l'URL — elles sont visibles (ex: ?nom=Lionel). <strong>POST</strong> les cache dans la requête — indispensable pour les mots de passe ! 🔒",
+  "c'est quoi action":"(^_^) <strong>action=</strong> indique où envoyer les données du formulaire — c'est l'adresse (URL) de la page qui va les traiter. Sans action=, les données ne vont nulle part !",
+  "cest quoi action":"(^_^) <strong>action=</strong> indique où envoyer les données du formulaire — c'est l'adresse (URL) de la page qui va les traiter.",
+  "c'est quoi name":"(^_^) <strong>name=</strong> est l'identifiant du champ côté serveur. C'est comme un badge : quand le formulaire est envoyé, le serveur utilise ce nom pour retrouver la valeur du champ !",
+  "cest quoi name":"(^_^) <strong>name=</strong> est l'identifiant du champ côté serveur. C'est comme un badge : quand le formulaire est envoyé, le serveur utilise ce nom pour retrouver la valeur du champ !",
+  "required sans valeur":"(^_^) Exactement — <strong>required</strong> est un attribut booléen ! Il n'a pas besoin de valeur. Sa simple présence suffit : <code>required</code> ≠ <code>required='true'</code>. Les deux marchent, mais le premier est plus propre.",
+  "pourquoi for":"(^_^) L'attribut <strong>for=</strong> du label crée un lien vers un input via son <strong>id=</strong>. Quand tu cliques sur le label, le navigateur cherche l'input avec cet id et y place le curseur. C'est aussi utile pour l'accessibilité !",
+  "label sans for":"(^_^) Un label sans for= fonctionne toujours visuellement, mais il n'est plus lié à l'input. Tu perds le clic automatique ET l'accessibilité pour les lecteurs d'écran. Toujours mettre for= !",
+  "quand utiliser email":"(^_^) Utilise <strong>type='email'</strong> quand tu veux forcer la présence d'un @. Le navigateur bloque l'envoi automatiquement si le format est invalide. C'est de la validation gratuite sans JavaScript !",
+  "autres types input":"(^_^) Il en existe plein ! <strong>date</strong> (calendrier), <strong>file</strong> (upload fichier), <strong>checkbox</strong> (case à cocher), <strong>range</strong> (curseur), <strong>color</strong> (sélecteur de couleur)... Chacun adapte l'interface selon le contexte.",
+  "select vs input":"(^_^) <strong>&lt;select&gt;</strong> impose un choix parmi des options prédéfinies — l'utilisateur ne peut pas inventer une réponse. <strong>&lt;input&gt;</strong> laisse l'utilisateur taper librement. Utilise select quand la liste est fermée !",
+  "textarea vs input":"(^_^) <strong>&lt;textarea&gt;</strong> = plusieurs lignes, redimensionnable, parfait pour les messages longs. <strong>&lt;input type='text'&gt;</strong> = une seule ligne. Même concept, taille différente !",
+  "question folle":null,
+};
+
+const wilds=[
+  "Et si &lt;form&gt; n'existait pas — comment tu enverrais tes données selon toi ? (~_~)",
+  "Pourquoi l'attribut 'name' est-il obligatoire pour que le serveur reçoive les données ? Et si deux inputs avaient le même name ? (o_O)",
+  "Si tu devais expliquer &lt;input&gt; à un enfant de 6 ans sans aucun mot technique — tu dirais quoi ? (*_*)",
+  "Selon toi, pourquoi est-ce que type='password' masque les caractères ? Qui est protégé dans ce cas ? (-_-)",
+  "Imagine le formulaire d'inscription de ton école — quelles balises HTML utiliserais-tu ? (~_~)"
+];
+
+function addMsg(type,html,delay=0){
+  setTimeout(()=>{
+    if(type==='bot'){
+      typing_el.classList.add('on');
+      msgs_el.scrollTop=msgs_el.scrollHeight;
+      setTimeout(()=>{
+        typing_el.classList.remove('on');
+        const g=document.createElement('div');g.className='mg';
+        const s=document.createElement('div');s.className='ms';s.innerHTML='<span>🤖</span> CodeBot';
+        const b=document.createElement('div');b.className='bbl bot';b.innerHTML=html;
+        g.append(s,b);msgs_el.insertBefore(g,typing_el);
+        msgs_el.scrollTop=msgs_el.scrollHeight;
+      },900);
+    } else if(type==='usr'){
+      const g=document.createElement('div');g.className='mg';g.style.alignItems='flex-end';
+      const s=document.createElement('div');s.className='ms usr';s.textContent='Lionel';
+      const b=document.createElement('div');b.className='bbl usr';b.textContent=html;
+      g.append(s,b);msgs_el.insertBefore(g,typing_el);
+      msgs_el.scrollTop=msgs_el.scrollHeight;
+    } else {
+      const d=document.createElement('div');d.className='bbl sys';d.textContent=html;
+      msgs_el.insertBefore(d,typing_el);msgs_el.scrollTop=msgs_el.scrollHeight;
+    }
+  },delay);
+}
+
+function send(){
+  const el=document.getElementById('cin');const t=el.value.trim();if(!t)return;el.value='';
+  addMsg('usr',t);
+  const k=norm(t);
+  const isWild=k.includes('folle')||k.includes('wild');
+  let r=replies[k];
+  if(!r&&!isWild){for(const key in replies){if(k.includes(norm(key))){r=replies[key];break;}}}
+  if(isWild||(!r&&k.includes('question')))r=wilds[Math.floor(Math.random()*wilds.length)];
+  addMsg('bot',r||"(^_^) Bonne question ! Continue d'explorer les éléments dans le code à gauche — clique dessus pour voir leur rôle.",80);
+}
+function sc(t){document.getElementById('cin').value=t;send();}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function showConcept(n,sendMsg=true){
+  document.querySelectorAll('.concept-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('cp'+n)?.classList.add('on');
+  currentConcept=n;
+  document.getElementById('content').scrollTop=0;
+  renderDots();
+  renderChips(n);
+  if(sendMsg){
+    const msgs2={
+      1:"(^_^) Concept 1 — la balise <strong>&lt;form&gt;</strong>. C'est le conteneur de tout formulaire. Clique sur <strong>action=</strong> et <strong>method=</strong> dans le code pour voir leur rôle !",
+      2:"(^_^) Concept 2 — <strong>&lt;input&gt;</strong>. C'est le champ de saisie. Il a 4 attributs importants — explore-les tous dans la liste à gauche !",
+      3:"(^_^) Concept 3 — <strong>&lt;label&gt;</strong>. Une étiquette pour chaque champ. Clique sur le label 'Ton prénom :' dans le rendu — observe la magie !",
+      4:"(^_^) Concept 4 — <strong>type=</strong>. Clique sur chaque type pour voir comment le champ se transforme. Essaie 'password' — regarde ce qui arrive à ce que tu tapes !",
+      5:"(^_^) Dernier concept ! <strong>&lt;select&gt;</strong> et <strong>&lt;textarea&gt;</strong>. Interagis avec les deux prévisualisations, puis relève le défi final !"
+    };
+    addMsg('bot',msgs2[n]||'(^_^) Explore ce concept !',200);
+  }
+}
+
+/* ═══════════════════════════════════════
+   UNLOCK NEXT CONCEPT
+═══════════════════════════════════════ */
+function unlock(next){
+  doneCount++;
+  const pct=Math.round(doneCount/maxConcepts*100);
+  // Mark current as solved in dots
+  const prev=next-1;
+  solved[prev]=true;
+  renderDots();
+  addMsg('sys','Concept '+prev+' validé ! (^_^)');
+  addMsg('bot','(^_^) Bien joué ! Concept '+prev+' maîtrisé. Passe au suivant →',200);
+  setTimeout(()=>showConcept(next,true),450);
+}
+
+/* ═══════════════════════════════════════
+   REVEAL CHALLENGE (progressive disclosure)
+═══════════════════════════════════════ */
+function revealChallenge(n){
+  document.getElementById('lock'+n).style.display='none';
+  document.getElementById('cz'+n).style.display='block';
+  challenged[n]=true;
+  if(!explored[n]){
+    addMsg('bot','(^_^) Défi débloqué ! Réponds à la question ci-dessous.',100);
+  }
+}
+
+function markExplored(n){
+  if(explored[n])return;
+  explored[n]=true;
+  // Auto-change lock text to more inviting
+  const lock=document.getElementById('lock'+n);
+  if(lock&&lock.style.display!=='none'){
+    lock.querySelector('.lock-icon').textContent='✨';
+    lock.querySelector('.challenge-lock')?lock.innerHTML='<span class="lock-icon">✨</span>Tu as exploré le code ! Clique ici pour relever le défi.':null;
+    lock.innerHTML='<span class="lock-icon">✨</span>Tu as exploré le code ! <strong>Clique ici pour relever le défi.</strong>';
+    lock.style.borderColor='rgba(24,201,122,.35)';
+    lock.style.background='rgba(24,201,122,.06)';
+    lock.style.color='var(--td)';
+  }
+}
+
+/* ═══════════════════════════════════════
+   CODE INTERACTIONS — Concept 1
+═══════════════════════════════════════ */
+function hlForm(attr){
+  document.querySelectorAll('#cp1 .cl').forEach(l=>l.classList.remove('hl','hl-v'));
+  const map={action:'c1-action',method:'c1-method'};
+  const el=document.getElementById(map[attr]);
+  if(el) el.classList.add(attr==='method'?'hl-v':'hl');
+  const hints={
+    action:"(^_^) <strong>action=</strong> — c'est l'URL où les données sont envoyées. Comme l'adresse de la cuisine au restaurant !",
+    method:"(^_^) <strong>method=</strong> — <strong>POST</strong> envoie les données de façon sécurisée (cachées). <strong>GET</strong> les met dans l'URL (visibles). Pour les formulaires d'inscription : toujours POST !"
+  };
+  addMsg('bot',hints[attr],100);
+  markExplored(1);
+}
+
+/* ═══════════════════════════════════════
+   CODE INTERACTIONS — Concept 2
+═══════════════════════════════════════ */
+const attrMap2={
+  type:{id:'il-type',cls:'hl',hint:"(^_^) <strong>type=</strong> définit le comportement du champ : 'text' = texte libre, 'email' = vérifie le @, 'password' = masque les caractères.",live:()=>{document.getElementById('live-inp').placeholder='Champ de type TEXT';document.getElementById('lp-hint').textContent='type="text" — champ texte normal'}},
+  name:{id:'il-name',cls:'hl-v',hint:"(^_^) <strong>name=</strong> est l'identifiant côté serveur. C'est comme un badge : le serveur utilise ce nom pour retrouver la valeur saisie.",live:()=>{document.getElementById('lp-hint').textContent='name= — indispensable pour que le serveur reçoive les données !'}},
+  placeholder:{id:'il-ph',cls:'hl',hint:"(^_^) <strong>placeholder=</strong> affiche un texte grisé d'aide. Il disparaît dès que l'utilisateur commence à taper.",live:()=>{document.getElementById('live-inp').placeholder='placeholder= ce texte guide l\'utilisateur';document.getElementById('lp-hint').textContent='Le placeholder disparaît quand tu tapes !'}},
+  required:{id:'il-req',cls:'hl-v',hint:"(^_^) <strong>required</strong> est un attribut booléen — pas de valeur nécessaire. Sa seule présence rend le champ obligatoire. Le formulaire refuse l'envoi si vide.",live:()=>{document.getElementById('live-inp').required=true;document.getElementById('lp-hint').textContent='required activé ! Essaie de valider un formulaire avec ce champ vide.'}},
+};
+function hlAttr(a){
+  document.querySelectorAll('#cp2 .cl').forEach(l=>l.classList.remove('hl','hl-v'));
+  document.querySelectorAll('#cp2 .attr-item').forEach(i=>i.classList.remove('hi'));
+  const m=attrMap2[a];if(!m)return;
+  const el=document.getElementById(m.id);if(el)el.classList.add(m.cls);
+  if(m.live)m.live();
+  addMsg('bot',m.hint,100);
+  markExplored(2);
+}
+
+/* ═══════════════════════════════════════
+   TYPE SWITCHER — Concept 4
+═══════════════════════════════════════ */
+function switchType(type,desc,el){
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const inp=document.getElementById('type-prev');
+  inp.type=type;inp.value='';inp.focus();
+  document.getElementById('type-disp').textContent=type;
+  document.getElementById('type-pill').textContent='(^_^) '+desc;
+  const hints={
+    text:"(^_^) type='text' — texte libre, l'utilisateur peut taper n'importe quoi !",
+    password:"(^_^) type='password' — regarde ! Chaque caractère devient un ●. Parfait pour les mots de passe.",
+    email:"(^_^) type='email' — essaie de soumettre un formulaire sans le @, le navigateur bloque automatiquement !",
+    number:"(^_^) type='number' — seuls les chiffres passent. Les flèches permettent d'incrémenter la valeur.",
+  };
+  addMsg('bot',hints[type]||'(^_^) Explore ce type !',100);
+  markExplored(4);
+}
+
+/* Label explore */
+document.getElementById('lp-prenom')?.addEventListener('focus',()=>markExplored(3));
+
+/* ═══════════════════════════════════════
+   CHALLENGES
+═══════════════════════════════════════ */
+function checkC1(){
+  const a=document.getElementById('fb1a').value.trim().toLowerCase();
+  const b=document.getElementById('fb1b').value.trim().toLowerCase();
+  const c=document.getElementById('fb1c').value.trim().toLowerCase();
+  document.getElementById('rt1').classList.remove('on');
+  const ok=a==='form'&&b==='post'&&c==='form';
+  const fb=document.getElementById('fb1');
+  if(ok){
+    fb.className='cz-fb ok';fb.textContent='(^_^) Parfait ! form + post + /form — ta balise form est complète et valide !';
+    ['fb1a','fb1b','fb1c'].forEach(id=>document.getElementById(id).classList.add('ok'));
+    if(!solved[1]){addXP(20);}
+    document.getElementById('ul1').classList.add('on');
+  } else {
+    fb.className='cz-fb nope';fb.textContent='(-_-) Pas tout à fait... Rappel : la balise s\'appelle "form", et le mode sécurisé c\'est "post".';
+    if(a!=='form')flash('fb1a');
+    if(b!=='post')flash('fb1b');
+    if(c!=='form')flash('fb1c');
+  }
+}
+
+function mcq2(btn,correct){
+  if(btn.disabled)return;
+  document.querySelectorAll('#cp2 .mopt').forEach(b=>{b.disabled=true;b.style.pointerEvents='none';});
+  const fb=document.getElementById('fb2');
+  if(correct){
+    btn.classList.add('ok');
+    fb.className='cz-fb ok';fb.textContent='(^_^) Exactement ! required — un seul mot qui rend le champ obligatoire. Le formulaire refuse l\'envoi si vide.';
+    if(!solved[2]){addXP(20);}
+    document.getElementById('ul2').classList.add('on');
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cp2 .mopt')[2].classList.add('ok');
+    fb.className='cz-fb nope';fb.textContent='(-_-) Non ! C\'est required — sa simple présence suffit, sans valeur.';
+    setTimeout(()=>document.getElementById('ul2').classList.add('on'),800);
+  }
+}
+
+function mcq3(btn,correct){
+  if(btn.disabled)return;
+  document.querySelectorAll('#cp3 .mopt').forEach(b=>{b.disabled=true;b.style.pointerEvents='none';});
+  const fb=document.getElementById('fb3');
+  if(correct){
+    btn.classList.add('ok');
+    fb.className='cz-fb ok';fb.textContent='(^_^) Parfait ! for= du label doit correspondre à id= de l\'input. C\'est le lien invisible qui les connecte !';
+    if(!solved[3]){addXP(20);}
+    document.getElementById('ul3').classList.add('on');
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cp3 .mopt')[1].classList.add('ok');
+    fb.className='cz-fb nope';fb.textContent='(-_-) Non ! C\'est l\'attribut for= — il doit avoir la même valeur que id= de l\'input.';
+    setTimeout(()=>document.getElementById('ul3').classList.add('on'),800);
+  }
+}
+
+function checkC4(){
+  const v=document.getElementById('fb4a').value.trim().toLowerCase();
+  document.getElementById('rt4').classList.remove('on');
+  const fb=document.getElementById('fb4');
+  if(v==='password'){
+    fb.className='cz-fb ok';fb.textContent='(^_^) Exact ! type="password" masque chaque caractère. Essentiel pour la sécurité !';
+    document.getElementById('fb4a').classList.add('ok');
+    if(!solved[4]){addXP(20);}
+    document.getElementById('ul4').classList.add('on');
+  } else {
+    fb.className='cz-fb nope';fb.textContent='(-_-) Pas tout à fait... Ce type masque les caractères avec des ●. Mot anglais lié à la sécurité, commence par P.';
+    flash('fb4a');
+  }
+}
+
+function mcq5(btn,correct){
+  if(btn.disabled)return;
+  document.querySelectorAll('#cp5 .mopt').forEach(b=>{b.disabled=true;b.style.pointerEvents='none';});
+  const fb=document.getElementById('fb5');
+  if(correct){
+    btn.classList.add('ok');
+    fb.className='cz-fb ok';fb.textContent='(^_^) Parfait ! <textarea> crée une zone multi-lignes. Tu as maîtrisé toutes les fondations !';
+    if(!solved[5]){addXP(20);}
+    document.getElementById('ul5').classList.add('on');
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cp5 .mopt')[2].classList.add('ok');
+    fb.className='cz-fb nope';fb.textContent='(-_-) Non ! <textarea> est la bonne réponse. input type="text" n\'a qu\'une seule ligne.';
+    setTimeout(()=>document.getElementById('ul5').classList.add('on'),800);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RT HINTS
+═══════════════════════════════════════ */
+function rtH1(){
+  const a=document.getElementById('fb1a').value.trim().toLowerCase();
+  const b=document.getElementById('fb1b').value.trim().toLowerCase();
+  const rt=document.getElementById('rt1');
+  if(a.length>0&&a!=='form'){rt.textContent='💡 Le conteneur de formulaire s\'appelle "form"';rt.classList.add('on');}
+  else if(b.length>0&&b!=='post'&&b!=='get'){rt.textContent='💡 Pour un envoi sécurisé : "post" (les données n\'apparaissent pas dans l\'URL)';rt.classList.add('on');}
+  else{rt.classList.remove('on');}
+}
+function rtH4(){
+  const v=document.getElementById('fb4a').value.trim().toLowerCase();
+  const rt=document.getElementById('rt4');
+  if(v.length>0&&!'password'.startsWith(v)){rt.textContent='💡 Ce type commence par "p"... pense à la sécurité !';rt.classList.add('on');}
+  else rt.classList.remove('on');
+}
+
+/* ═══════════════════════════════════════
+   CELEBRATE
+═══════════════════════════════════════ */
+function celebrate(){
+  solved[5]=true;doneCount=5;
+  renderDots();
+  document.getElementById('cel').classList.add('on');
+  addMsg('sys','🏆 Fondations HTML complètes ! Total : '+xp+' XP');
+  addMsg('bot','🎉 <strong>BRAVO Lionel</strong> ! Tu as maîtrisé les 5 fondations HTML :<br>• &lt;form&gt; — le conteneur<br>• &lt;input&gt; — le champ<br>• &lt;label&gt; — l\'étiquette<br>• type= — les comportements<br>• &lt;select&gt; et &lt;textarea&gt;<br><br><strong>Phase 3 — Explorer</strong> t\'attend !',300);
+  launchConfetti();
+  setTimeout(()=>document.getElementById('cel').scrollIntoView({behavior:'smooth',block:'start'}),700);
+}
+
+/* ═══════════════════════════════════════
+   XP + NOTIF
+═══════════════════════════════════════ */
+function addXP(n){
+  xp+=n;
+  document.getElementById('xp-val').textContent=xp;
+  const notif=document.createElement('div');notif.className='xp-notif';notif.textContent='+'+n+' XP';
+  const el=document.getElementById('xp-val');
+  const r=el.getBoundingClientRect();
+  notif.style.left=(r.left+r.width/2-28)+'px';notif.style.top=(r.top-8)+'px';
+  document.body.appendChild(notif);setTimeout(()=>notif.remove(),1800);
+}
+
+/* ═══════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════ */
+function launchConfetti(){
+  const cvs=document.getElementById('confetti-cvs');const ctx=cvs.getContext('2d');
+  cvs.width=window.innerWidth;cvs.height=window.innerHeight;
+  const cols=['#18c97a','#7b6ff8','#f05848','#e09818','#0cb4d4','#c06fd8'];
+  const pieces=Array.from({length:130},()=>({
+    x:Math.random()*cvs.width,y:-20-Math.random()*80,
+    w:5+Math.random()*9,h:4+Math.random()*5,
+    color:cols[Math.floor(Math.random()*cols.length)],
+    vx:(Math.random()-.5)*5,vy:2.5+Math.random()*4,
+    rot:Math.random()*Math.PI*2,vr:(Math.random()-.5)*.16,opacity:1
+  }));
+  let f=0;
+  (function draw(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
+      if(f>70)p.opacity=Math.max(0,p.opacity-.014);
+      ctx.save();ctx.globalAlpha=p.opacity;ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+    f++;if(f<160)requestAnimationFrame(draw);else ctx.clearRect(0,0,cvs.width,cvs.height);
+  })();
+}
+
+/* ═══════════════════════════════════════
+   UTILS
+═══════════════════════════════════════ */
+function flash(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.classList.add('err');setTimeout(()=>el.classList.remove('err'),500);
+}
+
+/* ═══════════════════════════════════════
+   SELECT explore trigger
+═══════════════════════════════════════ */
+document.querySelector('.fp-sel')?.addEventListener('change',()=>markExplored(5));
+document.querySelector('.fp-ta')?.addEventListener('input',()=>markExplored(5));
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+renderDots();
+renderChips(1);
+</script>
+</html>
