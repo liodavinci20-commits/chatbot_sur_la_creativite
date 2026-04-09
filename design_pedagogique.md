@@ -1,34 +1,35 @@
-# Design Pédagogique — Chatbot sur la Créativité (Formulaires HTML)
+# Design Pédagogique — CodeBot : Apprendre les Formulaires HTML
 
-> [!NOTE]
-> Ce document présente le design pédagogique complet de mon projet de chatbot éducatif. Il détaille les choix pédagogiques, les théories d'apprentissage mobilisées, le scénario d'apprentissage et l'architecture technique au service de la pédagogie.
+> **Document de référence** — Ce fichier décrit le design pédagogique réel et actuel de l'application. Il reflète l'état du code en production, les choix d'implémentation effectifs et la logique d'apprentissage telle qu'elle a été construite.
 
 ---
 
 ## 1. Contexte et Problématique
 
 ### 1.1. Le constat de départ
-L'apprentissage du HTML, en particulier des formulaires web, est souvent enseigné de manière trop théorique dans les classes de lycée. Les élèves lisent du code sur un tableau, recopient des balises sans comprendre leur fonction réelle, et perdent rapidement leur motivation.
+L'apprentissage du HTML, et en particulier des formulaires web, est souvent enseigné de manière trop abstraite dans les lycées. Les élèves lisent du code sur un tableau, recopient des balises sans en comprendre la fonction, et perdent rapidement leur motivation faute de retour immédiat et de sens concret.
 
-### 1.2. La solution proposée
-J'ai conçu et développé **CodeBot**, un chatbot éducatif interactif qui enseigne les formulaires HTML à travers une expérience d'apprentissage progressive, visuelle et ludique. L'outil transforme un cours magistral passif en une aventure interactive où l'élève apprend en faisant, pas juste en lisant.
+### 1.2. La réponse apportée
+**CodeBot** est une application web éducative interactive qui enseigne les formulaires HTML à travers un parcours progressif en 4 pages. L'élève ne lit pas — il fait, il clique, il tape, il dialogue avec un chatbot en temps réel. Chaque concept est d'abord vécu (via le formulaire lui-même), puis nommé (explication), puis ancré (analogie + image + dialogue), puis appliqué (pratique + défi).
 
 ### 1.3. Le public cible
+
 | Caractéristique | Détail |
 | :--- | :--- |
-| **Âge** | 15-16 ans (classe de Seconde / Première) |
-| **Niveau technique** | Débutant complet en HTML |
-| **Environnement** | Lycée, salle informatique ou à domicile |
-| **Habitudes numériques** | Familiers avec Instagram, TikTok, WhatsApp — habitués aux interfaces dynamiques et colorées |
+| **Âge** | 15–18 ans (lycée, toutes séries) |
+| **Niveau technique** | Débutant absolu en HTML |
+| **Environnement** | Salle informatique ou domicile, navigateur moderne |
+| **Rapport au numérique** | Utilisateurs quotidiens de formulaires (Instagram, TikTok, Snapchat) sans le savoir |
 
 ---
 
 ## 2. Théories d'Apprentissage Mobilisées
 
-Mon design pédagogique ne repose pas sur l'improvisation. Il s'appuie sur 3 cadres théoriques reconnus en sciences de l'éducation :
+Le design repose sur trois cadres théoriques articulés ensemble :
 
-### 2.1. La Taxonomie de Bloom (Hiérarchie Cognitive)
-J'ai structuré le parcours pour faire progresser l'élève du niveau cognitif le plus bas (se souvenir) vers le plus élevé (créer).
+### 2.1. La Taxonomie de Bloom — progression cognitive
+
+L'élève est guidé du niveau cognitif le plus bas vers le plus élevé, sans sauter d'étape.
 
 ```mermaid
 graph BT
@@ -36,11 +37,11 @@ graph BT
     classDef mid fill:#fff9c4,stroke:#fdd835,stroke-width:2px;
     classDef high fill:#ffccbc,stroke:#e64a19,stroke-width:2px;
 
-    N1["1. Se souvenir<br/>(Lire l'explication)"] --> N2["2. Comprendre<br/>(Analogie du restaurant)"]
-    N2 --> N3["3. Appliquer<br/>(Visualisation SVG)"]
-    N3 --> N4["4. Analyser<br/>(Manipuler le sandbox)"]
-    N4 --> N5["5. Évaluer<br/>(Répondre au Quiz)"]
-    N5 --> N6["6. Créer<br/>(Défi créatif HTML)"]
+    N1["1. Se souvenir<br/>(Lire le concept)"] --> N2["2. Comprendre<br/>(Analogie du quotidien)"]
+    N2 --> N3["3. Appliquer<br/>(Cliquer / Taper dans l'éditeur)"]
+    N3 --> N4["4. Analyser<br/>(Explorer les attributs)"]
+    N4 --> N5["5. Évaluer<br/>(QCM + feedback adaptatif)"]
+    N5 --> N6["6. Créer<br/>(Mini-projet HTML libre)"]
 
     class N1,N2 low;
     class N3,N4 mid;
@@ -48,200 +49,268 @@ graph BT
 ```
 
 ### 2.2. Le Constructivisme (Piaget / Vygotsky)
-L'apprentissage est plus solide quand l'élève **construit** lui-même ses connaissances plutôt que de les recevoir passivement.
-*   **Application :** La section Interactive Preview (`InteractivePreview.jsx`) permet à l'élève de manipuler de vrais éléments HTML (cocher des cases, sélectionner des options dans un menu déroulant, remplir des champs) **avant** de passer au quiz. Il découvre par lui-même le comportement des éléments.
-*   **Zone Proximale de Développement (ZPD) :** Le chatbot agit comme un tuteur intelligent. Si l'élève dit « j'ai pas compris », le bot ne répète pas la même explication — il bascule vers une **analogie** plus simple (ex : « les boutons radio, c'est comme les boutons d'un ancien poste radio »).
+
+L'élève construit ses connaissances par l'action et le dialogue, pas par la lecture passive.
+
+- **Action directe :** Sur l'`IntroPage`, l'élève interagit avec un vrai formulaire *avant* de recevoir une explication. Il comprend d'abord *ce que ça fait*, puis *comment ça s'appelle*.
+- **Zone Proximale de Développement :** Le chatbot détecte les blocages. Si l'élève tape "non" après une explication, le bot bascule automatiquement vers une analogie alternative plus accessible — jamais la même répétition.
+- **Construction par dialogue :** Le dialogue bot/élève est une machine à états réelle. L'élève n'est pas spectateur — ses réponses (oui/non) changent la séquence des messages reçus.
 
 ### 2.3. Les 9 Événements de Gagné
-Robert Gagné a identifié 9 étapes clés pour un apprentissage efficace. Mon chatbot en implémente la majorité :
 
-| Événement de Gagné | Implémentation dans CodeBot |
+| Événement | Implémentation concrète dans CodeBot |
 | :--- | :--- |
-| 1. Capter l'attention | Animation Lottie du robot qui salue l'élève sur la page d'introduction |
-| 2. Informer des objectifs | Message de bienvenue personnalisé qui explique le déroulement en 5 étapes |
-| 3. Stimuler le rappel | Analogie du menu de restaurant pour raccrocher aux connaissances existantes |
-| 4. Présenter le contenu | Explication structurée de chaque rubrique avec exemples de code HTML |
-| 5. Guider l'apprentissage | Visualisations SVG interactives et Preview manipulable |
-| 6. Susciter la performance | Quiz à choix multiples (A, B, C) |
-| 7. Fournir un feedback | Réponse immédiate du bot (« Bravo ! » ou « Oups, réessaie ! ») |
-| 8. Évaluer la performance | Défi créatif : l'élève écrit son propre code HTML |
-| 9. Favoriser la rétention | Défi Final qui combine toutes les notions apprises |
+| 1. Capter l'attention | `IntroPage` : titre "Tu l'utilises déjà. Sans le savoir." — choc cognitif immédiat |
+| 2. Informer des objectifs | Message de bienvenue du bot + barre de navigation dots (5 concepts visibles) |
+| 3. Stimuler le rappel | Analogies tirées du quotidien (restaurant, enveloppe, cuisine) avant tout code |
+| 4. Présenter le contenu | Blocs de code interactifs avec syntaxe colorée par rôle sémantique |
+| 5. Guider l'apprentissage | Dialogue bot en cascade (4 messages progressifs) + image révélable à la demande |
+| 6. Susciter la performance | Éditeur temps réel (`MiniProjectPage`) + défi verrouillé par concept |
+| 7. Fournir un feedback | Réponse immédiate du bot selon la réponse (oui/non) + +XP animé |
+| 8. Évaluer la performance | QCM avec feedback adaptatif + vérification de code dans le mini-projet |
+| 9. Favoriser la rétention | `MiniProjectPage` : créer un formulaire complet + export PDF à conserver |
 
 ---
 
-## 3. Scénario Pédagogique Complet
+## 3. Architecture de l'Application
 
-Le parcours d'apprentissage suit un flux précis en **5 phases progressives** :
+### 3.1. Vue d'ensemble des pages
 
 ```mermaid
 graph LR
-    classDef phase1 fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
-    classDef phase2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-    classDef phase3 fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-    classDef phase4 fill:#fce4ec,stroke:#c62828,stroke-width:2px;
-    classDef phase5 fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px;
+    classDef page fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef comp fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px;
+    classDef back fill:#fff3e0,stroke:#e65100,stroke-width:2px;
 
-    A["Phase 1<br/>DÉCOUVRIR"] --> B["Phase 2<br/>COMPRENDRE LES BASES"]
-    B --> C["Phase 3<br/>EXPLORER & MANIPULER"]
-    C --> D["Phase 4<br/>ÉVALUER & CRÉER"]
-    D --> E["Phase 5<br/>SYNTHÉTISER"]
+    Login["LoginPage<br/>Connexion élève"] --> Intro["IntroPage<br/>Découverte"]
+    Intro --> Found["FoundationsPage<br/>5 Concepts"]
+    Found --> Mini["MiniProjectPage<br/>Projet créatif"]
+    Mini --> Hub["HubPage<br/>Hub avancé"]
 
-    class A phase1;
-    class B phase2;
-    class C phase3;
-    class D phase4;
-    class E phase5;
+    Found --> ChatBot["ChatBot local-first<br/>+ fallback API Python"]
+    Mini --> ChatBot
+
+    class Login,Intro,Found,Mini,Hub page;
+    class ChatBot back;
 ```
 
-### Phase 1 — DÉCOUVRIR (IntroPage)
-**Objectif :** Contextualiser et motiver.
-*   L'élève est accueilli par une animation Lottie (robot qui dit bonjour).
-*   La question fondamentale est posée : « Qu'est-ce qu'un formulaire ? »
-*   Une définition claire est donnée, accompagnée d'un bouton « Visualiser un exemple ».
-*   Si l'élève ne comprend pas, un bouton « J'ai pas compris 🤔 » affiche une explication simplifiée avec des références à Instagram et TikTok.
-*   L'analogie du menu de restaurant (SVG) fait le lien entre un concept connu et le concept technique.
-*   L'élève peut poser des questions libres au robot (`ThinkingRobot`).
+### 3.2. Stack technique
 
-### Phase 2 — COMPRENDRE LES BASES (FoundationsPage)
-**Objectif :** Poser les fondations techniques.
-*   Explication des éléments structurels d'un formulaire HTML (`<form>`, `<input>`, `<label>`, `<select>`, `<textarea>`).
-*   Chaque notion est illustrée par un schéma SVG interactif (composants `FormStructureSVG`, `InputAttributesSVG`, `LabelSVG`, etc.).
-*   Un mini-chat intégré permet de poser des questions en direct au bot.
-*   Boutons « J'ai pas compris » pour chaque section, déclenchant des explications alternatives.
+| Couche | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18 + Vite, Framer Motion, react-icons |
+| **Routage** | React Router v6, lazy loading des pages |
+| **Chat** | Local-first (réponses JSX pré-écrites) + fallback HTTP vers Flask |
+| **Voix** | Web Speech Synthesis API (browser natif) |
+| **Export** | html2pdf.js (PDF côté client, zéro serveur) |
+| **Persistance** | `sessionStorage` (session utilisateur sans base de données) |
+| **Backend** | Python / Flask (API REST, utilisé en fallback uniquement) |
 
-### Phase 3 — EXPLORER & MANIPULER (HubPage — Visualisation + Sandbox)
-**Objectif :** Passer de la théorie à la pratique tactile.
-*   L'élève choisit une rubrique dans le menu latéral (`TopicsSidebar`).
-*   Le chatbot affiche l'explication de la rubrique.
-*   **Étape clé — Visualisation SVG** (`TopicVisualizations.jsx`) : un schéma illustré montre le concept visuellement.
-*   **Étape clé — Preview Interactive** (`InteractivePreview.jsx`) : l'élève manipule de vrais éléments HTML fonctionnels (il coche, sélectionne, remplit) sans écrire de code.
+### 3.3. Architecture du chatbot — Local-first
 
-### Phase 4 — ÉVALUER & CRÉER (HubPage — Quiz + Défi Créatif)
-**Objectif :** Vérifier la compréhension et stimuler la créativité.
-*   **Quiz** : 3 choix (A, B, C). Le moteur (`chatbot_engine.py`) détecte la réponse par pattern matching intelligent.
-*   **Feedback immédiat** : en cas de bonne réponse → félicitations + passage au défi. En cas d'erreur → encouragement + indice + possibilité de revoir l'analogie.
-*   **Défi créatif** : l'élève doit écrire du code HTML réel. Le moteur vérifie la présence des balises attendues (`_check_html_tags`).
+Le chatbot fonctionne en deux niveaux :
 
-### Phase 5 — SYNTHÉTISER (Défi Final)
-**Objectif :** Mobiliser toutes les compétences acquises.
-*   Débloqué uniquement après validation des 5 rubriques.
-*   L'élève doit créer un formulaire d'inscription complet combinant : `text`, `password`, `checkbox`, `radio`, `select`, `textarea`, `submit`, `reset`.
-*   Animation de célébration (`Celebration.jsx`) à la réussite.
+```mermaid
+graph TD
+    MSG["Message de l'élève"] --> INT["Intercepteurs de dialogue<br/>(analogyDialogRef, inputAnalogyDialogRef, typeAnalogyDialogRef)"]
+    INT -->|"Machine à états active"| CASCADE["Cascade de messages pédagogiques<br/>(ANALOGY_PARTS, C2, C3...)"]
+    INT -->|"Aucun dialogue actif"| LOCAL["LOCAL_REPLIES<br/>(pattern matching normalisé)"]
+    LOCAL -->|"Mot-clé trouvé"| REPLY["Réponse immédiate (0 latence réseau)"]
+    LOCAL -->|"Non trouvé"| API["Fallback API Python<br/>POST /api/chat"]
+    CASCADE --> XP["Système XP + notif flottante"]
+```
 
 ---
 
-## 4. Architecture Technique au Service de la Pédagogie
+## 4. Scénario Pédagogique Page par Page
 
-### 4.1. Vue d'ensemble du système
+### Phase 1 — DÉCOUVRIR (`IntroPage`)
+
+**Objectif pédagogique :** Créer un conflit cognitif — l'élève réalise qu'il *utilise* déjà des formulaires sans le savoir.
+
+**Séquence :**
+1. **Accroche** — Titre "Tu l'utilises déjà. Sans le savoir." → déstabilisation volontaire
+2. **Révélation progressive** — Le bot envoie 2 messages avant d'afficher le formulaire (`formReady`). L'élève ne voit pas d'emblée du code — il vit d'abord l'expérience
+3. **Formulaire interactif** — Chaque ligne du tableau de données est cliquable : cliquer sur "Prénom" déclenche une explication bot du tag HTML correspondant (`handleFieldClick`)
+4. **Banner de découverte** — 2 états : découverte partielle → découverte complète, avec animation de révélation
+5. **Mode voix** — Toggle pour que le bot lise ses réponses à voix haute (`Web Speech Synthesis`). Bouton de stop et de toggle avec icônes react-icons
+
+**Valeur pédagogique :** L'élève part de son vécu (il a déjà rempli un formulaire Instagram) et remonte vers le concept HTML. Le sens précède la syntaxe.
+
+---
+
+### Phase 2 — COMPRENDRE LES BASES (`FoundationsPage`)
+
+**Objectif pédagogique :** Construire une représentation mentale solide des 5 balises fondamentales des formulaires, concept par concept, en allant du connu vers l'inconnu.
+
+Le parcours est structuré en **5 concepts progressifs et verrouillés**. Chaque concept doit être exploré avant de pouvoir accéder au défi. La progression est visible via des **navigation dots** en haut de page.
 
 ```mermaid
-graph TB
-    classDef front fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
-    classDef back fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-    classDef data fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-
-    subgraph Frontend React / Vite
-        Login["LoginPage<br/>Connexion élève"] --> Intro["IntroPage<br/>Découverte"]
-        Intro --> Found["FoundationsPage<br/>Fondations"]
-        Found --> Hub["HubPage<br/>Hub d'apprentissage"]
-        Hub --> Sidebar["TopicsSidebar"]
-        Hub --> Chat["ChatPanel"]
-        Hub --> Visu["TopicVisualizations"]
-        Hub --> Inter["InteractivePreview"]
-        Hub --> Celeb["Celebration"]
-    end
-
-    subgraph Backend Python / Flask
-        API["app.py<br/>API REST (6 routes)"]
-        Engine["chatbot_engine.py<br/>Machine à états"]
-    end
-
-    subgraph Données
-        Lessons["lessons_data.py<br/>5 leçons structurées"]
-    end
-
-    Hub -->|"Requêtes HTTP"| API
-    API --> Engine
-    Engine --> Lessons
-
-    class Login,Intro,Found,Hub,Sidebar,Chat,Visu,Inter,Celeb front;
-    class API,Engine back;
-    class Lessons data;
+graph LR
+    C1["Concept 1<br/>&lt;form&gt;"] --> C2["Concept 2<br/>&lt;input&gt;"]
+    C2 --> C3["Concept 3<br/>type="]
+    C3 --> C4["Concept 4<br/>&lt;label&gt;"]
+    C4 --> C5["Concept 5<br/>&lt;button&gt;"]
+    C5 --> MP["MiniProjectPage"]
 ```
 
-### 4.2. La machine à états conversationnelle
-Le moteur de conversation (`chatbot_engine.py`) fonctionne comme un **automate fini** qui guide l'élève à travers les étapes :
+#### Concept 1 — `<form>` : Le conteneur
+
+**Analogie :** Le plateau de restaurant
+- Le plateau = `<form>` (regroupe tout d'un coup)
+- Les plats = les `<input>` (chaque info)
+- "C'est bon !" = le bouton submit
+- La cuisine = le serveur informatique
+
+**Mécanique pédagogique :**
+- Lignes de code cliquables avec annotations apparaissant au survol (`action=`, `method=`)
+- Bouton "Visualiser l'analogie en image" → image `/images/image analogie form .jpeg`
+- Au clic : le bot déclenche un **dialogue en cascade** (machine à états, `analogyDialogRef`)
+- L'élève répond "oui" → 4 messages progressifs espacés (1,6 s entre chaque)
+- L'élève répond "non" après la cascade → analogie alternative (panier de supermarché)
+- Validation : "oui" → **+15 XP** + notification flottante + message de félicitation
+- Défi verrouillé jusqu'à exploration du code → débloqué → QCM → validation → Concept 2
+
+#### Concept 2 — `<input>` : Le champ de saisie
+
+**Analogie :** Les lignes pointillées d'une enveloppe postale
+- L'enveloppe = `<form>` (toujours autour)
+- Les lignes pointillées = les `<input>` (on y écrit une info précise)
+- Chaque ligne a un rôle : `type="email"` vérifie le @, `type="password"` cache les caractères
+- Règle d'or : on écrit *sur* l'enveloppe → `<input>` *dans* `<form>`, toujours
+
+**Mécanique pédagogique :**
+- **Éditeur temps réel** : l'élève tape `<input>` dans la zone de code → le champ apparaît dans le rendu en direct
+- 3 étapes guidées par le bot : apparition → disparition → réapparition (effet "wow / pouf")
+- Bouton "Visualiser l'analogie en image" → image `/images/image analogie 2.jpeg`
+- Dialogue bot en machine à états (`inputAnalogyDialogRef`) identique au Concept 1
+- Analogie alternative (non) : feuille d'examen à rendre au prof
+- Attributs cliquables après exploration : `type`, `name`, `placeholder`, `required` → mode pratique par attribut
+
+#### Concept 3 — `type=` : Chaque champ a son rôle
+
+**Analogie :** Les ustensiles de cuisine
+- Une fourchette pour les pâtes, une louche pour la soupe — jamais l'inverse
+- `type="text"` → cuillère polyvalente
+- `type="email"` → tamis (filtre et vérifie le @)
+- `type="password"` → boîte hermétique (cache le contenu)
+- `type="number"` → balance de cuisine (chiffres uniquement)
+
+**Mécanique pédagogique :**
+- Onglets de type (`text`, `password`, `email`, `number`) avec prévisualisation live
+- Bouton "Pratiquer" apparaît après exploration de chaque type
+- Bouton "Visualiser l'analogie en image" → image `/images/image analogie 3.jpeg`
+- Dialogue bot (`typeAnalogyDialogRef`) avec cascade de 4 messages + analogie transports en fallback
+- **+15 XP** à la compréhension validée
+
+#### Concept 4 — `<label>` : L'étiquette du champ
+
+**Mécanique :** Clic sur le label dans le rendu → le curseur saute dans le champ lié (comportement natif du navigateur révélé comme magie). QCM + défi pratique.
+
+#### Concept 5 — `<button>` : Le déclencheur
+
+**Mécanique :** Choix du `type` (`submit`, `button`, `reset`) avec explication des conséquences. QCM final → déverrouille l'accès à `MiniProjectPage`.
+
+**Système transversal — Chatbot `FoundationsPage` :**
+
+| Fonctionnalité | Détail |
+| :--- | :--- |
+| **Local-first** | `LOCAL_REPLIES` : 12+ réponses pré-écrites (GET vs POST, action=, required…) |
+| **Chips de question** | Boutons de question rapide contextuels par concept (ex: "GET vs POST ?") |
+| **Questions folles** | 5 questions ouvertes aléatoires pour stimuler la réflexion critique |
+| **Deep Thinking** | Mode activable pour signaler une question complexe (simulé, prêt pour connexion LLM) |
+| **Fallback API** | Si aucune réponse locale → `POST /api/chat` vers le backend Python |
+| **XP système** | +15 XP par analogie validée, notification flottante animée |
+| **Célébration** | Animation de célébration à la fin des 5 concepts |
+
+---
+
+### Phase 3 — CRÉER (`MiniProjectPage`)
+
+**Objectif pédagogique :** Mobiliser toutes les connaissances acquises dans une production personnelle concrète et exportable.
+
+**Fonctionnalités :**
+- **Éditeur de code HTML** en temps réel avec rendu dans un iframe
+- **Chatbot d'analyse** : après chaque balise ajoutée, le bot interpelle l'élève pour analyser son code ("tu veux qu'on analyse ce que tu viens d'écrire ?")
+- **Mode jour/nuit** : toggle avec `FiSun` / `FiMoon` — couleurs de l'interface adaptées conditionnellement (inline styles pour surclasser les classes CSS)
+- **Export PDF** : `html2pdf.js` — génère un PDF du rendu directement côté client, sans serveur
+- **Bouton "Approfondir mes connaissances"** avec icône `FiArrowRight` → redirection vers `HubPage`
+
+**Valeur pédagogique :** L'élève repart avec une production tangible (le PDF) — preuve de ce qu'il a construit. Cela ancre l'apprentissage et crée de la fierté.
+
+---
+
+### Phase 4 — EXPLORER EN PROFONDEUR (`HubPage`)
+
+**Objectif pédagogique :** Offrir un espace de pratique libre et approfondie pour les élèves qui veulent aller plus loin.
+
+**Fonctionnalités :**
+- Menu rubriques latéral (`TopicsSidebar`) : 5 rubriques thématiques
+- Panel de chat connecté au backend Python (`ChatPanel`)
+- Visualisations SVG par rubrique (`TopicVisualizations`)
+- Preview interactive (`InteractivePreview`) : manipulation de vrais éléments HTML sans écrire de code
+- Animation de célébration finale (`Celebration`) quand toutes les rubriques sont complétées
+
+---
+
+## 5. Mécaniques Pédagogiques Transversales
+
+### 5.1. Le dialogue par analogie en cascade — pattern central
+
+C'est la mécanique la plus importante de `FoundationsPage`. Elle transforme une image statique en dialogue pédagogique actif.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> IDLE
-    IDLE --> VISUALIZE : Sélection d'une rubrique
-    VISUALIZE --> QUIZ : "Prêt pour le quiz"
-    VISUALIZE --> VISUALIZE : "J'ai pas compris" (analogie)
-    QUIZ --> CHALLENGE : Bonne réponse
-    QUIZ --> QUIZ : Mauvaise réponse (réessayer)
-    QUIZ --> QUIZ : "J'ai pas compris" (analogie)
-    CHALLENGE --> IDLE : Code HTML validé
-    CHALLENGE --> CHALLENGE : Code HTML incomplet
-    IDLE --> FINAL : Toutes rubriques validées
-    FINAL --> IDLE : Défi Final réussi
+    [*] --> IDLE : état 0
+    IDLE --> DEMANDE : Élève clique "Visualiser l'analogie"
+    DEMANDE --> EXPLIQUE : Élève tape "oui"
+    DEMANDE --> IDLE : Élève tape "non"
+    EXPLIQUE --> COMPREND : 4 messages bot en cascade (1,6s entre chaque)
+    COMPREND --> VALIDE : Élève tape "oui"
+    COMPREND --> ALT : Élève tape "non"
+    ALT --> COMPREND : Analogie alternative envoyée
+    VALIDE --> DONE : +15 XP + félicitation
 ```
 
-### 4.3. Contenu pédagogique structuré (lessons_data.py)
-Chaque leçon est un objet structuré contenant 5 champs pédagogiques :
+**Implémentation :** `useRef` (pas `useState`) pour stocker l'état du dialogue — évite les re-renders inutiles et les stale closures dans `useCallback`.
 
-| Champ | Rôle pédagogique |
+### 5.2. Catalogue des analogies utilisées
+
+| Concept HTML | Analogie principale | Analogie de secours |
+| :--- | :--- | :--- |
+| `<form>` | Plateau de restaurant | Panier de supermarché |
+| `<input>` | Lignes pointillées d'une enveloppe | Feuille d'examen à rendre au prof |
+| `type=` | Ustensiles de cuisine (fourchette, louche…) | Transports en ville (vélo, GPS, coffre blindé) |
+| `<label>` | Étiquette d'un casier scolaire | — |
+| `<button>` | Bouton "Remettre sa copie" | — |
+
+### 5.3. Système de gamification
+
+| Mécanique | Implémentation |
 | :--- | :--- |
-| `explanation` | Contenu théorique avec exemples de code |
-| `analogy` | Explication alternative par analogie (pour les « j'ai pas compris ») |
-| `quiz` | Question à choix multiple avec réponse correcte et explication |
-| `challenge` | Défi créatif contextuel (scénario réaliste du lycée) |
-| `icon` / `title` | Repères visuels pour la navigation |
+| **XP flottant** | `+15 XP` animé avec `setXpNotif`, disparaît après 1,8 s |
+| **Navigation dots** | 5 pastilles de progression cliquables (locked / active / done) |
+| **Défi verrouillé** | Le défi n'est visible qu'après exploration du code (composant `ChallengeSection`) |
+| **Concepts séquentiels** | Chaque concept doit être validé pour débloquer le suivant |
+| **Célébration finale** | Animation de confettis après le 5e concept validé |
+| **Export PDF** | Production tangible exportable depuis `MiniProjectPage` |
 
-Les 5 rubriques couvrent :
-1. 📝 Zones de saisie (`text`, `password`, `textarea`)
-2. ☑️ Cases à cocher (`checkbox`)
-3. 🔘 Boutons radio (`radio`)
-4. 📋 Listes déroulantes (`select`, `option`)
-5. 🔲 Boutons cliquables (`submit`, `reset`)
+### 5.4. Le mode voix
 
----
+L'élève peut activer un mode voix sur `IntroPage` : toutes les réponses du bot sont lues par le navigateur via `window.speechSynthesis`. Un bouton stop permet d'interrompre à tout moment. Implémenté avec `useRef` (`voiceModeRef`) pour éviter les stale closures dans les callbacks asynchrones.
 
-## 5. Stratégies Pédagogiques Clés
+### 5.5. Feedback adaptatif
 
-### 5.1. L'apprentissage par analogie
-Chaque concept technique est d'abord présenté via une analogie tirée de la vie quotidienne de l'adolescent :
+Le chatbot ne répond jamais de manière identique à deux situations différentes :
 
-| Concept HTML | Analogie utilisée |
+| Situation | Réponse du bot |
 | :--- | :--- |
-| `<input type="text">` | Une ligne de cahier (on y écrit quelque chose de court) |
-| `<textarea>` | Une page entière de cahier (pour un long texte) |
-| `<input type="password">` | Écrire avec de l'encre invisible |
-| `checkbox` | Une liste de courses (on coche ce qu'on veut) |
-| `radio` | Les boutons d'un ancien poste radio (un seul à la fois) |
-| `select` | Un menu de restaurant (on ouvre, on choisit, on referme) |
-| `submit` / `reset` | Remettre sa copie d'examen / Effacer tout et recommencer |
-
-### 5.2. Le feedback adaptatif
-Le chatbot ne se contente pas de dire « Bonne réponse » ou « Mauvaise réponse ». Il adapte sa réponse :
-*   **Bonne réponse** → Explication du « pourquoi c'est correct » + transition vers le défi créatif.
-*   **Mauvaise réponse** → Encouragement + indice + rappel de la question + suggestion de dire « j'ai pas compris ».
-*   **Confusion détectée** → Bascule automatique vers une explication par analogie.
-*   **Code HTML incomplet** → Liste visuelle des balises trouvées (✅) et manquantes (❌).
-
-### 5.3. La gamification
-Plusieurs mécaniques de jeu sont intégrées pour maintenir la motivation :
-*   **Barre de progression** visible en haut de page, qui avance à chaque rubrique validée.
-*   **Système de validation par rubrique** : chaque rubrique affiche un check vert une fois complétée.
-*   **Défi Final débloquable** : crée un objectif et une récompense à atteindre.
-*   **Animation de célébration** (`Celebration.jsx`) avec effets visuels à la fin du parcours.
-*   **Avatar animé** (`TeacherAvatar.jsx`) qui réagit en temps réel (idle, thinking, speaking).
-
-### 5.4. L'accessibilité et l'engagement visuel
-*   Interface aux couleurs vibrantes, adaptée aux goûts d'un public adolescent (gradients, glassmorphism, animations fluides via Framer Motion).
-*   Animations Lottie pour humaniser le robot (hello-robot, coding-animation).
-*   Micro-animations sur les boutons (hover, tap) pour renforcer l'interactivité.
-*   Particules de fond animées pour dynamiser les pages.
+| Élève dit "oui" après l'explication | Félicitations + XP + suite du parcours |
+| Élève dit "non" après l'explication | Analogie alternative (jamais la même) |
+| Élève dit "j'ai pas compris" | Demande de précision ("sur quel point tu bloques ?") |
+| Élève pose une question connue | Réponse locale immédiate depuis `LOCAL_REPLIES` |
+| Question inconnue | Fallback API Python |
+| Deep Thinking activé | Message spécifique + simulation de réflexion profonde |
 
 ---
 
@@ -252,40 +321,43 @@ graph TD
     classDef action fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
     classDef decision fill:#fff9c4,stroke:#f9a825,stroke-width:2px;
     classDef success fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px;
+    classDef xp fill:#fce4ec,stroke:#c62828,stroke-width:2px;
 
-    Start["L'élève entre son nom et sa classe"] --> Intro["Page Introduction"]
-    Intro --> Q1{"Comprend la définition ?"}
-    Q1 -->|"Oui"| Found["Page Fondations"]
-    Q1 -->|"Non"| Simple["Explication simplifiée + Analogie"]
-    Simple --> Found
-    Found --> Hub["Hub d'apprentissage"]
-    Hub --> Select["Sélection d'une rubrique"]
-    Select --> Explain["Explication + Code"]
-    Explain --> SVG["Visualisation SVG"]
-    SVG --> Preview["Manipulation interactive"]
-    Preview --> Quiz{"Quiz (A/B/C)"}
-    Quiz -->|"Correct"| Challenge["Défi créatif HTML"]
-    Quiz -->|"Incorrect"| Retry["Réessayer + Analogie"]
-    Retry --> Quiz
-    Challenge --> Check{"Code vérifié ?"}
-    Check -->|"Complet"| Valid["Rubrique validée ✅"]
-    Check -->|"Incomplet"| Fix["Compléter le code"]
-    Fix --> Check
-    Valid --> AllDone{"5/5 rubriques ?"}
-    AllDone -->|"Non"| Select
-    AllDone -->|"Oui"| Final["Défi Final"]
-    Final --> Victory["Célébration 🎉"]
+    Start["Connexion — nom + classe"] --> Intro["IntroPage<br/>Choc cognitif + formulaire interactif"]
+    Intro --> Q1{"Clique sur une ligne du tableau ?"}
+    Q1 -->|"Oui"| Explain1["Bot explique la balise HTML correspondante"]
+    Q1 -->|"Non"| Found
+    Explain1 --> Found["FoundationsPage — Concept 1 &lt;form&gt;"]
+    Found --> Analogy1["Clique sur Visualiser l'analogie ?"]
+    Analogy1 -->|"Oui (bot)"| Cascade1["Cascade 4 messages restaurant"]
+    Cascade1 --> Q2{"Compris ?"}
+    Q2 -->|"Oui"| XP1["+15 XP"]
+    Q2 -->|"Non"| Alt1["Analogie supermarché"]
+    XP1 --> Challenge1["Défi Concept 1"]
+    Challenge1 --> C2["Concept 2 &lt;input&gt;"]
+    C2 --> C3["Concept 3 type="]
+    C3 --> C4["Concept 4 &lt;label&gt;"]
+    C4 --> C5["Concept 5 &lt;button&gt;"]
+    C5 --> Celeb["Célébration 5/5"]
+    Celeb --> Mini["MiniProjectPage<br/>Éditeur temps réel"]
+    Mini --> PDF["Export PDF"]
+    Mini --> Hub["HubPage — approfondissement"]
 
-    class Start,Intro,Found,Hub,Select,Explain,SVG,Preview action;
-    class Q1,Quiz,Check,AllDone decision;
-    class Valid,Victory success;
+    class Start,Intro,Found,C2,C3,C4,C5,Mini action;
+    class Q1,Q2 decision;
+    class XP1,Celeb,PDF success;
 ```
 
 ---
 
-## 7. Perspectives d'Amélioration
+## 7. Ce qui Reste à Construire
 
-1.  **Tracking de la performance** : Intégrer un système de stockage des résultats (temps passé par rubrique, nombre de tentatives au quiz, erreurs fréquentes) pour identifier les points de blocage pédagogique.
-2.  **Adaptation du niveau de difficulté** : Proposer des quiz de difficulté croissante en fonction de la performance (si l'élève réussit du premier coup, proposer une question bonus plus complexe).
-3.  **Mode collaboratif** : Permettre à deux élèves de travailler ensemble sur le Défi Final, favorisant l'apprentissage par les pairs (pédagogie de Vygotsky).
-4.  **Tableau de bord enseignant** : Créer une interface pour le professeur permettant de suivre la progression de toute la classe en temps réel.
+| Fonctionnalité | Statut | Note |
+| :--- | :--- | :--- |
+| Dialogue analogie Concept 4 (`<label>`) | À faire | Même pattern que C1/C2/C3 |
+| Dialogue analogie Concept 5 (`<button>`) | À faire | Même pattern |
+| Connexion LLM réelle (Deep Thinking) | À faire | Infrastructure prête côté Flask |
+| Tracking de performance par élève | À faire | Identifier les points de blocage récurrents |
+| Tableau de bord enseignant | À faire | Suivi de progression de la classe |
+| Mode collaboratif | À faire | Pédagogie par les pairs (Vygotsky) |
+| Accessibilité (WCAG AA) | À faire | Contraste, navigation clavier, aria-labels |

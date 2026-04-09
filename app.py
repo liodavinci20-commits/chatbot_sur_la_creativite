@@ -75,9 +75,9 @@ def register():
     email = data.get("email", "").strip()
     password = data.get("password", "").strip()
 
-    # Validation
-    if not prenom or not nom or not classe or not etablissement:
-        return jsonify({"error": "Tous les champs d'identité sont requis"}), 400
+    # Validation (classe et établissement sont optionnels)
+    if not prenom or not nom:
+        return jsonify({"error": "Prénom et nom sont requis"}), 400
     if not email or "@" not in email:
         return jsonify({"error": "Email invalide"}), 400
     if not password or len(password) < 6:

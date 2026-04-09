@@ -1,11 +1,13 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
+import AdminBar from './components/AdminBar'
 import './index.css'
 
 // Lazy load des pages lourdes pour des transitions fluides
 const IntroPage = lazy(() => import('./pages/IntroPage'))
 const FoundationsPage = lazy(() => import('./pages/FoundationsPage'))
+const MiniProjectPage = lazy(() => import('./pages/MiniProjectPage'))
 const HubPage = lazy(() => import('./pages/HubPage'))
 
 // Écran de chargement pendant le lazy loading
@@ -62,6 +64,9 @@ function App() {
 
   return (
     <BrowserRouter>
+      {/* Barre Admin flottante — visible uniquement en mode développeur */}
+      {user?.isAdmin && <AdminBar onLogout={handleLogout} />}
+
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<LoginPage onLogin={setUser} />} />
@@ -72,6 +77,10 @@ function App() {
           <Route
             path="/foundations"
             element={user ? <FoundationsPage user={user} /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/mini-project"
+            element={user ? <MiniProjectPage user={user} /> : <Navigate to="/" replace />}
           />
           <Route
             path="/hub"

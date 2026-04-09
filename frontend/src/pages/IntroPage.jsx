@@ -2,6 +2,7 @@
 // Structured as a multi-phase interactive discovery experience
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FiVolume2, FiVolumeX, FiSquare } from 'react-icons/fi'
 import AppShell from '../components/AppShell'
 import ChatPanel2 from '../components/ChatPanel2'
 
@@ -142,16 +143,19 @@ function WhatsAppCard() {
 export default function IntroPage({ user }) {
     const navigate = useNavigate()
     const scrollRef = useRef(null)
+    const voiceModeRef = useRef(false)
 
     // ── State ──
     const [phase, setPhase] = useState(1)
-    const [selected, setSelected] = useState(new Set())
+    const [selected, setSelected] = useState(user?.isAdmin ? new Set([0, 1, 2]) : new Set())
     const [xp, setXp] = useState(0)
-    const [formDone, setFormDone] = useState(false)
-    const [mcqDone, setMcqDone] = useState(false)
-    const [defRevealed, setDefRevealed] = useState(false)
-    const [ctaVisible, setCtaVisible] = useState(false)
+    const [formDone, setFormDone] = useState(!!user?.isAdmin)
+    const [mcqDone, setMcqDone] = useState(!!user?.isAdmin)
+    const [defRevealed, setDefRevealed] = useState(!!user?.isAdmin)
+    const [ctaVisible, setCtaVisible] = useState(!!user?.isAdmin)
     const [activeTab, setActiveTab] = useState('mine')
+    const [voiceMode, setVoiceMode] = useState(false)
+    const [formReady, setFormReady] = useState(false)
 
     // Form fields
     const [fPrenom, setFPrenom] = useState('')
@@ -184,7 +188,7 @@ export default function IntroPage({ user }) {
         setTimeout(() => {
             setChatLoading(false)
             addChatMsg({ type: isSoc ? 'soc' : 'bot', html: text })
-            speakText(text)
+            if (voiceModeRef.current) speakText(text)
         }, 900)
     }, [addChatMsg])
 
@@ -199,13 +203,40 @@ export default function IntroPage({ user }) {
         addBotResponse(response || "Très bonne observation ! Continue d'explorer (^_^)", isFolle)
     }, [addChatMsg, addBotResponse])
 
+    // ── Voice toggle ──
+    const toggleVoice = () => {
+        const next = !voiceModeRef.current
+        voiceModeRef.current = next
+        setVoiceMode(next)
+        if (!next) window.speechSynthesis.cancel()
+    }
+    const stopVoice = () => window.speechSynthesis.cancel()
+
+    // ── Field click explanations ──
+    const handleFieldClick = (field) => {
+        const explanations = {
+            prenom:   `(^_^) Ton prénom — tu l'as tapé dans le premier champ ! En HTML c'est un <code>&lt;input type="text"&gt;</code>. Cette balise accepte n'importe quel texte. C'est la plus courante sur tout le web.`,
+            classe:   `Ta classe — encore un <code>&lt;input type="text"&gt;</code>. Même balise, contenu différent. Le formulaire reçoit juste du texte, il ne sait pas si c'est un prénom ou une classe !`,
+            niveau:   `Tu as choisi ton niveau avec un bouton rond. En HTML c'est un <code>&lt;input type="radio"&gt;</code>. Les boutons radio autorisent un seul choix parmi plusieurs — essaie : tu ne peux pas cocher deux niveaux à la fois.`,
+            interets: `Tes centres d'intérêts — les cases à cocher s'appellent <code>&lt;input type="checkbox"&gt;</code>. Contrairement aux radio, tu peux en cocher plusieurs. C'est pour ça que les deux existent !`,
+            dispo:    `Ta disponibilité vient d'une liste déroulante : c'est une balise <code>&lt;select&gt;</code> avec des <code>&lt;option&gt;</code> à l'intérieur. Pratique quand les choix sont connus à l'avance.`,
+            email:    `Ton email — c'est un <code>&lt;input type="email"&gt;</code>, un type spécial ! Il vérifie automatiquement le format et bloque si tu oublies le "@". C'est le navigateur qui fait ce contrôle, pas toi !`,
+        }
+        addBotResponse(explanations[field] || '(^_^) Bonne exploration !')
+    }
+
     // ── Phase Navigation ──
     const goPhase = (n) => {
         setPhase(n)
+        setFormReady(false)
         if (scrollRef.current) scrollRef.current.scrollTop = 0
         if (n === 2) {
-            addChatMsg({ type: 'system', text: 'Activité 2 — Situation de vie' })
-            addBotResponse("(^_^) Parfait ! Maintenant imagine-toi dans cette situation. Lis attentivement, puis remplis le formulaire comme si tu étais vraiment en train de t'inscrire au club.")
+            addChatMsg({ type: 'system', text: 'Activité 2 — Situation réelle' })
+            addBotResponse("(^_^) Bien joué ! Maintenant, je vais te mettre dans une vraie situation. Lis bien ce que je t'envoie...")
+            setTimeout(() => {
+                addBotResponse("C'est lundi matin. Tu arrives au lycée et tu vois une affiche : le Club Informatique ouvre ses inscriptions en ligne. Tu sors ton téléphone... et tu tombes sur quelque chose. Regarde.")
+                setTimeout(() => setFormReady(true), 1000)
+            }, 1800)
         }
     }
 
@@ -305,17 +336,61 @@ export default function IntroPage({ user }) {
                             <div className="disc-hero-phase-dot" />Phase 1 · Découvrir
                         </div>
                         <div className="disc-hero-xp">XP <span className="disc-hero-xp-n">{xp}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <button
+                                onClick={toggleVoice}
+                                title={voiceMode ? 'Désactiver la voix' : 'Activer la voix'}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '8px',
+                                    padding: '9px 18px', borderRadius: '24px',
+                                    border: voiceMode
+                                        ? '1.5px solid rgba(29,185,122,0.5)'
+                                        : '1.5px solid rgba(255,255,255,0.12)',
+                                    background: voiceMode
+                                        ? 'linear-gradient(135deg, rgba(29,185,122,0.18), rgba(14,165,196,0.12))'
+                                        : 'rgba(255,255,255,0.05)',
+                                    color: voiceMode ? '#1DB97A' : 'rgba(255,255,255,0.55)',
+                                    fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+                                    fontFamily: 'Outfit, sans-serif',
+                                    boxShadow: voiceMode ? '0 0 16px rgba(29,185,122,0.25)' : 'none',
+                                    transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                                    outline: 'none', whiteSpace: 'nowrap',
+                                }}
+                            >
+                                {voiceMode
+                                    ? <><FiVolume2 size={16} /> Voix activée</>
+                                    : <><FiVolumeX size={16} /> Activer la voix</>
+                                }
+                            </button>
+                            {voiceMode && (
+                                <button
+                                    onClick={stopVoice}
+                                    title="Arrêter la lecture en cours"
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '7px',
+                                        padding: '9px 16px', borderRadius: '24px',
+                                        border: '1.5px solid rgba(240,88,72,0.4)',
+                                        background: 'rgba(240,88,72,0.1)',
+                                        color: '#f05848',
+                                        fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+                                        fontFamily: 'Outfit, sans-serif',
+                                        transition: 'all 0.2s', outline: 'none',
+                                    }}
+                                >
+                                    <FiSquare size={14} /> Stop
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <div className="disc-hero-body">
                         <div className="disc-hero-txt">
-                            <div className="disc-hero-eyebrow">Bienvenue, {user?.name || 'toi'}</div>
+                            <div className="disc-hero-eyebrow">(^_^) Salut {user?.name || 'toi'} — content de te voir !</div>
                             <div className="disc-hero-title">
-                                Tu interagis avec eux des dizaines de fois par jour.<br />
-                                Sans eux, Internet serait<br />
-                                <span className="disc-g1t">totalement muet.</span>
+                                Tu l'utilises déjà.<br />
+                                <span className="disc-g1t">Sans le savoir.</span>
                             </div>
                             <div className="disc-hero-sub">
-                                Aujourd'hui, on soulève le capot de tes apps préférées. <strong>4 activités. Aucun cours.</strong> Tu vas découvrir la mécanique invisible.
+                                TikTok, Instagram, WhatsApp... chaque fois que tu tapes, tu cliques, tu envoies — tu utilises la <strong>même technologie cachée</strong>. Aujourd'hui tu vas découvrir laquelle, et surtout : <strong>apprendre à la recréer toi-même.</strong>
                             </div>
                             {/* Progress dots */}
                             <div className="disc-hero-dots">
@@ -365,10 +440,21 @@ export default function IntroPage({ user }) {
                         {/* Reveal banner */}
                         {selected.size > 0 && (
                             <div className="disc-reveal-banner">
-                                <div className="disc-rb-face">!</div>
+                                <div className="disc-rb-face">
+                                    {selected.size === 3 ? '(!)' : '(^)'}
+                                </div>
                                 <div className="disc-rb-txt">
-                                    <span className="disc-rb-eyebrow">L'ILLUSION DE LA SIMPLICITÉ</span>
-                                    TikTok, Instagram et WhatsApp affichent des designs très différents... mais la mécanique invisible est strictement identique. <strong>Tu viens de manipuler des Formulaires HTML.</strong> C'est l'outil universel pour parler au web, et tu vas apprendre à le construire !
+                                    {selected.size < 3 ? (
+                                        <>
+                                            <span className="disc-rb-eyebrow">BONNE PIOCHE !</span>
+                                            Tu as reconnu {selected.size} interface{selected.size > 1 ? 's' : ''}. Regarde bien les zones vertes — tu vois ce qu'elles ont en commun ? Coche les autres pour découvrir le secret complet.
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="disc-rb-eyebrow">(!) SECRET DEBLOQUE</span>
+                                            3 apps, 3 styles complètement différents... <strong>mais une seule et même technologie sous le capot.</strong> Ces champs que tu remplis chaque jour ? C'est du HTML. Et aujourd'hui, tu vas apprendre à les construire toi-même.
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -388,12 +474,14 @@ export default function IntroPage({ user }) {
                 {/* ═══ PHASE 2 — Form + MCQ + Definition ═══ */}
                 {phase === 2 && (
                     <div className="disc-phase">
-                        <div className="disc-situation-intro">
-                            <strong>C'est lundi matin.</strong> Tu arrives au lycée et tu aperçois une affiche sur le panneau d'information : le Club Informatique ouvre les inscriptions en ligne. Tu sors ton téléphone, tu ouvres le lien... et tu tombes sur ça.
-                        </div>
+                        {!formReady && (
+                            <div className="disc-situation-intro" style={{ textAlign: 'center', opacity: 0.7 }}>
+                                (^_^) Le bot prépare la situation...
+                            </div>
+                        )}
 
-                        {/* Browser mockup */}
-                        <div className="disc-browser-wrap">
+                        {/* Browser mockup — apparaît après que le bot ait posé le décor */}
+                        {formReady && (<div className="disc-browser-wrap">
                             <div className="disc-browser-bar">
                                 <div className="disc-b-dots">
                                     <div className="disc-b-dot" style={{ background: '#ff6058' }} />
@@ -462,7 +550,7 @@ export default function IntroPage({ user }) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>)}
 
                         {/* MCQ Zone */}
                         {formSubmitted && (
@@ -525,15 +613,28 @@ export default function IntroPage({ user }) {
                                                     </div>
                                                 </div>
                                                 <div className="disc-dc-rows">
-                                                    <div className="disc-dc-row"><span className="disc-dc-key">Classe</span><span className="disc-dc-val">{fClasse || '—'}</span></div>
-                                                    <div className="disc-dc-row"><span className="disc-dc-key">Niveau</span><span className="disc-dc-val disc-g1t">{fNiveau || '—'}</span></div>
-                                                    <div className="disc-dc-row"><span className="disc-dc-key">Intérêts</span><span className="disc-dc-val" style={{ fontSize: '11px' }}>{fInterets.length > 0 ? fInterets.join(', ') : '—'}</span></div>
-                                                    <div className="disc-dc-row"><span className="disc-dc-key">Disponibilité</span><span className="disc-dc-val">{fDispo || '—'}</span></div>
-                                                    <div className="disc-dc-row"><span className="disc-dc-key">Email</span><span className="disc-dc-val" style={{ color: 'var(--teal-dark)' }}>{fEmail || '—'}</span></div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('prenom')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Prénom</span><span className="disc-dc-val">{fPrenom || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('classe')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Classe</span><span className="disc-dc-val">{fClasse || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('niveau')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Niveau</span><span className="disc-dc-val disc-g1t">{fNiveau || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('interets')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Intérêts</span><span className="disc-dc-val" style={{ fontSize: '11px' }}>{fInterets.length > 0 ? fInterets.join(', ') : '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('dispo')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Disponibilité</span><span className="disc-dc-val">{fDispo || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
+                                                    <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('email')} title="Clique pour en savoir plus">
+                                                        <span className="disc-dc-key">Email</span><span className="disc-dc-val" style={{ color: 'var(--teal-dark)' }}>{fEmail || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="disc-info-note teal">
-                                                <strong>(^_^) Voilà !</strong> Ces informations que tu as saisies viennent d'être "collectées" par le formulaire. Dans une vraie page, elles seraient envoyées à un serveur.
+                                                <strong>(^_^) Clique sur chaque ligne</strong> pour découvrir la balise HTML qui se cache derrière chaque information que tu as remplie !
                                             </div>
                                         </div>
                                     )}
