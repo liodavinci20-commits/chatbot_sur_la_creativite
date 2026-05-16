@@ -232,14 +232,14 @@ Il doit contenir :
 
 💡 **Bonus créativité** : Ajoute des champs ORIGINAUX auxquels personne n'a pensé ! (ex : photo de profil, email, date de naissance, couleur préférée...)
 
-Montre ta créativité et écris le code HTML complet ! 🚀
+Montre ta créativité et écris le code HTML complet ! ⚡
 """
 }
 
 WELCOME_MESSAGE = """
 ✨ **Bienvenue, {name} !** ✨
 
-Je suis **CodeBot** 🤖, ton assistant IA pour apprendre les formulaires HTML et booster ta créativité !
+Je suis **CodeBot** 💎, ton assistant IA pour apprendre les formulaires HTML et booster ta créativité !
 
 Voici comment ça marche :
 1. 📚 Choisis une **rubrique** dans le menu à gauche
@@ -292,7 +292,7 @@ GENERAL_KNOWLEDGE = {
 
     "envoi_formulaire": {
         "keywords": ["quand j'envoie", "se passe quoi derrière", "envoie un formulaire", "après envoi", "données vont où", "il se passe quoi", "derrière"],
-        "response": "Quand tu cliques sur \"Envoyer\", voici ce qui se passe **en coulisses** ! 🎬\n\n1. 📦 Le navigateur **emballe** toutes tes données (nom, email, etc.)\n2. 🚀 Il les **envoie** au serveur (l'ordinateur du site)\n3. 🧠 Le serveur **traite** les données (vérifie, enregistre...)\n4. 📬 Le serveur **répond** (page de confirmation, erreur...)\n\n📮 **Analogie** : C'est exactement comme envoyer une **lettre par la poste** !\n- Tu remplis la lettre (= tu remplis le formulaire)\n- Tu la mets dans la boîte aux lettres (= tu cliques Envoyer)\n- Le facteur la transporte (= Internet)\n- Le destinataire la lit et te répond (= le serveur traite et répond)\n\nTout ça se passe en quelques millisecondes ! ⚡"
+        "response": "Quand tu cliques sur \"Envoyer\", voici ce qui se passe **en coulisses** ! 🎬\n\n1. 📦 Le navigateur **emballe** toutes tes données (nom, email, etc.)\n2. ⚡ Il les **envoie** au serveur (l'ordinateur du site)\n3. 🧠 Le serveur **traite** les données (vérifie, enregistre...)\n4. 📬 Le serveur **répond** (page de confirmation, erreur...)\n\n📮 **Analogie** : C'est exactement comme envoyer une **lettre par la poste** !\n- Tu remplis la lettre (= tu remplis le formulaire)\n- Tu la mets dans la boîte aux lettres (= tu cliques Envoyer)\n- Le facteur la transporte (= Internet)\n- Le destinataire la lit et te répond (= le serveur traite et répond)\n\nTout ça se passe en quelques millisecondes ! ⚡"
     },
 
     "html_envoie_donnees": {

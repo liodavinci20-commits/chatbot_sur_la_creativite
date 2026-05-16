@@ -14,30 +14,30 @@ const ANALOGY_PARTS = [
   `<strong>1. Le plateau = la balise &lt;form&gt;</strong><br><br>Imagine que tu es au restaurant. Pour apporter ta commande complète à la cuisine d'un seul voyage, le serveur a besoin d'un <strong>plateau</strong>.<br>En HTML, ce plateau c'est <code>&lt;form&gt;</code> — il regroupe <em>toutes</em> tes informations ensemble avant de les envoyer.`,
   `<strong>2. Les plats = les champs &lt;input&gt;</strong><br><br>Chaque plat posé sur le plateau = une info demandée à l'utilisateur :<br>• Le burger → <code>type="text"</code> pour le nom<br>• Le gobelet → <code>type="email"</code> pour l'adresse<br>• La salade → <code>type="checkbox"</code> pour les options à cocher`,
   `<strong>3. Le bouton "Envoyer" = type="submit"</strong><br><br>Le serveur attend à côté de toi, plateau en main. Tant que tu n'as pas dit <em>"C'est bon !"</em>, il reste là.<br>Dès que tu cliques sur <strong>Envoyer</strong>, c'est le signal : <em>"La commande est prête, file à la cuisine !"</em>`,
-  `<strong>4. La cuisine = le serveur informatique</strong><br><br>La cuisine reçoit le plateau. Les chefs (les programmes) lisent chaque papier, traitent les données et enregistrent ta commande.<br><br>Sans <code>&lt;form&gt;</code>, les infos n'arriveraient jamais là-bas ! (^_^)<br><br>— Tap <strong>oui</strong> si c'est clair, ou <strong>non</strong> si tu veux une autre explication !`,
+  `<strong>4. La cuisine = le serveur informatique</strong><br><br>La cuisine reçoit le plateau. Les chefs (les programmes) lisent chaque papier, traitent les données et enregistrent ta commande.<br><br>Sans <code>&lt;form&gt;</code>, les infos n'arriveraient jamais là-bas ! 😊<br><br>— Tap <strong>oui</strong> si c'est clair, ou <strong>non</strong> si tu veux une autre explication !`,
 ]
 
-const ANALOGY_ALT = `Essayons avec un panier de supermarché ! (^_^)<br><br>• Le <strong>panier</strong> = <code>&lt;form&gt;</code> — il contient tout<br>• Les <strong>articles</strong> = les <code>&lt;input&gt;</code> — chaque article = une info<br>• La <strong>caisse</strong> = le bouton submit — c'est là qu'on valide tout<br>• Le <strong>magasinier</strong> derrière = le serveur qui reçoit et traite<br><br>L'idée clé : CONTENIR → REMPLIR → ENVOYER. (^_^)<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
+const ANALOGY_ALT = `Essayons avec un panier de supermarché ! 😊<br><br>• Le <strong>panier</strong> = <code>&lt;form&gt;</code> — il contient tout<br>• Les <strong>articles</strong> = les <code>&lt;input&gt;</code> — chaque article = une info<br>• La <strong>caisse</strong> = le bouton submit — c'est là qu'on valide tout<br>• Le <strong>magasinier</strong> derrière = le serveur qui reçoit et traite<br><br>L'idée clé : CONTENIR → REMPLIR → ENVOYER. 😊<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
 
 /* ── Analogie Enveloppe — Concept 2 ── */
 const ANALOGY_C2_PARTS = [
   `<strong>1. L'enveloppe et ses lignes pointillées</strong><br><br>Si <code>&lt;form&gt;</code> est une <strong>enveloppe postale</strong>, alors chaque <code>&lt;input&gt;</code> est une <strong>ligne pointillée</strong> à remplir.<br>Sans ces lignes, impossible d'écrire son nom, son adresse... L'enveloppe resterait vide et ne pourrait jamais être envoyée !`,
   `<strong>2. Chaque ligne a un rôle précis</strong><br><br>Sur une vraie enveloppe, certaines lignes sont réservées à un usage particulier :<br>• Ligne "Nom :" → <code>type="text"</code> (accepte n'importe quel texte)<br>• Ligne "Email :" → <code>type="email"</code> (vérifie qu'il y a un @)<br>• Ligne "Code secret :" → <code>type="password"</code> (cache les caractères tapés)<br><br>C'est l'attribut <strong>type=</strong> qui définit le rôle de chaque ligne.`,
   `<strong>3. Les attributs = les instructions imprimées sur la ligne</strong><br><br>Chaque ligne peut avoir des indications supplémentaires :<br>• <code>placeholder="Ton prénom..."</code> → le texte grisé qu'on voit avant d'écrire<br>• <code>name="prenom"</code> → l'étiquette que le facteur (serveur) lit pour trier le courrier<br>• <code>required</code> → "Cette ligne est obligatoire — on ne peut pas envoyer sans !"`,
-  `<strong>4. La règle d'or à retenir</strong><br><br>Les lignes sont <em>toujours imprimées sur l'enveloppe</em>, jamais en dehors. De la même façon, un <code>&lt;input&gt;</code> doit <em>toujours être à l'intérieur</em> d'un <code>&lt;form&gt;</code>.<br><br>Sans enveloppe autour, tes données remplies s'envolent dans le vent et n'arrivent jamais à destination ! (^_^)<br><br>— Tape <strong>oui</strong> si c'est clair, ou <strong>non</strong> pour une autre explication !`,
+  `<strong>4. La règle d'or à retenir</strong><br><br>Les lignes sont <em>toujours imprimées sur l'enveloppe</em>, jamais en dehors. De la même façon, un <code>&lt;input&gt;</code> doit <em>toujours être à l'intérieur</em> d'un <code>&lt;form&gt;</code>.<br><br>Sans enveloppe autour, tes données remplies s'envolent dans le vent et n'arrivent jamais à destination ! 😊<br><br>— Tape <strong>oui</strong> si c'est clair, ou <strong>non</strong> pour une autre explication !`,
 ]
 
-const ANALOGY_C2_ALT = `Essayons avec une feuille d'examen ! (^_^)<br><br>Imagine une feuille que tu remplis en classe :<br>• La <strong>feuille entière</strong> = <code>&lt;form&gt;</code> — elle regroupe tout<br>• Les <strong>cases à remplir</strong> = les <code>&lt;input&gt;</code> — chaque case = une info<br>• Le <strong>texte imprimé</strong> avant chaque case = le <code>placeholder</code><br>• Ton <strong>prénom en haut à droite</strong> = l'attribut <code>name="eleve"</code><br><br>Quand tu rends la feuille au prof, c'est comme cliquer sur <strong>Envoyer</strong> ! (^_^)<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
+const ANALOGY_C2_ALT = `Essayons avec une feuille d'examen ! 😊<br><br>Imagine une feuille que tu remplis en classe :<br>• La <strong>feuille entière</strong> = <code>&lt;form&gt;</code> — elle regroupe tout<br>• Les <strong>cases à remplir</strong> = les <code>&lt;input&gt;</code> — chaque case = une info<br>• Le <strong>texte imprimé</strong> avant chaque case = le <code>placeholder</code><br>• Ton <strong>prénom en haut à droite</strong> = l'attribut <code>name="eleve"</code><br><br>Quand tu rends la feuille au prof, c'est comme cliquer sur <strong>Envoyer</strong> ! 😊<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
 
 /* ── Analogie Ustensiles — Concept 3 ── */
 const ANALOGY_C3_PARTS = [
   `<strong>1. La cuisine et ses ustensiles</strong><br><br>Imagine-toi dans une cuisine équipée. Tu n'utilises pas une fourchette pour faire de la soupe, ni une louche pour manger des pâtes !<br>C'est exactement le rôle de l'attribut <code>type=</code> — il donne à chaque <code>&lt;input&gt;</code> l'<strong>outil adapté à la situation</strong>.`,
   `<strong>2. Chaque type = un ustensile différent</strong><br><br>• <code>type="text"</code> → La <strong>cuillère polyvalente</strong> — accepte n'importe quoi<br>• <code>type="email"</code> → Le <strong>tamis</strong> — filtre et vérifie qu'il y a un @<br>• <code>type="password"</code> → La <strong>boîte hermétique</strong> — cache ce qu'il y a dedans<br>• <code>type="number"</code> → La <strong>balance de cuisine</strong> — n'accepte que des chiffres`,
-  `<strong>3. Le navigateur fait le travail à ta place</strong><br><br>Le grand avantage ? C'est le navigateur qui s'occupe de <strong>tout valider automatiquement</strong>.<br><br>Si tu mets <code>type="email"</code> et que l'utilisateur tape "bonjour" sans @, le formulaire bloque tout seul — sans une seule ligne de JavaScript ! (^_^)`,
-  `<strong>4. La règle d'or</strong><br><br>Toujours choisir le type le plus <em>précis</em> possible :<br>• Un champ date ? → <code>type="date"</code> (le navigateur ouvre un calendrier !)<br>• Un mot de passe ? → <code>type="password"</code> (les caractères sont masqués)<br>• Une couleur ? → <code>type="color"</code> (un sélecteur graphique apparaît !)<br><br>Plus ton type est précis, moins tu as besoin d'écrire de code. (^_^)<br><br>— Tape <strong>oui</strong> si c'est clair, ou <strong>non</strong> pour une autre explication !`,
+  `<strong>3. Le navigateur fait le travail à ta place</strong><br><br>Le grand avantage ? C'est le navigateur qui s'occupe de <strong>tout valider automatiquement</strong>.<br><br>Si tu mets <code>type="email"</code> et que l'utilisateur tape "bonjour" sans @, le formulaire bloque tout seul — sans une seule ligne de JavaScript ! 😊`,
+  `<strong>4. La règle d'or</strong><br><br>Toujours choisir le type le plus <em>précis</em> possible :<br>• Un champ date ? → <code>type="date"</code> (le navigateur ouvre un calendrier !)<br>• Un mot de passe ? → <code>type="password"</code> (les caractères sont masqués)<br>• Une couleur ? → <code>type="color"</code> (un sélecteur graphique apparaît !)<br><br>Plus ton type est précis, moins tu as besoin d'écrire de code. 😊<br><br>— Tape <strong>oui</strong> si c'est clair, ou <strong>non</strong> pour une autre explication !`,
 ]
 
-const ANALOGY_C3_ALT = `Essayons avec les transports ! (^_^)<br><br>Imagine que tu dois te déplacer en ville :<br>• <code>type="text"</code> → Les <strong>pieds</strong> — ça marche partout, mais c'est basique<br>• <code>type="email"</code> → Le <strong>vélo</strong> — rapide et efficace, mais seulement sur les bonnes routes (avec un @)<br>• <code>type="password"</code> → Le <strong>coffre blindé</strong> — personne ne voit ce qu'il y a dedans<br>• <code>type="date"</code> → Le <strong>GPS</strong> — il affiche directement un calendrier pour choisir<br><br>L'idée clé : le bon <code>type=</code> = le bon outil = moins de travail pour toi ! (^_^)<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
+const ANALOGY_C3_ALT = `Essayons avec les transports ! 😊<br><br>Imagine que tu dois te déplacer en ville :<br>• <code>type="text"</code> → Les <strong>pieds</strong> — ça marche partout, mais c'est basique<br>• <code>type="email"</code> → Le <strong>vélo</strong> — rapide et efficace, mais seulement sur les bonnes routes (avec un @)<br>• <code>type="password"</code> → Le <strong>coffre blindé</strong> — personne ne voit ce qu'il y a dedans<br>• <code>type="date"</code> → Le <strong>GPS</strong> — il affiche directement un calendrier pour choisir<br><br>L'idée clé : le bon <code>type=</code> = le bon outil = moins de travail pour toi ! 😊<br><br>— C'est plus clair maintenant ? Tape <strong>oui</strong> ou <strong>non</strong> !`
 
 const LOCAL_REPLIES = {
   "j'ai pas compris":     "Aucun souci ! Sur quel point tu bloques exactement ? Dis-moi et j'adapte l'explication.",
@@ -58,11 +58,11 @@ const LOCAL_REPLIES = {
 }
 
 const WILD_QUESTIONS = [
-  "Et si <strong>&lt;form&gt;</strong> n'existait pas — comment tu enverrais tes données ? (~_~)",
-  "Pourquoi le <strong>name=</strong> est-il obligatoire côté serveur ? Que se passe-t-il si deux inputs partagent le même name ? (o_O)",
-  "Si tu devais expliquer <strong>&lt;input&gt;</strong> à un enfant de 6 ans sans aucun mot technique — tu dirais quoi ? (*_*)",
-  "Pourquoi <strong>type='password'</strong> masque les caractères ? Qui est protégé — l'utilisateur ou le serveur ? (-_-)",
-  "Imagine le formulaire d'inscription de ton lycée — quelles balises HTML utiliserais-tu exactement ? (~_~)",
+  "Et si <strong>&lt;form&gt;</strong> n'existait pas — comment tu enverrais tes données ? ",
+  "Pourquoi le <strong>name=</strong> est-il obligatoire côté serveur ? Que se passe-t-il si deux inputs partagent le même name ? 🤔",
+  "Si tu devais expliquer <strong>&lt;input&gt;</strong> à un enfant de 6 ans sans aucun mot technique — tu dirais quoi ? ✨",
+  "Pourquoi <strong>type='password'</strong> masque les caractères ? Qui est protégé — l'utilisateur ou le serveur ? 😅",
+  "Imagine le formulaire d'inscription de ton lycée — quelles balises HTML utiliserais-tu exactement ? ",
 ]
 
 const CHIPS_PER_CONCEPT = {
@@ -71,31 +71,31 @@ const CHIPS_PER_CONCEPT = {
     { label: "GET vs POST ?",         msg: "get vs post" },
     { label: "Analogie [~]",          msg: "analogie" },
     { label: "J'ai pas compris",      msg: "j'ai pas compris" },
-    { label: "~_~ Question folle",    msg: "question folle", wild: true },
+    { label: "Question surprise",    msg: "question folle", wild: true },
   ],
   2: [
     { label: "C'est quoi name= ?",    msg: "c'est quoi name" },
     { label: "required sans valeur ?",msg: "required sans valeur" },
     { label: "J'ai pas compris",      msg: "j'ai pas compris" },
-    { label: "~_~ Question folle",    msg: "question folle", wild: true },
+    { label: "Question surprise",    msg: "question folle", wild: true },
   ],
   3: [
     { label: "Quand utiliser email ?",msg: "quand utiliser email" },
     { label: "Autres types ?",        msg: "autres types input" },
     { label: "J'ai pas compris",      msg: "j'ai pas compris" },
-    { label: "~_~ Question folle",    msg: "question folle", wild: true },
+    { label: "Question surprise",    msg: "question folle", wild: true },
   ],
   4: [
     { label: "Pourquoi for= ?",       msg: "pourquoi for" },
     { label: "label sans for ?",      msg: "label sans for" },
     { label: "J'ai pas compris",      msg: "j'ai pas compris" },
-    { label: "~_~ Question folle",    msg: "question folle", wild: true },
+    { label: "Question surprise",    msg: "question folle", wild: true },
   ],
   5: [
     { label: "Bouton sans type ?",    msg: "bouton sans type" },
     { label: "input vs button ?",     msg: "input vs button" },
     { label: "J'ai pas compris",      msg: "j'ai pas compris" },
-    { label: "~_~ Question folle",    msg: "question folle", wild: true },
+    { label: "Question surprise",    msg: "question folle", wild: true },
   ],
 }
 
@@ -267,6 +267,476 @@ function McqOptions({ options, selectedIdx, onSelect }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   ANIMATION CONCEPT 2 — type= et placeholder=
+══════════════════════════════════════════════════════════════ */
+function InputAttrAnim() {
+  const TYPES = [
+    { val: 'text',     color: '#a855f7', content: () => <><span style={{color:'#555',fontFamily:'Outfit,sans-serif',fontSize:11}}>Texte libre…</span><motion.span animate={{opacity:[1,0,1]}} transition={{repeat:Infinity,duration:0.7}} style={{width:1.5,height:12,background:'#a855f7',display:'inline-block',marginLeft:2}}/></> },
+    { val: 'password', color: '#f43f5e', content: () => <span style={{fontSize:13,letterSpacing:4,color:'#f43f5e',fontWeight:700}}>••••••••</span> },
+    { val: 'email',    color: '#0ea5e9', content: () => <><span style={{color:'#bbb',fontFamily:'Outfit,sans-serif',fontSize:11,flex:1}}>email@…</span><span style={{fontSize:13,color:'#0ea5e9',fontWeight:700}}>@</span></> },
+  ]
+  const [typeIdx,     setTypeIdx]     = useState(0)
+  const [phClicked,   setPhClicked]   = useState(false)
+  const [showPh,      setShowPh]      = useState(false)
+
+  useEffect(() => {
+    const t = []
+    t.push(setTimeout(() => setTypeIdx(1), 1600))
+    t.push(setTimeout(() => setTypeIdx(2), 3200))
+    t.push(setTimeout(() => setShowPh(true),  4600))
+    t.push(setTimeout(() => setPhClicked(true), 5800))
+    return () => t.forEach(clearTimeout)
+  }, [])
+
+  const cur = TYPES[typeIdx]
+
+  return (
+    <motion.div initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{type:'spring',stiffness:120,damping:14}}
+      style={{maxWidth:310, margin:'0 auto', display:'flex', flexDirection:'column', gap:20}}
+    >
+      {/* ── Bloc type= ── */}
+      <div style={{background:'#000',borderRadius:12,padding:'16px',border:'1px solid rgba(255,255,255,0.10)'}}>
+        <div style={{fontSize:11,color:'rgba(255,255,255,0.45)',fontFamily:'Outfit,sans-serif',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:12,fontWeight:700}}>
+          Attribut <code style={{color:'#fff'}}>type=</code>
+        </div>
+
+        {/* Label qui change */}
+        <AnimatePresence mode="wait">
+          <motion.div key={cur.val}
+            initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} exit={{opacity:0, x:10}}
+            transition={{duration:0.3}}
+            style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}
+          >
+            <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:'rgba(255,255,255,0.5)'}}>type=</span>
+            <motion.span
+              initial={{scale:0.8}} animate={{scale:1}} transition={{type:'spring',stiffness:300}}
+              style={{fontFamily:"'JetBrains Mono',monospace",fontSize:13,color:cur.color,fontWeight:800,
+                background:`${cur.color}18`,padding:'2px 8px',borderRadius:6,border:`1px solid ${cur.color}40`}}
+            >
+              "{cur.val}"
+            </motion.span>
+            <motion.span animate={{opacity:[1,0.3,1]}} transition={{repeat:Infinity,duration:1.5}}
+              style={{fontSize:9,color:cur.color}}>●</motion.span>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Champ qui se transforme */}
+        <AnimatePresence mode="wait">
+          <motion.div key={cur.val}
+            initial={{scaleX:0.92,opacity:0}} animate={{scaleX:1,opacity:1}} exit={{scaleX:0.92,opacity:0}}
+            transition={{type:'spring',stiffness:260,damping:18}}
+            style={{border:`2px solid ${cur.color}`,borderRadius:7,padding:'8px 12px',background:'#fff',display:'flex',alignItems:'center',gap:4,
+              boxShadow:`0 0 14px ${cur.color}33`}}
+          >
+            {cur.content()}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Progression dots */}
+        <div style={{display:'flex',justifyContent:'center',gap:6,marginTop:12}}>
+          {TYPES.map((_,i) => (
+            <motion.div key={i} animate={{scale: i===typeIdx?1.3:1, opacity: i===typeIdx?1:0.3}}
+              style={{width:6,height:6,borderRadius:'50%',background: TYPES[i].color}} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Bloc placeholder= ── */}
+      <AnimatePresence>
+        {showPh && (
+          <motion.div key="ph"
+            initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{type:'spring',stiffness:160,damping:16}}
+            style={{background:'#000',borderRadius:12,padding:'16px',border:'1px solid rgba(255,255,255,0.10)'}}
+          >
+            <div style={{fontSize:11,color:'rgba(255,255,255,0.45)',fontFamily:'Outfit,sans-serif',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:12,fontWeight:700}}>
+              Attribut <code style={{color:'#fff'}}>placeholder=</code>
+            </div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:'rgba(255,255,255,0.5)',marginBottom:8}}>
+              placeholder= <span style={{color:'#1DB97A',fontWeight:700}}>"Ton prénom..."</span>
+            </div>
+            <div style={{border:'2px solid #1DB97A55',borderRadius:7,padding:'8px 12px',background:'#fff',display:'flex',alignItems:'center',minHeight:34,
+              boxShadow: phClicked ? '0 0 14px #1DB97A33' : 'none', transition:'box-shadow 0.3s'}}>
+              {!phClicked
+                ? <span style={{color:'#bbb',fontFamily:'Outfit,sans-serif',fontSize:11}}>Ton prénom...</span>
+                : <motion.span animate={{opacity:[1,0,1]}} transition={{repeat:Infinity,duration:0.7}}
+                    style={{width:1.5,height:12,background:'#1DB97A',display:'inline-block'}} />
+              }
+            </div>
+            <div style={{marginTop:8,fontSize:10,color:'rgba(255,255,255,0.3)',fontFamily:'Outfit,sans-serif',fontStyle:'italic',textAlign:'center'}}>
+              {phClicked ? '← clic simulé : le placeholder disparaît' : '← texte grisé visible avant la saisie'}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RECAP ANIMATION — résumé form + input
+══════════════════════════════════════════════════════════════ */
+function RecapFormAnim() {
+  const [act, setAct]           = useState(0)
+  const [typedText, setTypedText] = useState('')
+  const [phClicked, setPhClicked] = useState(false)
+  const NAME = 'Liodavinci'
+
+  useEffect(() => {
+    const t = []
+    t.push(setTimeout(() => setAct(1), 200))
+    t.push(setTimeout(() => setAct(2), 1000))
+    t.push(setTimeout(() => {
+      setAct(3)
+      let i = 0
+      const iv = setInterval(() => {
+        if (i < NAME.length) { i++; setTypedText(NAME.slice(0, i)) }
+        else clearInterval(iv)
+      }, 75)
+    }, 2400))
+    t.push(setTimeout(() => setAct(4), 4300))
+    t.push(setTimeout(() => setPhClicked(true), 5300))
+    t.push(setTimeout(() => setAct(5), 6300))
+    return () => t.forEach(clearTimeout)
+  }, [])
+
+  const glowGreen  = act >= 3 ? '0 0 14px #1DB97A55' : 'none'
+  const glowBlue   = act >= 4 ? '0 0 14px #0ea5c455' : 'none'
+
+  return (
+    <motion.div
+      initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }}
+      transition={{ type:'spring', stiffness:120, damping:14 }}
+      style={{ maxWidth:300, margin:'0 auto', fontFamily:"'JetBrains Mono',monospace" }}
+    >
+      {/* Act 1 — <form> naît */}
+      <AnimatePresence>
+        {act >= 1 && (
+          <motion.div key="form-wrap"
+            initial={{ scale:0.08, opacity:0 }}
+            animate={{ scale:1, opacity:1 }}
+            transition={{ type:'spring', stiffness:180, damping:16 }}
+          >
+            {/* Balise <form> */}
+            <div style={{ background:'linear-gradient(90deg,#1DB97A22,transparent)', border:'2px solid #1DB97A', borderBottom:'none', borderRadius:'14px 14px 0 0', padding:'9px 16px', fontSize:13, fontWeight:800, color:'#1DB97A', display:'flex', alignItems:'center', gap:8 }}>
+              <motion.span animate={{ opacity:[1,0.3,1] }} transition={{ repeat:Infinity, duration:2 }}
+                style={{ width:7, height:7, borderRadius:'50%', background:'#1DB97A', display:'inline-block' }} />
+              {'<form>'}
+            </div>
+
+            {/* Corps */}
+            <div style={{ border:'2px solid #1DB97A33', borderTop:'none', borderBottom: act>=5?'none':'2px solid #1DB97A33', background:'#08081a', padding:'12px', display:'flex', flexDirection:'column', gap:8, minHeight:110 }}>
+
+              {/* Input 1 — type="text" */}
+              <AnimatePresence>
+                {act >= 2 && (
+                  <motion.div key="inp1"
+                    initial={{ opacity:0, x:-28 }} animate={{ opacity:1, x:0 }}
+                    transition={{ delay:0, type:'spring', stiffness:220, damping:18 }}
+                  >
+                    <AnimatePresence>
+                      {act >= 3 && (
+                        <motion.div key="lbl1"
+                          initial={{ opacity:0, y:-6 }} animate={{ opacity:1, y:0 }}
+                          style={{ fontSize:9, color:'#1DB97A', marginBottom:3, display:'flex', alignItems:'center', gap:4 }}
+                        >
+                          <motion.span animate={{ scale:[1,1.4,1] }} transition={{ duration:0.4 }}
+                            style={{ color:'#FFD700' }}>✦</motion.span>
+                          type="text"
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <div style={{ border:`2px solid ${act>=3?'#1DB97A':'rgba(255,255,255,0.12)'}`, borderRadius:6, padding:'7px 10px', background: act>=3?'#fff':'#111', transition:'all 0.4s', boxShadow:glowGreen, display:'flex', alignItems:'center' }}>
+                      <span style={{ fontSize:11, color:'#222', fontFamily:'Outfit,sans-serif' }}>{typedText}</span>
+                      {act === 3 && (
+                        <motion.span animate={{ opacity:[1,0,1] }} transition={{ repeat:Infinity, duration:0.65 }}
+                          style={{ width:1.5, height:12, background:'#1DB97A', display:'inline-block', marginLeft:1 }} />
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Input 2 — placeholder */}
+              <AnimatePresence>
+                {act >= 2 && (
+                  <motion.div key="inp2"
+                    initial={{ opacity:0, x:-28 }} animate={{ opacity:1, x:0 }}
+                    transition={{ delay:0.45, type:'spring', stiffness:220, damping:18 }}
+                  >
+                    <AnimatePresence>
+                      {act >= 4 && (
+                        <motion.div key="lbl2"
+                          initial={{ opacity:0, y:-6 }} animate={{ opacity:1, y:0 }}
+                          style={{ fontSize:9, color:'#0ea5c4', marginBottom:3, display:'flex', alignItems:'center', gap:4 }}
+                        >
+                          <motion.span animate={{ scale:[1,1.4,1] }} transition={{ duration:0.4 }}
+                            style={{ color:'#FFD700' }}>✦</motion.span>
+                          placeholder="email@..."
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <div style={{ border:`2px solid ${act>=4?'#0ea5c4':'rgba(255,255,255,0.12)'}`, borderRadius:6, padding:'7px 10px', background: act>=4?'#fff':'#111', transition:'all 0.4s', boxShadow:glowBlue, minHeight:30, display:'flex', alignItems:'center' }}>
+                      {act >= 4 && !phClicked && (
+                        <span style={{ fontSize:11, color:'#bbb', fontFamily:'Outfit,sans-serif' }}>email@...</span>
+                      )}
+                      {phClicked && (
+                        <motion.span animate={{ opacity:[1,0,1] }} transition={{ repeat:Infinity, duration:0.65 }}
+                          style={{ width:1.5, height:12, background:'#0ea5c4', display:'inline-block' }} />
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Input 3 — submit */}
+              <AnimatePresence>
+                {act >= 2 && (
+                  <motion.div key="inp3"
+                    initial={{ opacity:0, x:-28 }} animate={{ opacity:1, x:0 }}
+                    transition={{ delay:0.9, type:'spring', stiffness:220, damping:18 }}
+                  >
+                    {act >= 5 ? (
+                      <motion.div
+                        initial={{ scale:0.9 }} animate={{ scale:1 }}
+                        transition={{ type:'spring', stiffness:300, damping:18 }}
+                        style={{ background:'linear-gradient(135deg,#1DB97A,#059669)', color:'#fff', borderRadius:6, padding:'8px', textAlign:'center', fontSize:11, fontFamily:'Outfit,sans-serif', fontWeight:800, boxShadow:'0 4px 14px #1DB97A55' }}
+                      >
+                        Envoyer
+                      </motion.div>
+                    ) : (
+                      <div style={{ border:'2px solid rgba(255,255,255,0.1)', borderRadius:6, padding:'7px 10px', background:'#111', minHeight:30 }} />
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Balise </form> — Act 5 */}
+            <AnimatePresence>
+              {act >= 5 && (
+                <motion.div key="closing"
+                  initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }}
+                  transition={{ type:'spring', stiffness:180 }}
+                >
+                  <motion.div
+                    animate={{ boxShadow:['0 0 0px #1DB97A00','0 0 28px #1DB97A88','0 0 0px #1DB97A00'] }}
+                    transition={{ duration:1.2, delay:0.3 }}
+                    style={{ background:'linear-gradient(90deg,transparent,#1DB97A22)', border:'2px solid #1DB97A', borderTop:'none', borderRadius:'0 0 14px 14px', padding:'9px 16px', fontSize:13, fontWeight:800, color:'#1DB97A', textAlign:'right' }}
+                  >
+                    {'</form>'}
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STREAMING — affichage caractère par caractère
+══════════════════════════════════════════════════════════════ */
+function StreamingHtmlMessage({ html, onDone }) {
+  const plain = (html || '').replace(/<[^>]*>/g, '')
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone]           = useState(false)
+  useEffect(() => {
+    setDisplayed(''); setDone(false)
+    let i = 0
+    const id = setInterval(() => {
+      if (i < plain.length) { i++; setDisplayed(plain.slice(0, i)) }
+      else { clearInterval(id); setDone(true); onDone?.() }
+    }, 22)
+    return () => clearInterval(id)
+  }, [html])
+  if (done) return <span dangerouslySetInnerHTML={{ __html: html }} />
+  return <span style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{displayed}<span className="typing-cursor" /></span>
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMATION 2 — <input> : carré → flèche → code
+══════════════════════════════════════════════════════════════ */
+function InputAnim2() {
+  const ROW_GAP = 0.78
+  const inputs = [
+    {
+      tag: 'input type="text"', color: '#a855f7',
+      visual: (c) => (
+        <div style={{ border:`2px solid ${c}`, borderRadius:6, padding:'6px 10px', background:'#faf5ff', display:'flex', alignItems:'center', gap:3, minWidth:90, boxShadow:`0 0 8px ${c}30` }}>
+          <span style={{ fontSize:9, color:'#888', fontFamily:'Outfit,sans-serif', flex:1 }}>Prénom...</span>
+          <motion.span animate={{ opacity:[1,0,1] }} transition={{ repeat:Infinity, duration:1 }}
+            style={{ width:1.5, height:11, background:c, display:'inline-block' }} />
+        </div>
+      ),
+    },
+    {
+      tag: 'input type="email"', color: '#0ea5e9',
+      visual: (c) => (
+        <div style={{ border:`2px solid ${c}`, borderRadius:6, padding:'6px 10px', background:'#f0f9ff', minWidth:90, boxShadow:`0 0 8px ${c}30` }}>
+          <span style={{ fontSize:9, color:'#888', fontFamily:'Outfit,sans-serif' }}>email@...</span>
+        </div>
+      ),
+    },
+    {
+      tag: 'input type="password"', color: '#f43f5e',
+      visual: (c) => (
+        <div style={{ border:`2px solid ${c}`, borderRadius:6, padding:'6px 10px', background:'#fff1f2', minWidth:90, boxShadow:`0 0 8px ${c}30` }}>
+          <span style={{ fontSize:11, color:c, letterSpacing:4, fontWeight:700 }}>••••••</span>
+        </div>
+      ),
+    },
+    {
+      tag: 'input type="submit"', color: '#10b981',
+      visual: (c) => (
+        <div style={{ background:`linear-gradient(135deg, ${c}, #059669)`, color:'#fff', borderRadius:6, padding:'6px 14px', fontSize:9, fontFamily:'Outfit,sans-serif', fontWeight:800, minWidth:90, textAlign:'center', boxShadow:`0 4px 12px ${c}50` }}>
+          Envoyer
+        </div>
+      ),
+    },
+  ]
+
+  const endDelay = 0.2 + inputs.length * ROW_GAP
+
+  return (
+    <motion.div
+      initial={{ opacity:0, y:20 }}
+      animate={{ opacity:1, y:0 }}
+      transition={{ type:'spring', stiffness:120, damping:14 }}
+      style={{ maxWidth:400, margin:'0 auto' }}
+    >
+      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        {inputs.map((el, i) => {
+          const base = 0.2 + i * ROW_GAP
+          return (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:8 }}>
+              {/* 1 — Carré visuel (apparaît EN PREMIER) */}
+              <motion.div
+                initial={{ opacity:0, scale:0.7 }}
+                animate={{ opacity:1, scale:1 }}
+                transition={{ delay:base, type:'spring', stiffness:280, damping:18 }}
+                style={{ flexShrink:0 }}
+              >
+                {el.visual(el.color)}
+              </motion.div>
+
+              {/* 2 — Flèche ← pointant vers le carré (depuis la droite) */}
+              <motion.div
+                initial={{ opacity:0, scaleX:0 }}
+                animate={{ opacity:1, scaleX:1 }}
+                transition={{ delay:base+0.3, duration:0.25, ease:'easeOut' }}
+                style={{ transformOrigin:'right', flexShrink:0 }}
+              >
+                <svg width="30" height="12" viewBox="0 0 30 12">
+                  <line x1="30" y1="6" x2="9" y2="6" stroke={el.color} strokeWidth="1.5" />
+                  <polygon points="9,2 0,6 9,10" fill={el.color} />
+                </svg>
+              </motion.div>
+
+              {/* 3 — Code tag (apparaît EN DERNIER) */}
+              <motion.div
+                initial={{ opacity:0, x:14 }}
+                animate={{ opacity:1, x:0 }}
+                transition={{ delay:base+0.52, type:'spring', stiffness:220, damping:18 }}
+                style={{ background:`${el.color}12`, border:`1.5px solid ${el.color}45`, borderRadius:7, padding:'6px 9px', flexShrink:0, display:'flex', alignItems:'center', gap:5 }}
+              >
+                <span style={{ width:5, height:5, borderRadius:'50%', background:el.color, display:'inline-block', flexShrink:0 }} />
+                <span style={{ fontSize:8.5, fontFamily:"'JetBrains Mono',monospace", color:el.color, fontWeight:700, whiteSpace:'nowrap' }}>
+                  {'<'}{el.tag}{'>'}
+                </span>
+              </motion.div>
+            </div>
+          )
+        })}
+      </div>
+
+      <motion.div
+        initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:endDelay }}
+        style={{ marginTop:14, textAlign:'center', padding:'9px 16px', borderRadius:9, background:'#000', border:'1px solid rgba(255,255,255,0.12)', fontSize:12, color:'#fff', fontFamily:'Outfit,sans-serif', fontWeight:600 }}
+      >
+        ⚡ Ce que tu vois à gauche — c'est ce que {'<input>'} crée dans le navigateur
+      </motion.div>
+    </motion.div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMATION 3D — <form> conteneur
+══════════════════════════════════════════════════════════════ */
+function FormBox3D() {
+  const inputs = [
+    { tag: 'input type="text"',     label: 'Prénom',       color: '#1DB97A' },
+    { tag: 'input type="email"',    label: 'Email',        color: '#0ea5c4' },
+    { tag: 'input type="password"', label: 'Mot de passe', color: '#7c6ff7' },
+    { tag: 'input type="submit"',   label: 'Envoyer',      color: '#fe2c55' },
+  ]
+  const containerVar = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.45, delayChildren: 0.7 } },
+  }
+  const itemVar = {
+    hidden: { opacity: 0, y: -28, scale: 0.8 },
+    show:   { opacity: 1, y: 0,   scale: 1, transition: { type: 'spring', stiffness: 220, damping: 16 } },
+  }
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24, rotateX: 14 }}
+      animate={{ opacity: 1, y: 0, rotateX: 0, rotateY: [0, 4, 0, -4, 0] }}
+      transition={{
+        opacity: { duration: 0.5 },
+        y: { type: 'spring', stiffness: 120, damping: 14 },
+        rotateX: { duration: 0.6 },
+        rotateY: { repeat: Infinity, duration: 7, ease: 'easeInOut', delay: 1 },
+      }}
+      style={{ transformPerspective: 900, maxWidth: 320, margin: '0 auto' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.15, type: 'spring', stiffness: 180 }}
+        style={{ background:'linear-gradient(90deg,#1DB97A22,transparent)', border:'2px solid #1DB97A', borderBottom:'none', borderRadius:'14px 14px 0 0', padding:'10px 18px', fontFamily:"'JetBrains Mono',monospace", fontSize:14, fontWeight:800, color:'#1DB97A', boxShadow:'0 0 20px #1DB97A30', display:'flex', alignItems:'center', gap:8 }}
+      >
+        <motion.span animate={{ opacity:[1,0.3,1] }} transition={{ repeat:Infinity, duration:2.2 }}
+          style={{ width:8, height:8, borderRadius:'50%', background:'#1DB97A', display:'inline-block', flexShrink:0 }} />
+        {'<form>'}
+      </motion.div>
+
+      <motion.div variants={containerVar} initial="hidden" animate="show"
+        style={{ border:'2px solid #1DB97A33', borderTop:'none', borderBottom:'none', background:'#08081a', padding:'14px 12px', display:'flex', flexDirection:'column', gap:8 }}
+      >
+        {inputs.map((el, i) => (
+          <motion.div key={i} variants={itemVar}
+            style={{ display:'flex', alignItems:'center', gap:10, background:`${el.color}12`, border:`1.5px solid ${el.color}40`, borderRadius:9, padding:'9px 13px' }}
+          >
+            <motion.div animate={{ scale:[1,1.3,1] }} transition={{ delay:0.7+i*0.45+0.35, duration:0.4 }}
+              style={{ width:8, height:8, borderRadius:'50%', background:el.color, flexShrink:0 }} />
+            <div>
+              <div style={{ fontSize:10, fontFamily:"'JetBrains Mono',monospace", color:el.color, fontWeight:700 }}>{'<'}{el.tag}{'>'}</div>
+              <div style={{ fontSize:11, color:'rgba(255,255,255,0.42)', fontFamily:'Outfit,sans-serif', marginTop:2 }}>{el.label}</div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity:0, x:16 }} animate={{ opacity:1, x:0 }}
+        transition={{ delay:0.7+inputs.length*0.45+0.4, type:'spring', stiffness:180 }}
+        style={{ background:'linear-gradient(90deg,transparent,#1DB97A22)', border:'2px solid #1DB97A', borderTop:'none', borderRadius:'0 0 14px 14px', padding:'10px 18px', fontFamily:"'JetBrains Mono',monospace", fontSize:14, fontWeight:800, color:'#1DB97A', boxShadow:'0 0 20px #1DB97A30', textAlign:'right' }}
+      >
+        {'</form>'}
+      </motion.div>
+
+      <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }}
+        transition={{ delay:0.7+inputs.length*0.45+1.1 }}
+        style={{ marginTop:12, textAlign:'center', fontSize:11, color:'rgba(255,255,255,0.28)', fontFamily:'Outfit,sans-serif', fontStyle:'italic' }}
+      >
+        Les champs sont contenus à l'intérieur du {'<form>'}
+      </motion.p>
+    </motion.div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════
    COMPOSANT PRINCIPAL
 ══════════════════════════════════════════════════════════════ */
 export default function FoundationsPage({ user }) {
@@ -290,8 +760,18 @@ export default function FoundationsPage({ user }) {
   const [showC1Joke, setShowC1Joke] = useState(false)
   const [c1JokeFeedback, setC1JokeFeedback] = useState(null)
   const [showFormAnalogy, setShowFormAnalogy] = useState(false)
+  const [showForm3D,      setShowForm3D]      = useState(false)
+  const [streamingIdx,    setStreamingIdx]    = useState(null)
+  const prevMsgCount   = useRef(2)
+  const form3DMsg      = useRef(false)
+  const input2AnimMsg  = useRef(false)
   const analogyDialogRef = useRef(0) // 0=off 1=asked 2=explaining 3=asked_understood 4=done
-  const [showInputAnalogy, setShowInputAnalogy] = useState(false)
+  const [showInputAnalogy,  setShowInputAnalogy]  = useState(false)
+  const [showInput2Anim,   setShowInput2Anim]    = useState(false)
+  const [showRecap,        setShowRecap]          = useState(false)
+  const [recapKey,         setRecapKey]           = useState(0)
+  const [showAttrAnim,     setShowAttrAnim]       = useState(false)
+  const [attrAnimKey,      setAttrAnimKey]        = useState(0)
   const inputAnalogyDialogRef = useRef(0) // 0=off 1=asked 2=explaining 3=asked_understood 4=done
   const [showTypeAnalogy, setShowTypeAnalogy] = useState(false)
   const typeAnalogyDialogRef = useRef(0) // 0=off 1=asked 2=explaining 3=asked_understood 4=done
@@ -379,9 +859,18 @@ export default function FoundationsPage({ user }) {
   /* ── Ajouter message au chat ── */
   const addMsg = useCallback((type, html, delay = 0) => {
     setTimeout(() => {
-      setMessages(prev => [...prev, { type, html }])
+      setMessages(prev => [...prev, { type, html, id: Date.now() + Math.random() }])
     }, delay)
   }, [])
+
+  /* ── Détecte nouveau message bot → streaming ── */
+  useEffect(() => {
+    if (messages.length > prevMsgCount.current) {
+      const last = messages[messages.length - 1]
+      if (last?.type === 'bot') setStreamingIdx(messages.length - 1)
+    }
+    prevMsgCount.current = messages.length
+  }, [messages])
 
   /* ── Envoi chat (local-first, fallback API) ── */
   const handleChatSend = useCallback(async (text) => {
@@ -410,7 +899,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Pas de souci ! Continue d'explorer le code à gauche quand tu veux. (^_^)")
+          addMsg('bot', "Pas de souci ! Continue d'explorer le code à gauche quand tu veux. 😊")
           return
         }
       }
@@ -422,7 +911,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Parfait ! (+15 XP) Tu viens de saisir la mécanique fondamentale des formulaires HTML. (^_^)<br><br>Continue sur le code à gauche — clique sur <strong>action=</strong> pour aller encore plus loin !")
+          addMsg('bot', "Parfait ! (+15 XP) Tu viens de saisir la mécanique fondamentale des formulaires HTML. 😊<br><br>Continue sur le code à gauche — clique sur <strong>action=</strong> pour aller encore plus loin !")
           return
         }
         if (isNon) {
@@ -456,7 +945,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Pas de souci ! Continue d'explorer le code à gauche quand tu veux. (^_^)")
+          addMsg('bot', "Pas de souci ! Continue d'explorer le code à gauche quand tu veux. 😊")
           return
         }
       }
@@ -468,7 +957,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Parfait ! (+15 XP) Tu as compris pourquoi un <code>&lt;input&gt;</code> doit toujours vivre à l'intérieur d'un <code>&lt;form&gt;</code>. (^_^)<br><br>Continue — clique sur les attributs ci-dessous pour découvrir leurs superpouvoirs !")
+          addMsg('bot', "Parfait ! (+15 XP) Tu as compris pourquoi un <code>&lt;input&gt;</code> doit toujours vivre à l'intérieur d'un <code>&lt;form&gt;</code>. 😊<br><br>Continue — clique sur les attributs ci-dessous pour découvrir leurs superpouvoirs !")
           return
         }
         if (isNon) {
@@ -502,7 +991,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Pas de souci ! Clique sur les types dans les onglets à gauche pour explorer. (^_^)")
+          addMsg('bot', "Pas de souci ! Clique sur les types dans les onglets à gauche pour explorer. 😊")
           return
         }
       }
@@ -514,7 +1003,7 @@ export default function FoundationsPage({ user }) {
           setChatLoading(true)
           await new Promise(r => setTimeout(r, 800))
           setChatLoading(false)
-          addMsg('bot', "Excellent ! (+15 XP) Tu maîtrises maintenant l'attribut <code>type=</code> — le chef cuisinier des formulaires ! (^_^)<br><br>Clique sur les onglets et essaie le bouton <strong>Pratiquer</strong> pour chaque type !")
+          addMsg('bot', "Excellent ! (+15 XP) Tu maîtrises maintenant l'attribut <code>type=</code> — le chef cuisinier des formulaires ! 😊<br><br>Clique sur les onglets et essaie le bouton <strong>Pratiquer</strong> pour chaque type !")
           return
         }
         if (isNon) {
@@ -571,7 +1060,7 @@ export default function FoundationsPage({ user }) {
       const data = await res.json()
       addMsg('bot', data.response || "Continue d'explorer les concepts à gauche — clique sur les éléments du code !")
     } catch {
-      addMsg('bot', "Je n'ai pas accès au serveur là — mais continue d'explorer les concepts ! (*_*)")
+      addMsg('bot', "Je n'ai pas accès au serveur là — mais continue d'explorer les concepts ! ✨")
     }
     setChatLoading(false)
   }, [chatLoading, addMsg, isDeepThinking, addXP])
@@ -622,7 +1111,7 @@ export default function FoundationsPage({ user }) {
   const unlockNext = useCallback((next) => {
     const prev = next - 1
     setSolved(s => ({ ...s, [prev]: true }))
-    addMsg('sys', `Concept ${prev} validé ! (^_^)`)
+    addMsg('sys', `Concept ${prev} validé ! 😊`)
     addMsg('bot', `Bien joué ! Concept ${prev} maîtrisé. Passe au suivant →`, 250)
     setTimeout(() => showConcept(next, true), 500)
   }, [addMsg, showConcept])
@@ -666,7 +1155,7 @@ export default function FoundationsPage({ user }) {
       const escCode = c1PracticeCode.replace(/</g, '&lt;').replace(/>/g, '&gt;').substring(0, 30)
       
       if (!val) {
-        addMsg('bot', "Hé ! Tu n'as rien écrit ! (^_^) La boîte est carrément inexistante. Essaie de taper <code>&lt;form&gt;&lt;/form&gt;</code>.", 100)
+        addMsg('bot', "Hé ! Tu n'as rien écrit ! 😊 La boîte est carrément inexistante. Essaie de taper <code>&lt;form&gt;&lt;/form&gt;</code>.", 100)
       } else if (val.includes('from')) {
         addMsg('bot', `Oups ! Tu as écrit ` + (escCode ? `<code>${escCode}</code>` : '') + `. Tu as tapé "from" au lieu de "form" ! C'est une erreur classique (et très compréhensible). Corrige-la.`, 100)
       } else if (val.includes('form') && !val.includes('<')) {
@@ -734,11 +1223,11 @@ export default function FoundationsPage({ user }) {
     if (c2MCQ.selected !== null) return
     setC2MCQ({ selected: idx })
     if (correct) {
-      setC2Feedback({ ok: true, text: '(^_^) Exactement ! <strong>required</strong> rend le champ obligatoire — sa seule présence suffit.' })
+      setC2Feedback({ ok: true, text: '😊 Exactement ! <strong>required</strong> rend le champ obligatoire — sa seule présence suffit.' })
       if (!solved[2]) addXP(15)
       setC2Unlock(true)
     } else {
-      setC2Feedback({ ok: false, text: '(-_-) Presque ! C\'est <strong>required</strong> — un attribut booléen qui ne nécessite pas de valeur.' })
+      setC2Feedback({ ok: false, text: '😅 Presque ! C\'est <strong>required</strong> — un attribut booléen qui ne nécessite pas de valeur.' })
     }
   }
 
@@ -795,11 +1284,16 @@ export default function FoundationsPage({ user }) {
     if (c3MCQ.selected !== null) return
     setC3MCQ({ selected: idx })
     if (correct) {
-      setC3Feedback({ ok: true, text: '(^_^) Parfait ! <strong>for=</strong> dans le label doit avoir la même valeur que <strong>id=</strong> dans l\'input.' })
+      setC3Feedback({ ok: true, text: '😊 Parfait ! <strong>for=</strong> dans le label doit avoir la même valeur que <strong>id=</strong> dans l\'input.' })
       if (!solved[3]) addXP(15)
       setC3Unlock(true)
     } else {
-      setC3Feedback({ ok: false, text: '(-_-) Non — c\'est <strong>for=</strong>. Il doit correspondre à l\'id= de l\'input pour créer le lien.' })
+      setC3Feedback({ ok: false, text: '😅 Pas tout à fait — réfléchis encore, le chatbot t\'aide 👉' })
+      addMsg('bot', 'Rappelle-toi ce qu\'on a vu 😊 — pour lier un <code>&lt;label&gt;</code> à un <code>&lt;input&gt;</code>, le label a un attribut spécial qui doit avoir <strong>exactement la même valeur</strong> que le <code>id=</code> de l\'input. Ce n\'est ni <code>name</code> ni <code>class</code>… C\'est <code>f__</code> 😉 Réessaie !', 400)
+      setTimeout(() => {
+        setC3MCQ({ selected: null })
+        setC3Feedback(null)
+      }, 3000)
     }
   }
 
@@ -824,12 +1318,12 @@ export default function FoundationsPage({ user }) {
     const val = c4Blank.trim().toLowerCase()
     if (val === 'password') {
       setC4Status('ok')
-      setC4Feedback({ ok: true, text: '(^_^) Parfait ! type="password" masque les caractères avec des ●.' })
+      setC4Feedback({ ok: true, text: '😊 Parfait ! type="password" masque les caractères avec des ●.' })
       if (!solved[4]) addXP(20)
       setC4Unlock(true)
     } else {
       setC4Status('err')
-      setC4Feedback({ ok: false, text: '(-_-) Pas tout à fait — pense au type qui masque les caractères avec des points ●●●.' })
+      setC4Feedback({ ok: false, text: '😅 Pas tout à fait — pense au type qui masque les caractères avec des points ●●●.' })
     }
   }
 
@@ -873,13 +1367,13 @@ export default function FoundationsPage({ user }) {
     if (c5MCQ.selected !== null) return
     setC5MCQ({ selected: idx })
     if (correct) {
-      setC5Feedback({ ok: true, text: '(^_^) Bravo ! <strong>&lt;textarea&gt;</strong> est la balise pour les grands champs de texte multi-lignes.' })
+      setC5Feedback({ ok: true, text: '😊 Bravo ! <strong>&lt;textarea&gt;</strong> est la balise pour les grands champs de texte multi-lignes.' })
       if (!solved[5]) addXP(25)
       setSolved(s => ({ ...s, 5: true }))
       addMsg('bot', '\(^o^)/ Fondations HTML terminées ! Tu connais maintenant toutes les bases pour construire un formulaire HTML complet. La phase 3 — Explorer — t\'attend !', 400)
       setTimeout(() => setShowCelebration(true), 700)
     } else {
-      setC5Feedback({ ok: false, text: '(-_-) Non — pour un grand champ multi-lignes, c\'est <strong>&lt;textarea&gt;</strong>.' })
+      setC5Feedback({ ok: false, text: '😅 Non — pour un grand champ multi-lignes, c\'est <strong>&lt;textarea&gt;</strong>.' })
     }
   }
 
@@ -967,6 +1461,24 @@ export default function FoundationsPage({ user }) {
         completedSteps={[1]}
       />
 
+      {/* ── Bouton retour Phase 0 ── */}
+      <button
+        onClick={() => navigate('/intro')}
+        style={{
+          position: 'fixed', top: 52, left: 16, zIndex: 200,
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+          color: 'rgba(255,255,255,0.65)', borderRadius: 10,
+          padding: '6px 12px', fontSize: 12, fontFamily: 'Outfit,sans-serif',
+          fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.65)'}
+      >
+        ‹ Retour
+      </button>
+
       {/* ── Zone de contenu (colonne gauche, scrollable) ── */}
       <div className="fnd-content">
 
@@ -978,7 +1490,7 @@ export default function FoundationsPage({ user }) {
               Phase 2 · Fondations HTML
             </div>
             <div className="fnd-hero-title">
-              Super <em>{user?.name || 'toi'}</em> — on construit (^_^)
+              Super <em>{user?.name || 'toi'}</em> — on construit 😊
             </div>
             <div className="fnd-hero-sub">
               5 concepts, 5 défis. <strong>Un seul à la fois</strong> — explore le code, relève le défi, passe au suivant.
@@ -1036,7 +1548,7 @@ export default function FoundationsPage({ user }) {
                           setShowFormAnalogy(next)
                           if (next && analogyDialogRef.current === 0) {
                             analogyDialogRef.current = 1
-                            addMsg('bot', "Tu vois cette image ? (^_^) Tu veux que je t'explique l'analogie étape par étape ? Tape <strong>oui</strong> ou <strong>non</strong> !", 500)
+                            addMsg('bot', "Tu vois cette image ? 😊 Tu veux que je t'explique l'analogie étape par étape ? Tape <strong>oui</strong> ou <strong>non</strong> !", 500)
                           }
                         }}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', color: '#ddd', fontSize: '13px', cursor: 'pointer' }}
@@ -1054,6 +1566,36 @@ export default function FoundationsPage({ user }) {
                           style={{ overflow: 'hidden', marginTop: '12px', borderRadius: '8px' }}
                         >
                           <img src="/images/image%20analogie%20form%20.jpeg" alt="Analogie Formulaire" style={{ width: '100%', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* ── Animation 3D form ── */}
+                    <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                      <button
+                        onClick={() => {
+                          const next = !showForm3D
+                          setShowForm3D(next)
+                          if (next && !form3DMsg.current) {
+                            form3DMsg.current = true
+                            addXP(5)
+                            addMsg('bot', 'Regarde bien ! Chaque balise <code>&lt;input&gt;</code> à l\'intérieur du <code>&lt;form&gt;</code> génère un <strong>élément visuel précis</strong> — un champ texte, un email, des points de mot de passe, un bouton. C\'est le code HTML qui crée ce que l\'utilisateur voit et remplit à l\'écran. 😊', 300)
+                          }
+                        }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(29,185,122,0.08)', borderRadius: '8px', border: '1px solid rgba(29,185,122,0.25)', color: '#1DB97A', fontSize: '13px', cursor: 'pointer', fontFamily: 'Outfit,sans-serif', fontWeight: 600 }}
+                      >
+                        <FiBox /> {showForm3D ? 'Masquer l\'animation' : 'Voir l\'animation 3D'}
+                      </button>
+                    </div>
+                    <AnimatePresence>
+                      {showForm3D && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          style={{ overflow: 'hidden', marginTop: '16px' }}
+                        >
+                          <FormBox3D />
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -1143,32 +1685,73 @@ export default function FoundationsPage({ user }) {
                               initial={{ opacity: 0, scale: 0.95, y: 10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               className="fnd-joke-box"
-                              style={{
-                                marginTop: '24px',
-                                background: '#ececec',
-                                border: '3px dashed #999',
-                                borderRadius: '12px',
-                                padding: '32px',
-                                textAlign: 'center',
-                                color: '#333'
-                              }}
+                              style={{ marginTop: '20px' }}
                             >
-                              <div style={{ marginBottom: '16px' }}><FiBox size={64} color="#888" /></div>
-                              <div style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '8px', color: '#111' }}>
-                                Tada ! Je suis un formulaire.
+                              {/* Aperçu formulaire complet — cohérent avec l'animation */}
+                              <div style={{ background:'#fff', borderRadius:14, padding:'18px 16px', boxShadow:'0 4px 28px rgba(0,0,0,0.10)', border:'1px solid #e8e8e8', maxWidth:300, margin:'0 auto' }}>
+                                {/* En-tête */}
+                                <div style={{ marginBottom:14, paddingBottom:10, borderBottom:'1px solid #f0f0f0', display:'flex', alignItems:'center', gap:8 }}>
+                                  <div style={{ fontSize:10, fontFamily:"'JetBrains Mono',monospace", color:'#1DB97A', fontWeight:700 }}>{'<form>'}</div>
+                                  <div style={{ fontSize:11, fontWeight:700, color:'#1a1a2e', fontFamily:'Outfit,sans-serif' }}>Formulaire d'inscription</div>
+                                </div>
+
+                                {/* Champs animés séquentiellement */}
+                                {[
+                                  { tag:'input type="text"',     label:'Prénom',       placeholder:'Ton prénom...',  color:'#1DB97A', delay:0.2 },
+                                  { tag:'input type="email"',    label:'Email',         placeholder:'email@...',       color:'#0ea5c4', delay:0.55 },
+                                  { tag:'input type="password"', label:'Mot de passe',  placeholder:'••••••••',        color:'#7c6ff7', delay:0.9  },
+                                ].map((f, i) => (
+                                  <motion.div key={i}
+                                    initial={{ opacity:0, x:-14 }}
+                                    animate={{ opacity:1, x:0 }}
+                                    transition={{ delay:f.delay, type:'spring', stiffness:200, damping:18 }}
+                                    style={{ marginBottom:10 }}
+                                  >
+                                    <div style={{ fontSize:8.5, fontFamily:"'JetBrains Mono',monospace", color:f.color, fontWeight:700, marginBottom:4 }}>{'<'}{f.tag}{'>'}</div>
+                                    <div style={{ border:`1.5px solid ${f.color}55`, borderRadius:6, padding:'7px 10px', fontSize:11, color:'#bbb', fontFamily:'Outfit,sans-serif', background:`${f.color}05` }}>
+                                      {f.placeholder}
+                                    </div>
+                                  </motion.div>
+                                ))}
+
+                                {/* Submit */}
+                                <motion.div
+                                  initial={{ opacity:0, y:8 }}
+                                  animate={{ opacity:1, y:0 }}
+                                  transition={{ delay:1.25, type:'spring', stiffness:200, damping:18 }}
+                                >
+                                  <div style={{ fontSize:8.5, fontFamily:"'JetBrains Mono',monospace", color:'#fe2c55', fontWeight:700, marginBottom:6 }}>{'<input type="submit">'}</div>
+                                  <div style={{ background:'#1DB97A', color:'#fff', borderRadius:8, padding:'9px', textAlign:'center', fontSize:12, fontFamily:'Outfit,sans-serif', fontWeight:800 }}>
+                                    Envoyer
+                                  </div>
+                                </motion.div>
+
+                                <motion.div
+                                  initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.6 }}
+                                  style={{ fontSize:10, fontFamily:"'JetBrains Mono',monospace", color:'#1DB97A', fontWeight:700, marginTop:10, textAlign:'right' }}
+                                >
+                                  {'</form>'}
+                                </motion.div>
                               </div>
-                              <div style={{ fontSize: '15px', color: '#555', lineHeight: '1.5' }}>
-                                Mais... je suis vide ! (T_T)<br/><br/>
-                                Le navigateur sait que j'existe grâce à tes balises, mais un formulaire seul est juste une "boîte invisible".<br/>
-                                Il me faut des <strong>champs</strong> à l'intérieur pour être utile !
-                              </div>
-                              <button 
-                                className="fnd-unlock-btn"
-                                style={{ marginTop: '24px', background: '#333', color: 'white' }}
-                                onClick={() => unlockNext(2)}
+
+                              <motion.p
+                                initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.9 }}
+                                style={{ marginTop:10, textAlign:'center', fontSize:11, color:'rgba(255,255,255,0.3)', fontFamily:'Outfit,sans-serif', fontStyle:'italic' }}
                               >
-                                Découvrir les champs (Concept Suivant) →
-                              </button>
+                                Les champs sont contenus à l'intérieur du {'<form>'}
+                              </motion.p>
+
+                              <motion.div
+                                initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:2.1 }}
+                                style={{ textAlign:'center', marginTop:14 }}
+                              >
+                                <button
+                                  className="fnd-unlock-btn"
+                                  onClick={() => unlockNext(2)}
+                                >
+                                  Concept suivant — les champs {'<input>'} →
+                                </button>
+                              </motion.div>
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -1201,7 +1784,42 @@ export default function FoundationsPage({ user }) {
                     <p className="fnd-exp-p">
                       Après avoir vu l'importance de <code className="fnd-ic t">&lt;form&gt;</code>, on aborde la balise <code className="fnd-ic v">&lt;input&gt;</code>. Elle est indispensable car elle permet à ton utilisateur de <strong>saisir des informations</strong> (comme du texte, un mot de passe ou une date). Sans <code className="v">input</code>, impossible de te répondre !
                     </p>
-                    
+
+                    {/* Syntaxe */}
+                    <div style={{ margin:'4px 0 18px', padding:'14px 16px', background:'#000', borderRadius:10, border:'1px solid rgba(255,255,255,0.12)' }}>
+                      <div style={{ fontSize:11, color:'#fff', fontFamily:'Outfit,sans-serif', marginBottom:10, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:700 }}>
+                        La syntaxe est la suivante :
+                      </div>
+                      <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, lineHeight:2 }}>
+                        <span style={{ color:'#7c6ff7' }}>&lt;input</span>
+                        {' '}
+                        <span style={{ color:'#0ea5e9' }}>type</span>
+                        <span style={{ color:'rgba(255,255,255,0.5)' }}>=</span>
+                        <span style={{ color:'#1DB97A' }}>"text"</span>
+                        {' '}
+                        <span style={{ color:'#0ea5e9' }}>name</span>
+                        <span style={{ color:'rgba(255,255,255,0.5)' }}>=</span>
+                        <span style={{ color:'#1DB97A' }}>"prenom"</span>
+                        {' '}
+                        <span style={{ color:'#0ea5e9' }}>placeholder</span>
+                        <span style={{ color:'rgba(255,255,255,0.5)' }}>=</span>
+                        <span style={{ color:'#1DB97A' }}>"Ton prénom..."</span>
+                        <span style={{ color:'#7c6ff7' }}>&gt;</span>
+                      </div>
+                      <div style={{ marginTop:10, display:'flex', flexWrap:'wrap', gap:8 }}>
+                        {[
+                          { attr:'type=', desc:'le type du champ (text, email, password…)', color:'#0ea5e9' },
+                          { attr:'name=', desc:'identifiant envoyé au serveur', color:'#0ea5e9' },
+                          { attr:'placeholder=', desc:'texte indicatif grisé', color:'#0ea5e9' },
+                        ].map((item, i) => (
+                          <div key={i} style={{ display:'flex', alignItems:'center', gap:6, fontSize:10, fontFamily:'Outfit,sans-serif' }}>
+                            <code style={{ color:item.color, fontFamily:"'JetBrains Mono',monospace", fontSize:10 }}>{item.attr}</code>
+                            <span style={{ color:'#fff' }}>{item.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* L'Analogie */}
                     <motion.div 
                         className="fnd-analogy-box"
@@ -1219,7 +1837,7 @@ export default function FoundationsPage({ user }) {
                         onClick={() => {
                           if (inputAnalogyDialogRef.current === 0) {
                             inputAnalogyDialogRef.current = 1
-                            addMsg('bot', "Je vois que tu veux visualiser l'analogie de l'enveloppe ! (^_^)<br><br>Tu veux que je t'explique comment <code>&lt;input&gt;</code> fonctionne avec l'image — <strong>oui</strong> ou <strong>non</strong> ?")
+                            addMsg('bot', "Je vois que tu veux visualiser l'analogie de l'enveloppe ! 😊<br><br>Tu veux que je t'explique comment <code>&lt;input&gt;</code> fonctionne avec l'image — <strong>oui</strong> ou <strong>non</strong> ?")
                           }
                           setShowInputAnalogy(v => !v)
                         }}
@@ -1257,6 +1875,36 @@ export default function FoundationsPage({ user }) {
                       </AnimatePresence>
                     </div>
 
+                    {/* ── Animation 2 — input dans form ── */}
+                    <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                      <button
+                        onClick={() => {
+                          const next = !showInput2Anim
+                          setShowInput2Anim(next)
+                          if (next && !input2AnimMsg.current) {
+                            input2AnimMsg.current = true
+                            addXP(5)
+                            addMsg('bot', 'Regarde bien ! Le carré à <strong>gauche</strong> c\'est ce que le navigateur affiche — un champ, un mot de passe, un bouton. La flèche ← te dit : <em>c\'est cette balise qui le crée</em>. Chaque <code>&lt;input&gt;</code> génère un élément visuel précis. 😊', 300)
+                          }
+                        }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(124,111,247,0.08)', borderRadius: '8px', border: '1px solid rgba(124,111,247,0.25)', color: '#c4b5fd', fontSize: '13px', cursor: 'pointer', fontFamily: 'Outfit,sans-serif', fontWeight: 600 }}
+                      >
+                        <FiPlay size={13} /> {showInput2Anim ? 'Masquer l\'animation' : 'Voir l\'animation 2'}
+                      </button>
+                    </div>
+                    <AnimatePresence>
+                      {showInput2Anim && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          style={{ overflow: 'hidden', marginTop: '16px' }}
+                        >
+                          <InputAnim2 key={showInput2Anim} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     {/* Le Bouton de Validation de Séance */}
                     {inputLessonStage >= 1 && inputLessonStage < 4 && (
                       <motion.div 
@@ -1277,21 +1925,21 @@ export default function FoundationsPage({ user }) {
                     )}
 
                     {inputLessonStage === 4 && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }} 
-                        animate={{ opacity: 1, height: 'auto' }} 
+                      <>
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
                         style={{ marginTop: '24px' }}
                       >
-                        <p className="fnd-exp-p">Bien jou&#233; ! L&#39;input que tu as cr&#233;&#233; &#233;tait simplifi&#233; pour te montrer l&#39;effet. En r&#233;alit&#233;, un <code className="v">&lt;input&gt;</code> a besoin d&#39;<strong>attributs</strong> pour &#234;tre vraiment utile. Clique sur chacun pour comprendre :</p>
                         <div className="fnd-attr-list">
                           {[
-                            { key: 'type',        badge: 't', desc: 'Le type de champ (texte, email\u2026)' },
-                            { key: 'name',        badge: 'v', desc: "L'identifiant du champ c\u00f4t\u00e9 serveur" },
-                            { key: 'placeholder', badge: 'a', desc: "Le texte d'aide gris\u00e9 \u00e0 l'int\u00e9rieur" },
-                            { key: 'required',    badge: 'c', desc: 'Rend le champ obligatoire' },
-                          ].map(({ key, badge, desc }) => {
+                            { key: 'type',        badge: 't', desc: 'Le type de champ (texte, email\u2026)',          noPractice: false },
+                            { key: 'placeholder', badge: 'a', desc: "Le texte d'aide gris\u00e9 \u00e0 l'int\u00e9rieur",       noPractice: false },
+                            { key: 'name',        badge: 'v', desc: "L'identifiant du champ c\u00f4t\u00e9 serveur",       noPractice: true  },
+                            { key: 'required',    badge: 'c', desc: 'Rend le champ obligatoire (non vide)',       noPractice: true  },
+                          ].map(({ key, badge, desc, noPractice }) => {
                             const isExplored = c2AttrExplored.has(key);
-                            const canPractice = c2AttrExplored.size >= 3;
+                            const canPractice = c2AttrExplored.size >= 1;
                             return (
                               <motion.div
                                 key={key}
@@ -1306,8 +1954,8 @@ export default function FoundationsPage({ user }) {
                                 
                                 {isExplored && (
                                   <div style={{ marginLeft: '12px', display: 'flex', alignItems: 'center' }}>
-                                    {canPractice ? (
-                                      <motion.button 
+                                    {canPractice && !noPractice ? (
+                                      <motion.button
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         onClick={(e) => {
@@ -1319,18 +1967,10 @@ export default function FoundationsPage({ user }) {
                                             code = 'type="password"';
                                             msg = "<strong>Mode Pratique — type :</strong> J'ai pré-rempli avec <code>type=\"password\"</code>. Essaie de taper dans le champ ! Modifie-le par <code>color</code> ou <code>date</code>.";
                                             setC2PracticeType('password'); setC2PracticeName(''); setC2PracticePH(''); setC2PracticeReq(false);
-                                          } else if (key === 'name') {
-                                            code = 'name="identifiant"';
-                                            msg = "<strong>Mode Pratique — name :</strong> J'ai ajouté <code>name=\"identifiant\"</code>. Regarde sous l'input : tu vois que le serveur sait maintenant la variable associée à la valeur tapée !";
-                                            setC2PracticeType('text'); setC2PracticeName('identifiant'); setC2PracticePH(''); setC2PracticeReq(false);
                                           } else if (key === 'placeholder') {
                                             code = 'placeholder="Ex: Superman"';
                                             msg = "<strong>Mode Pratique — placeholder :</strong> Le texte grisé apparaît ! Dès que tu tapes, il disparaît. Pratique non ?";
                                             setC2PracticeType('text'); setC2PracticeName(''); setC2PracticePH('Ex: Superman'); setC2PracticeReq(false);
-                                          } else if (key === 'required') {
-                                            code = 'required';
-                                            msg = "<strong>Mode Pratique — required :</strong> Clique sur le bouton 'Simuler l'envoi' en laissant le champ vide. Tu verras l'alerte du navigateur te bloquer !";
-                                            setC2PracticeType('text'); setC2PracticeName(''); setC2PracticePH(''); setC2PracticeReq(true);
                                           }
                                           setC2PracticeCode(code);
                                           addMsg('bot', msg, 100);
@@ -1358,7 +1998,7 @@ export default function FoundationsPage({ user }) {
                         </div>
 
                         {/* Indication Pratique Débloquée */}
-                        {c2AttrExplored.size >= 3 && !c2PracticePhase && (
+                        {c2AttrExplored.size >= 1 && !c2PracticePhase && (
                           <motion.div
                             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                             style={{ marginTop: '20px', padding: '16px', background: 'rgba(40,200,64,0.08)', border: '1px solid var(--gre)', borderRadius: '12px', textAlign: 'center' }}
@@ -1380,20 +2020,26 @@ export default function FoundationsPage({ user }) {
                             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '16px' }}>
                               <div style={{ fontFamily: 'monospace', fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>MON-INPUT.HTML</div>
                               <div style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)' }}>&lt;form&gt;</div>
-                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px', paddingLeft: '18px', margin: '8px 0' }}>
-                                <span style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)', whiteSpace: 'nowrap' }}>&lt;input </span>
-                                <input
-                                  type="text"
-                                  value={c2PracticeCode}
-                                  onChange={handleC2PracticeChange}
-                                  placeholder={'type="text" ...'}
-                                  style={{
-                                    background: 'rgba(0,0,0,0.4)', color: '#a5f3fc', border: '1px solid rgba(255,255,255,0.15)',
-                                    padding: '6px 10px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '14px', flex: 1, outline: 'none',
-                                    minWidth: 0
-                                  }}
-                                />
-                                <span style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)', whiteSpace: 'nowrap' }}>/&gt;</span>
+                              <div style={{ paddingLeft: '18px', margin: '6px 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                <span style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)' }}>&lt;input</span>
+                                <div style={{ paddingLeft: '16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                  <span style={{ fontFamily: 'monospace', fontSize: '13px', color: '#0ea5e9' }}>type=</span>
+                                  <span style={{ fontFamily: 'monospace', fontSize: '13px', color: '#1DB97A' }}>"text"</span>
+                                </div>
+                                <div style={{ paddingLeft: '16px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <span style={{ fontFamily: 'monospace', fontSize: '13px', color: '#0ea5e9', whiteSpace: 'nowrap' }}>placeholder=</span>
+                                  <input
+                                    type="text"
+                                    value={c2PracticeCode}
+                                    onChange={handleC2PracticeChange}
+                                    placeholder='"Ton prénom..."'
+                                    style={{
+                                      background: 'rgba(0,0,0,0.4)', color: '#1DB97A', border: '1px solid rgba(255,255,255,0.15)',
+                                      padding: '4px 8px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '13px', flex: 1, outline: 'none', minWidth: 0
+                                    }}
+                                  />
+                                </div>
+                                <span style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)' }}>/&gt;</span>
                               </div>
                               <div style={{ fontFamily: 'monospace', fontSize: '14px', color: 'var(--teal)' }}>&lt;/form&gt;</div>
                             </div>
@@ -1456,6 +2102,28 @@ export default function FoundationsPage({ user }) {
                           </motion.div>
                         )}
                       </motion.div>
+
+                      {/* ── Animation type= & placeholder= (toujours visible) ── */}
+                      <div style={{ marginTop:16, textAlign:'center' }}>
+                        <button
+                          onClick={() => { setShowAttrAnim(v => !v); setAttrAnimKey(k => k+1) }}
+                          style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'8px 16px', background:'rgba(168,85,247,0.08)', border:'1px solid rgba(168,85,247,0.3)', borderRadius:10, color:'#c4b5fd', fontSize:12, fontFamily:'Outfit,sans-serif', fontWeight:700, cursor:'pointer' }}
+                        >
+                          ✦ {showAttrAnim ? "Masquer l'animation" : "Voir l'animation — type & placeholder"}
+                        </button>
+                      </div>
+                      <AnimatePresence>
+                        {showAttrAnim && (
+                          <motion.div
+                            initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }}
+                            exit={{ opacity:0, height:0 }}
+                            style={{ overflow:'hidden', marginTop:14 }}
+                          >
+                            <InputAttrAnim key={attrAnimKey} />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      </>
                     )}
                   </div>
 
@@ -1555,7 +2223,7 @@ export default function FoundationsPage({ user }) {
                         onClick={() => {
                           if (typeAnalogyDialogRef.current === 0) {
                             typeAnalogyDialogRef.current = 1
-                            addMsg('bot', "Tu veux visualiser l'analogie des ustensiles ! (^_^)<br><br>Tu veux que je t'explique comment <code>type=</code> change le comportement avec l'image — <strong>oui</strong> ou <strong>non</strong> ?")
+                            addMsg('bot', "Tu veux visualiser l'analogie des ustensiles ! 😊<br><br>Tu veux que je t'explique comment <code>type=</code> change le comportement avec l'image — <strong>oui</strong> ou <strong>non</strong> ?")
                           }
                           setShowTypeAnalogy(v => !v)
                         }}
@@ -1631,6 +2299,27 @@ export default function FoundationsPage({ user }) {
                       })}
                     </div>
 
+                    {/* ── Résumé animé (optionnel) ── */}
+                    <div style={{ marginBottom:16, textAlign:'center' }}>
+                      <button
+                        onClick={() => { setShowRecap(v => !v); setRecapKey(k => k+1) }}
+                        style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'8px 16px', background:'rgba(29,185,122,0.08)', border:'1px solid rgba(29,185,122,0.3)', borderRadius:10, color:'#1DB97A', fontSize:12, fontFamily:'Outfit,sans-serif', fontWeight:700, cursor:'pointer' }}
+                      >
+                        ✦ {showRecap ? 'Masquer le résumé animé' : 'Voir le résumé animé — form + input'}
+                      </button>
+                    </div>
+                    <AnimatePresence>
+                      {showRecap && (
+                        <motion.div
+                          initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }}
+                          exit={{ opacity:0, height:0 }}
+                          style={{ overflow:'hidden', marginBottom:16 }}
+                        >
+                          <RecapFormAnim key={recapKey} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     {!c4PracticePhase ? (
                       <CodeBlock fileName="SYNTAXE">
                         <CodeLine><Ct c="&lt;input" /></CodeLine>
@@ -1678,7 +2367,7 @@ export default function FoundationsPage({ user }) {
                         animate={{ opacity: 1, x: 0 }}
                         className="fnd-type-pill"
                       >
-                        (^_^) {typeHint}
+                        😊 {typeHint}
                       </motion.div>
                     </div>
                   </div>
@@ -1708,7 +2397,7 @@ export default function FoundationsPage({ user }) {
                     </div>
                     <div className="fnd-fitb-actions">
                       <button className="fnd-btn-check" onClick={checkC4}>Vérifier ✓</button>
-                      <button className="fnd-btn-hint" onClick={() => addMsg('bot', 'Indice : ce type cache les caractères avec des points ●●●. C\'est un mot anglais qui commence par <strong>p</strong>… pense à la sécurité !')}>Indice (*_*)</button>
+                      <button className="fnd-btn-hint" onClick={() => addMsg('bot', 'Indice : ce type cache les caractères avec des points ●●●. C\'est un mot anglais qui commence par <strong>p</strong>… pense à la sécurité !')}>Indice ✨</button>
                     </div>
                     <AnimatePresence>
                       {c4Feedback && (
@@ -1867,7 +2556,7 @@ export default function FoundationsPage({ user }) {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             className="fnd-label-badge"
                           >
-                            (*_*) Magie ! Le curseur a sauté automatiquement !
+                            ✨ Magie ! Le curseur a sauté automatiquement !
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -2040,7 +2729,7 @@ export default function FoundationsPage({ user }) {
                                 alert("Pouf ! Le formulaire vient d'être soumis ! ✅");
                                 markExplored(5);
                               } else {
-                                alert("Rien ne se passe ! (-_-)\nLe navigateur te dit : 'Désolé, mais sans type=\"submit\", ce bouton ne sert pas à envoyer un formulaire.'");
+                                alert("Rien ne se passe ! 😅\nLe navigateur te dit : 'Désolé, mais sans type=\"submit\", ce bouton ne sert pas à envoyer un formulaire.'");
                               }
                             }}
                             style={{
@@ -2101,7 +2790,7 @@ export default function FoundationsPage({ user }) {
                         className="fnd-unlock-btn final"
                         onClick={() => navigate('/mini-project')}
                       >
-                        \(^_^)/ Continuer vers l'Explorer !
+                        \😊/ Continuer vers l'Explorer !
                       </motion.button>
                     )}
                   </ChallengeSection>
@@ -2163,17 +2852,19 @@ export default function FoundationsPage({ user }) {
         <div className="fnd-msgs" ref={msgsRef}>
           {messages.map((msg, i) => {
             if (msg.type === 'sys') {
-              return <div key={i} className="fnd-bbl sys">{msg.html}</div>
+              return <div key={msg.id || i} className="fnd-bbl sys">{msg.html}</div>
             }
             return (
-              <div key={i} className={`fnd-mg${msg.type === 'usr' ? ' usr-align' : ''}`}>
+              <div key={msg.id || i} className={`fnd-mg${msg.type === 'usr' ? ' usr-align' : ''}`}>
                 <div className={`fnd-ms${msg.type === 'usr' ? ' usr' : ''}`}>
                   {msg.type === 'bot' ? <><span><FiCpu style={{marginRight:4}}/></span> CodeBot</> : user?.name || 'Toi'}
                 </div>
-                <div
-                  className={`fnd-bbl ${msg.type}`}
-                  dangerouslySetInnerHTML={{ __html: msg.html }}
-                />
+                <div className={`fnd-bbl ${msg.type}`}>
+                  {msg.type === 'bot' && i === streamingIdx
+                    ? <StreamingHtmlMessage html={msg.html} onDone={() => setStreamingIdx(null)} />
+                    : <span dangerouslySetInnerHTML={{ __html: msg.html }} />
+                  }
+                </div>
               </div>
             )
           })}

@@ -1,31 +1,46 @@
 // IntroPage.jsx — Page Découvrir (Phase 1) — New design matching codebot_decouvrir_final.html
 // Structured as a multi-phase interactive discovery experience
-import { useState, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiVolume2, FiVolumeX, FiSquare } from 'react-icons/fi'
 import AppShell from '../components/AppShell'
 import ChatPanel2 from '../components/ChatPanel2'
+import IntroPhase0 from '../components/IntroPhase0'
 
 // ── Réponses locales pour le chat panel ──
 const CHAT_RESPONSES = {
-    "c'est quoi un formulaire ?": "(^_^) Un formulaire HTML, c'est une zone interactive sur une page web qui te permet de saisir et d'envoyer des informations. Tu en remplis plusieurs chaque jour : connexion Instagram, recherche Google, commande en ligne... On va découvrir ça ensemble !",
-    "j'ai pas compris": "Pas de souci (^_^) ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
-    "j'ai pas compris :-/": "Pas de souci (^_^) ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
-    "aide moi": "(^_^) Bien sûr ! Tu es sur la Phase 1. Commence par cocher les interfaces qui te semblent familières. Ensuite on remplira un vrai formulaire ensemble — et tu verras exactement à quoi ça sert.",
-    "c'est quoi html ?": "HTML, c'est le langage qui décrit la structure de toutes les pages web. Si une page web était une maison, HTML serait les murs et les portes. Les formulaires, ce sont les boîtes aux lettres — elles reçoivent et envoient des infos ! (^_^)",
+    // ── Réponses originales ──
+    "c'est quoi un formulaire ?": "😊 Un formulaire HTML, c'est une zone interactive sur une page web qui te permet de saisir et d'envoyer des informations. Tu en remplis plusieurs chaque jour : connexion Instagram, recherche Google, commande en ligne... On va découvrir ça ensemble !",
+    "j'ai pas compris": "Pas de souci 😊 ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
+    "j'ai pas compris :-/": "Pas de souci 😊 ! Pense à la dernière fois que tu t'es connecté à une appli. Tu as tapé ton pseudo, ton mot de passe, tu as cliqué 'Se connecter'... Tout ça = un formulaire HTML. On vit dedans sans le voir.",
+    "aide moi": "😊 Bien sûr ! Tu es sur la Phase 1. Commence par cocher les interfaces qui te semblent familières. Ensuite on remplira un vrai formulaire ensemble — et tu verras exactement à quoi ça sert.",
+    "c'est quoi html ?": "HTML, c'est le langage qui décrit la structure de toutes les pages web. Si une page web était une maison, HTML serait les murs et les portes. Les formulaires, ce sont les boîtes aux lettres — elles reçoivent et envoient des infos ! 😊",
+    // ── Nouvelles réponses ──
+    "pourquoi on apprend ça": "😊 Parce que <strong>TOUT</strong> passe par les formulaires sur le web ! Se connecter, s'inscrire, commander, voter, contacter... Si tu sais créer un formulaire HTML, tu sais déjà faire 80% des interactions d'un vrai site web. C'est la compétence de base de tout développeur !",
+    "pourquoi on apprend ca": "😊 Parce que <strong>TOUT</strong> passe par les formulaires sur le web ! Se connecter, s'inscrire, commander, voter, contacter... Si tu sais créer un formulaire HTML, tu sais déjà faire 80% des interactions d'un vrai site web. C'est la compétence de base de tout développeur !",
+    "c'est difficile": "Pas du tout 😊 ! HTML c'est le langage le plus simple qui existe sur le web. Pas de maths, pas de logique complexe — juste des balises comme <code>&lt;input&gt;</code> entre chevrons. Si tu sais écrire, tu sais faire du HTML. Promis !",
+    "cest difficile": "Pas du tout 😊 ! HTML c'est le langage le plus simple qui existe sur le web. Pas de maths, pas de logique complexe — juste des balises comme <code>&lt;input&gt;</code> entre chevrons. Si tu sais écrire, tu sais faire du HTML. Promis !",
+    "je connais pas html": "😊 C'est exactement pour ça que tu es là ! Zéro prérequis nécessaire. Cette phase t'apprend en partant de ce que tu utilises déjà — tu n'as jamais eu besoin de savoir ce qu'est le HTML pour utiliser Instagram. Maintenant tu vas voir ce qu'il y a <em>derrière</em>.",
+    "je connais pas le html": "😊 C'est exactement pour ça que tu es là ! Zéro prérequis nécessaire. Cette phase t'apprend en partant de ce que tu utilises déjà — tu n'as jamais eu besoin de savoir ce qu'est le HTML pour utiliser Instagram. Maintenant tu vas voir ce qu'il y a <em>derrière</em>.",
+    "c'est quoi une balise": "Une balise HTML, c'est une <strong>étiquette entre chevrons</strong> qui dit au navigateur quoi afficher. Exemple : <code>&lt;input type=\"text\"&gt;</code> crée un champ de texte. Les chevrons <code>&lt; &gt;</code> sont le signal que c'est du HTML. Simple, non ? 😊",
+    "cest quoi une balise": "Une balise HTML, c'est une <strong>étiquette entre chevrons</strong> qui dit au navigateur quoi afficher. Exemple : <code>&lt;input type=\"text\"&gt;</code> crée un champ de texte. Les chevrons <code>&lt; &gt;</code> sont le signal que c'est du HTML. Simple, non ? 😊",
+    "ça sert à quoi vraiment": "😊 Sur Instagram tu peux écrire un message, chercher un profil, liker... Tout ça, c'est des formulaires HTML qui envoient tes actions au serveur d'Instagram. Sans formulaires, le web ne serait qu'une bibliothèque — tu lirais sans jamais pouvoir interagir !",
+    "ca sert a quoi": "😊 Sur Instagram tu peux écrire un message, chercher un profil, liker... Tout ça, c'est des formulaires HTML qui envoient tes actions au serveur d'Instagram. Sans formulaires, le web ne serait qu'une bibliothèque — tu lirais sans jamais pouvoir interagir !",
+    "je comprends rien": "Respire 😊 ! Commence simple : regarde les cartes d'applications à gauche et coche celles que tu utilises. Pas besoin de comprendre le HTML pour l'instant — observe juste. La compréhension viendra d'elle-même, c'est garanti !",
+    "trop compliqué": "😅 Je comprends ! Mais je te promets que c'est plus simple que ça en a l'air. Le HTML des formulaires, c'est 5 balises à connaître. Cinq. C'est tout. Et dans cette phase, on va les découvrir une par une, à travers des exemples que tu connais déjà. Fais-moi confiance 😊",
+    "comment on fait un site": "😊 Un site web, c'est HTML (la structure) + CSS (le style) + JavaScript (l'interactivité). On commence par le HTML — et les formulaires, c'est l'une des parties les plus importantes ! Maîtrise ça, et tu auras la base de tout site web moderne.",
 }
 
 const WILD_QUESTIONS = [
-    "Et si tu devais inventer un formulaire pour lire les rêves — quels champs tu mettrais ? (~_~)",
+    "Et si tu devais inventer un formulaire pour lire les rêves — quels champs tu mettrais ? ",
     "Pourquoi les formulaires web ont-ils presque toujours un champ 'mot de passe' selon toi ? (o_O)",
-    "Si un formulaire pouvait te parler, que te dirait-il quand tu laisses un champ vide ? (*_*)",
-    "Imagine un monde sans formulaires HTML — comment tu créerais un compte sur une appli ? (-_-)",
+    "Si un formulaire pouvait te parler, que te dirait-il quand tu laisses un champ vide ? ✨",
+    "Imagine un monde sans formulaires HTML — comment tu créerais un compte sur une appli ? 😅",
 ]
 
 const CHAT_CHIPS = [
     { label: "C'est quoi un formulaire ?", text: "c'est quoi un formulaire ?" },
     { label: "J'ai pas compris :-/", text: "j'ai pas compris :-/" },
-    { label: '~_~ Question folle', text: 'question folle', wild: true },
     { label: 'Aide-moi', text: 'aide moi' },
 ]
 
@@ -124,7 +139,7 @@ function WhatsAppCard() {
             <rect className="ui-text" x="46" y="79" width="108" height="13" rx="6.5" fill="#25d366" opacity=".15" />
             <circle className="field-input" cx="56" cy="85.5" r="4" fill="none" stroke="#25d366" strokeWidth="1.5" />
             <circle className="ui-text" cx="56" cy="85.5" r="2" fill="#25d366" />
-            <text className="ui-text" x="64" y="89" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#333">Oui ! Je suis là (^_^)</text>
+            <text className="ui-text" x="64" y="89" fontFamily="Outfit,sans-serif" fontSize="6.5" fill="#333">Oui ! Je suis là 😊</text>
             <text className="code-elem" x="100" y="88" textAnchor="middle" fontSize="5.5" fill="#1DB97A" fontFamily="JetBrains Mono" fontWeight="800">&lt;input type="radio" value="oui"&gt;</text>
             <rect className="ui-text" x="46" y="96" width="108" height="13" rx="6.5" fill="white" stroke="#ddd" strokeWidth=".5" />
             <circle className="field-input" cx="56" cy="102.5" r="4" fill="none" stroke="#999" strokeWidth="1.5" />
@@ -139,14 +154,42 @@ function WhatsAppCard() {
     )
 }
 
+// ── Texte à taper (version plain pour l'effet) ──
+const HERO_TEXT = "TikTok, Instagram, WhatsApp... chaque fois que tu tapes, tu cliques, tu envoies — tu utilises la même technologie cachée. Aujourd'hui tu vas découvrir laquelle, et surtout : apprendre à la recréer toi-même."
+
 // ── Main IntroPage ──
 export default function IntroPage({ user }) {
     const navigate = useNavigate()
     const scrollRef = useRef(null)
     const voiceModeRef = useRef(false)
 
+    // ── Typewriter states ──
+    const [typedText, setTypedText]   = useState(user?.isAdmin ? HERO_TEXT : '')
+    const [typingDone, setTypingDone] = useState(!!user?.isAdmin)
+    const [showContent, setShowContent] = useState(!!user?.isAdmin)
+
+    // ── Typewriter effect ──
+    useEffect(() => {
+        if (user?.isAdmin) return
+        let i = 0
+        // petite pause avant de commencer
+        const start = setTimeout(() => {
+            const interval = setInterval(() => {
+                if (i < HERO_TEXT.length) {
+                    i++
+                    setTypedText(HERO_TEXT.slice(0, i))
+                } else {
+                    clearInterval(interval)
+                    setTypingDone(true)
+                    setTimeout(() => setShowContent(true), 500)
+                }
+            }, 22)
+        }, 600)
+        return () => clearTimeout(start)
+    }, [])
+
     // ── State ──
-    const [phase, setPhase] = useState(1)
+    const [phase, setPhase] = useState(user?.isAdmin ? 1 : 0)
     const [selected, setSelected] = useState(user?.isAdmin ? new Set([0, 1, 2]) : new Set())
     const [xp, setXp] = useState(0)
     const [formDone, setFormDone] = useState(!!user?.isAdmin)
@@ -171,8 +214,8 @@ export default function IntroPage({ user }) {
 
     // Chat
     const [chatMessages, setChatMessages] = useState([
-        { type: 'system', text: `Bienvenue ${user?.name || 'toi'} ! (^_^)` },
-        { type: 'bot', html: `Salut ${user?.name || 'toi'} ! Pas de cours aujourd'hui.<br><br>Commence par regarder ces 3 interfaces — et coche celles qui te semblent familières. Pas de bonne ou mauvaise réponse. (^_^)` },
+        { type: 'system', text: `Bienvenue ${user?.name || 'toi'} ! 😊` },
+        { type: 'bot', html: `Salut ${user?.name || 'toi'} ! 😊 Bienvenue dans cette aventure.<br><br>Avant d'écrire la moindre ligne de code, commence par observer ces 3 interfaces — et coche celles que tu utilises dans ta vie de tous les jours. Pas de bonne ou mauvaise réponse.` },
     ])
     const [chatLoading, setChatLoading] = useState(false)
 
@@ -192,16 +235,29 @@ export default function IntroPage({ user }) {
         }, 900)
     }, [addChatMsg])
 
+    // Ref vers le handler de Phase 0 — enregistré par IntroPhase0 au montage
+    const phase0HandlerRef = useRef(null)
+
     const handleChatSend = useCallback((text) => {
         addChatMsg({ type: 'user', text })
+
+        // ── Phase 0 : tout est géré par IntroPhase0 ──
+        if (phase === 0) {
+            if (phase0HandlerRef.current) {
+                phase0HandlerRef.current(text)
+            }
+            return
+        }
+
+        // ── Phase 1 & 2 : réponses contextuelles normales ──
         const key = text.toLowerCase()
         const isFolle = key.includes('folle')
         let response = CHAT_RESPONSES[key]
         if (isFolle || !response) {
             response = WILD_QUESTIONS[Math.floor(Math.random() * WILD_QUESTIONS.length)]
         }
-        addBotResponse(response || "Très bonne observation ! Continue d'explorer (^_^)", isFolle)
-    }, [addChatMsg, addBotResponse])
+        addBotResponse(response || "Très bonne observation ! Continue d'explorer 😊", isFolle)
+    }, [phase, addChatMsg, addBotResponse])
 
     // ── Voice toggle ──
     const toggleVoice = () => {
@@ -215,14 +271,14 @@ export default function IntroPage({ user }) {
     // ── Field click explanations ──
     const handleFieldClick = (field) => {
         const explanations = {
-            prenom:   `(^_^) Ton prénom — tu l'as tapé dans le premier champ ! En HTML c'est un <code>&lt;input type="text"&gt;</code>. Cette balise accepte n'importe quel texte. C'est la plus courante sur tout le web.`,
+            prenom:   `😊 Ton prénom — tu l'as tapé dans le premier champ ! En HTML c'est un <code>&lt;input type="text"&gt;</code>. Cette balise accepte n'importe quel texte. C'est la plus courante sur tout le web.`,
             classe:   `Ta classe — encore un <code>&lt;input type="text"&gt;</code>. Même balise, contenu différent. Le formulaire reçoit juste du texte, il ne sait pas si c'est un prénom ou une classe !`,
             niveau:   `Tu as choisi ton niveau avec un bouton rond. En HTML c'est un <code>&lt;input type="radio"&gt;</code>. Les boutons radio autorisent un seul choix parmi plusieurs — essaie : tu ne peux pas cocher deux niveaux à la fois.`,
             interets: `Tes centres d'intérêts — les cases à cocher s'appellent <code>&lt;input type="checkbox"&gt;</code>. Contrairement aux radio, tu peux en cocher plusieurs. C'est pour ça que les deux existent !`,
             dispo:    `Ta disponibilité vient d'une liste déroulante : c'est une balise <code>&lt;select&gt;</code> avec des <code>&lt;option&gt;</code> à l'intérieur. Pratique quand les choix sont connus à l'avance.`,
             email:    `Ton email — c'est un <code>&lt;input type="email"&gt;</code>, un type spécial ! Il vérifie automatiquement le format et bloque si tu oublies le "@". C'est le navigateur qui fait ce contrôle, pas toi !`,
         }
-        addBotResponse(explanations[field] || '(^_^) Bonne exploration !')
+        addBotResponse(explanations[field] || '😊 Bonne exploration !')
     }
 
     // ── Phase Navigation ──
@@ -232,7 +288,7 @@ export default function IntroPage({ user }) {
         if (scrollRef.current) scrollRef.current.scrollTop = 0
         if (n === 2) {
             addChatMsg({ type: 'system', text: 'Activité 2 — Situation réelle' })
-            addBotResponse("(^_^) Bien joué ! Maintenant, je vais te mettre dans une vraie situation. Lis bien ce que je t'envoie...")
+            addBotResponse("😊 Bien joué ! Maintenant, je vais te mettre dans une vraie situation. Lis bien ce que je t'envoie...")
             setTimeout(() => {
                 addBotResponse("C'est lundi matin. Tu arrives au lycée et tu vois une affiche : le Club Informatique ouvre ses inscriptions en ligne. Tu sors ton téléphone... et tu tombes sur quelque chose. Regarde.")
                 setTimeout(() => setFormReady(true), 1000)
@@ -249,13 +305,13 @@ export default function IntroPage({ user }) {
             else { next.add(n); addXP(10) }
 
             if (next.size === 1 && !wasSelected) {
-                addBotResponse("(^_^) Parfait. Tu viens de t'identifier, de chercher ou de voter. Mais as-tu remarqué ce qui se passe \"en dessous\" quand tu appuies sur le bouton ? Regarde les zones lumineuses.")
+                addBotResponse("😊 Parfait. Tu viens de t'identifier, de chercher ou de voter. Mais as-tu remarqué ce qui se passe \"en dessous\" quand tu appuies sur le bouton ? Regarde les zones lumineuses.")
             }
             if (next.size === 2 && !wasSelected) {
-                addBotResponse("(^_^) S'inscrire, voter, répondre... As-tu remarqué le point commun visuel entre toutes ces actions ?")
+                addBotResponse("😊 S'inscrire, voter, répondre... As-tu remarqué le point commun visuel entre toutes ces actions ?")
             }
             if (next.size === 3 && !wasSelected) {
-                addBotResponse("(?_?) Un sans faute ! Ces 3 écrans n'ont pourtant rien à voir visuellement, et pourtant, ils cachent exactement la même technologie de base.", true)
+                addBotResponse("🧐 Un sans faute ! Ces 3 écrans n'ont pourtant rien à voir visuellement, et pourtant, ils cachent exactement la même technologie de base.", true)
             }
             return next
         })
@@ -265,7 +321,7 @@ export default function IntroPage({ user }) {
     const handleFormSubmit = () => {
         setFormSubmitted(true)
         addXP(20)
-        addBotResponse("(^_^) Tu viens d'envoyer tes informations ! Dans une vraie page, elles partiraient vers un serveur. Maintenant une petite question — à toi de jouer.")
+        addBotResponse("😊 Tu viens d'envoyer tes informations ! Dans une vraie page, elles partiraient vers un serveur. Maintenant une petite question — à toi de jouer.")
     }
 
     const handleInteretToggle = (val) => {
@@ -280,10 +336,10 @@ export default function IntroPage({ user }) {
         if (correct) {
             addXP(30)
             setTimeout(() => setDefRevealed(true), 600)
-            addBotResponse("(^_^) Exactement ! Un formulaire HTML est bien une zone interactive de collecte d'informations. Tu viens de découvrir la définition par l'expérience — c'est la meilleure façon d'apprendre.")
+            addBotResponse("😊 Exactement ! Un formulaire HTML est bien une zone interactive de collecte d'informations. Tu viens de découvrir la définition par l'expérience — c'est la meilleure façon d'apprendre.")
         } else {
             setTimeout(() => setDefRevealed(true), 1200)
-            addBotResponse("Pas tout à fait ! (-_-) Regarde la réponse B — un formulaire HTML est une zone <em>interactive sur le web</em>. Ce n'est pas du papier, et ce n'est pas un programme qui calcule. Regarde maintenant la définition complète !")
+            addBotResponse("Pas tout à fait ! 😅 Regarde la réponse B — un formulaire HTML est une zone <em>interactive sur le web</em>. Ce n'est pas du papier, et ce n'est pas un programme qui calcule. Regarde maintenant la définition complète !")
         }
     }
 
@@ -291,20 +347,20 @@ export default function IntroPage({ user }) {
     const handleUnlockCTA = () => {
         setCtaVisible(true)
         addXP(20)
-        addChatMsg({ type: 'system', text: `(^_^) Phase 1 complète ! +${xp + 20} XP` })
-        addBotResponse(`(^_^) Félicitations ${user?.name || 'toi'} ! Tu as :<br>• Reconnu des formulaires dans ta vie quotidienne<br>• Rempli un vrai formulaire interactif<br>• Trouvé toi-même la définition<br>• Visualisé d'autres exemples<br><br>Tu es prêt pour la Phase 2 — les Fondations HTML !`)
+        addChatMsg({ type: 'system', text: `😊 Phase 1 complète ! +${xp + 20} XP` })
+        addBotResponse(`😊 Félicitations ${user?.name || 'toi'} ! Tu as :<br>• Reconnu des formulaires dans ta vie quotidienne<br>• Rempli un vrai formulaire interactif<br>• Trouvé toi-même la définition<br>• Visualisé d'autres exemples<br><br>Tu es prêt pour la Phase 2 — les Fondations HTML !`)
     }
 
     const handleCelebrate = () => {
-        addBotResponse("(^_^) C'est parti pour les Fondations HTML ! Tu vas voir les balises une par une — avec des visualisations et des défis. La magie commence maintenant !")
-        setTimeout(() => navigate('/foundations'), 1500)
+        addBotResponse("😊 Excellent ! Dans la phase suivante, tu vas voir le <strong>code</strong> qui se cache derrière ces formulaires. Tu découvriras 5 notions clés : <code>&lt;form&gt;</code>, <code>&lt;input&gt;</code>, les <strong>attributs</strong>, le <strong>type=</strong>, et <code>&lt;label&gt;</code>. Chaque notion t'est expliquée avec une analogie du quotidien — et tu pratiques à chaque étape. C'est là que tout prend son sens !")
+        setTimeout(() => navigate('/foundations'), 2800)
     }
 
     // Tab switch
     const handleTabSwitch = (name) => {
         setActiveTab(name)
         if (name === 'others') {
-            addBotResponse("(^_^) Tu vois — recherche Google, Uber Eats, formulaire de contact... Même principe partout ! Dans les prochaines phases tu apprendras à construire ça toi-même.")
+            addBotResponse("😊 Tu vois — recherche Google, Uber Eats, formulaire de contact... Même principe partout ! Dans les prochaines phases tu apprendras à construire ça toi-même.")
         }
     }
 
@@ -335,7 +391,20 @@ export default function IntroPage({ user }) {
                         <div className="disc-hero-phase">
                             <div className="disc-hero-phase-dot" />Phase 1 · Découvrir
                         </div>
-                        <div className="disc-hero-xp">XP <span className="disc-hero-xp-n">{xp}</span></div>
+                        <div className="disc-hero-xp" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontFamily: 'Outfit,sans-serif' }}>
+                                XP <strong style={{ color: '#1DB97A' }}>{xp}</strong>/100
+                            </span>
+                            <div style={{ width: '72px', height: '5px', borderRadius: '3px', background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
+                                <div style={{
+                                    width: `${Math.min(xp, 100)}%`,
+                                    height: '100%',
+                                    borderRadius: '3px',
+                                    background: 'linear-gradient(90deg, #1DB97A, #0ea5c4)',
+                                    transition: 'width 0.6s cubic-bezier(0.34,1.56,0.64,1)',
+                                }} />
+                            </div>
+                        </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <button
                                 onClick={toggleVoice}
@@ -384,13 +453,39 @@ export default function IntroPage({ user }) {
                     </div>
                     <div className="disc-hero-body">
                         <div className="disc-hero-txt">
-                            <div className="disc-hero-eyebrow">(^_^) Salut {user?.name || 'toi'} — content de te voir !</div>
+                            <div className="disc-hero-eyebrow">😊 Salut {user?.name || 'toi'} — content de te voir !</div>
                             <div className="disc-hero-title">
                                 Tu l'utilises déjà.<br />
                                 <span className="disc-g1t">Sans le savoir.</span>
                             </div>
                             <div className="disc-hero-sub">
-                                TikTok, Instagram, WhatsApp... chaque fois que tu tapes, tu cliques, tu envoies — tu utilises la <strong>même technologie cachée</strong>. Aujourd'hui tu vas découvrir laquelle, et surtout : <strong>apprendre à la recréer toi-même.</strong>
+                                {!typingDone ? (
+                                    <>
+                                        {typedText}
+                                        <span className="typing-cursor" />
+                                    </>
+                                ) : (
+                                    <>
+                                        TikTok, Instagram, WhatsApp... chaque fois que tu tapes, tu cliques, tu envoies — tu utilises la <strong>même technologie cachée</strong>. Aujourd'hui tu vas découvrir laquelle, et surtout : <strong>apprendre à la recréer toi-même.</strong>
+                                    </>
+                                )}
+                            </div>
+                            <div style={{
+                                marginTop: '12px',
+                                padding: '10px 14px',
+                                borderRadius: '10px',
+                                background: 'rgba(29,185,122,0.08)',
+                                border: '1px solid rgba(29,185,122,0.22)',
+                                fontSize: '12px',
+                                color: 'rgba(255,255,255,0.7)',
+                                fontFamily: 'Outfit, sans-serif',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                lineHeight: '1.5',
+                            }}>
+                                <span style={{ color: '#1DB97A', fontWeight: '800', fontSize: '14px', flexShrink: 0 }}>🎯</span>
+                                <span><strong style={{ color: '#1DB97A' }}>Objectif :</strong> À la fin de cette phase, tu sauras reconnaître un formulaire HTML dans n'importe quelle application.</span>
                             </div>
                             {/* Progress dots */}
                             <div className="disc-hero-dots">
@@ -401,7 +496,7 @@ export default function IntroPage({ user }) {
                             </div>
                         </div>
                         <div className="disc-bot-card">
-                            <div className="disc-bc-eyes">^_^</div>
+                            <div className="disc-bc-eyes">💎</div>
                             <div className="disc-bc-mouth">hello</div>
                             <div className="disc-bc-dot" />
                         </div>
@@ -409,7 +504,19 @@ export default function IntroPage({ user }) {
                 </div>
             </div>
 
-            <div className="disc-scroll" ref={scrollRef}>
+            {showContent && <div className="disc-scroll disc-content-reveal" ref={scrollRef}>
+
+                {/* ═══ PHASE 0 — Ancrage interactif personnalisé ═══ */}
+                {phase === 0 && (
+                    <IntroPhase0
+                        user={user}
+                        onComplete={() => navigate('/foundations')}
+                        addChatMsg={addChatMsg}
+                        addBotResponse={addBotResponse}
+                        onRegisterHandler={(fn) => { phase0HandlerRef.current = fn }}
+                    />
+                )}
+
                 {/* ═══ PHASE 1 — App Recognition ═══ */}
                 {phase === 1 && (
                     <div className="disc-phase">
@@ -441,7 +548,7 @@ export default function IntroPage({ user }) {
                         {selected.size > 0 && (
                             <div className="disc-reveal-banner">
                                 <div className="disc-rb-face">
-                                    {selected.size === 3 ? '(!)' : '(^)'}
+                                    {selected.size === 3 ? '(!)' : '👆'}
                                 </div>
                                 <div className="disc-rb-txt">
                                     {selected.size < 3 ? (
@@ -462,7 +569,7 @@ export default function IntroPage({ user }) {
                         <div className="disc-p1-next">
                             <button
                                 className={`disc-nbtn ${selected.size === 0 ? 'off' : ''}`}
-                                onClick={() => goPhase(2)}
+                                onClick={handleCelebrate}
                                 disabled={selected.size === 0}
                             >
                                 Compris ! Je veux voir comment ça marche &nbsp;›
@@ -471,12 +578,12 @@ export default function IntroPage({ user }) {
                     </div>
                 )}
 
-                {/* ═══ PHASE 2 — Form + MCQ + Definition ═══ */}
-                {phase === 2 && (
+                {/* ═══ PHASE 2 — supprimée ═══ */}
+                {false && (
                     <div className="disc-phase">
                         {!formReady && (
                             <div className="disc-situation-intro" style={{ textAlign: 'center', opacity: 0.7 }}>
-                                (^_^) Le bot prépare la situation...
+                                😊 Le bot prépare la situation...
                             </div>
                         )}
 
@@ -545,7 +652,7 @@ export default function IntroPage({ user }) {
                                             <input className="disc-fc-input" type="email" placeholder="ton@email.com" value={fEmail} onChange={e => setFEmail(e.target.value)} />
                                         </div>
                                         <button className="disc-fc-submit" onClick={handleFormSubmit}>
-                                            Envoyer mon inscription (^_^)
+                                            Envoyer mon inscription 😊
                                         </button>
                                     </div>
                                 </div>
@@ -614,27 +721,27 @@ export default function IntroPage({ user }) {
                                                 </div>
                                                 <div className="disc-dc-rows">
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('prenom')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Prénom</span><span className="disc-dc-val">{fPrenom || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Prénom</span><span className="disc-dc-val">{fPrenom || '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('classe')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Classe</span><span className="disc-dc-val">{fClasse || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Classe</span><span className="disc-dc-val">{fClasse || '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('niveau')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Niveau</span><span className="disc-dc-val disc-g1t">{fNiveau || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Niveau</span><span className="disc-dc-val disc-g1t">{fNiveau || '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('interets')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Intérêts</span><span className="disc-dc-val" style={{ fontSize: '11px' }}>{fInterets.length > 0 ? fInterets.join(', ') : '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Intérêts</span><span className="disc-dc-val" style={{ fontSize: '11px' }}>{fInterets.length > 0 ? fInterets.join(', ') : '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('dispo')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Disponibilité</span><span className="disc-dc-val">{fDispo || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Disponibilité</span><span className="disc-dc-val">{fDispo || '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                     <div className="disc-dc-row disc-dc-row--click" onClick={() => handleFieldClick('email')} title="Clique pour en savoir plus">
-                                                        <span className="disc-dc-key">Email</span><span className="disc-dc-val" style={{ color: 'var(--teal-dark)' }}>{fEmail || '—'}</span><span className="disc-dc-hint">(^)</span>
+                                                        <span className="disc-dc-key">Email</span><span className="disc-dc-val" style={{ color: 'var(--teal-dark)' }}>{fEmail || '—'}</span><span className="disc-dc-hint">👆</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="disc-info-note teal">
-                                                <strong>(^_^) Clique sur chaque ligne</strong> pour découvrir la balise HTML qui se cache derrière chaque information que tu as remplie !
+                                                <strong>😊 Clique sur chaque ligne</strong> pour découvrir la balise HTML qui se cache derrière chaque information que tu as remplie !
                                             </div>
                                         </div>
                                     )}
@@ -679,14 +786,54 @@ export default function IntroPage({ user }) {
                                                 </div>
                                             </div>
                                             <div className="disc-info-note viola">
-                                                <strong>(^_^) Tu les reconnais ?</strong> Recherche, commande, contact... Ce sont tous des formulaires HTML. Même principe, contextes différents.
+                                                <strong>😊 Tu les reconnais ?</strong> Recherche, commande, contact... Ce sont tous des formulaires HTML. Même principe, contextes différents.
                                             </div>
                                         </div>
                                     )}
                                 </div>
 
                                 <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button className="disc-nbtn" onClick={handleUnlockCTA}>(^_^) J'ai tout compris — on continue !</button>
+                                    <button className="disc-nbtn" onClick={handleUnlockCTA}>😊 J'ai tout compris — on continue !</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ── Bilan de découverte ── */}
+                        {ctaVisible && (
+                            <div style={{
+                                margin: '20px 0 4px',
+                                padding: '20px 24px',
+                                borderRadius: '16px',
+                                background: 'linear-gradient(135deg, rgba(29,185,122,0.07), rgba(124,111,247,0.07))',
+                                border: '1px solid rgba(29,185,122,0.18)',
+                            }}>
+                                <div style={{ fontSize: '13px', fontWeight: '800', color: '#1DB97A', marginBottom: '14px', fontFamily: 'Outfit, sans-serif', letterSpacing: '0.03em' }}>
+                                    ✅ Ce que tu viens de découvrir
+                                </div>
+                                {[
+                                    'Tu as reconnu des formulaires HTML dans Instagram, TikTok et WhatsApp',
+                                    'Tu as rempli un vrai formulaire interactif et envoyé tes données',
+                                    "Tu as trouvé toi-même la définition d'un formulaire HTML",
+                                    'Tu sais que chaque champ correspond à une balise précise : input, select, radio...',
+                                ].map((item, i) => (
+                                    <div key={i} style={{
+                                        display: 'flex', alignItems: 'flex-start', gap: '10px',
+                                        marginBottom: '10px', fontSize: '13px',
+                                        color: 'rgba(255,255,255,0.78)',
+                                        fontFamily: 'Outfit, sans-serif',
+                                        lineHeight: '1.5',
+                                    }}>
+                                        <span style={{ color: '#1DB97A', fontWeight: '800', flexShrink: 0, marginTop: '1px' }}>✓</span>
+                                        {item}
+                                    </div>
+                                ))}
+                                <div style={{
+                                    marginTop: '14px', paddingTop: '14px',
+                                    borderTop: '1px solid rgba(255,255,255,0.07)',
+                                    fontSize: '12px', color: 'rgba(255,255,255,0.45)',
+                                    fontFamily: 'Outfit, sans-serif',
+                                }}>
+                                    🔓 Phase suivante débloquée — <strong style={{ color: 'rgba(255,255,255,0.65)' }}>Les Fondations HTML</strong>
                                 </div>
                             </div>
                         )}
@@ -698,7 +845,7 @@ export default function IntroPage({ user }) {
                                     <div className="disc-cta-icon">[→]</div>
                                     <div className="disc-cta-txt">
                                         <p>C'est compris, on passe aux Fondations !</p>
-                                        <span>Tu vas maintenant apprendre les balises HTML une par une (^_^)</span>
+                                        <span>Tu vas apprendre les 5 balises clés : form, input, type=, attributs, label 😊</span>
                                     </div>
                                     <div className="disc-cta-arr">›</div>
                                 </div>
@@ -706,7 +853,7 @@ export default function IntroPage({ user }) {
                         )}
                     </div>
                 )}
-            </div>
+            </div>}
         </AppShell>
     )
 }

@@ -7,14 +7,62 @@ import { HiOutlineAcademicCap, HiOutlineUser, HiOutlineEye, HiOutlineHandRaised,
 import TopicVisualization from './TopicVisualizations'
 import InteractivePreview from './InteractivePreview'
 
+// ── Composant streaming : affiche le texte caractère par caractère ──
+function StreamingMessage({ content, onDone }) {
+    const [displayed, setDisplayed] = useState('')
+    const [done, setDone] = useState(false)
+
+    useEffect(() => {
+        setDisplayed('')
+        setDone(false)
+        let i = 0
+        const CHUNK = 1   // 1 caractère par tick
+        const SPEED = 28  // ms par tick → ~35 car/sec
+        const id = setInterval(() => {
+            if (i < content.length) {
+                i = Math.min(i + CHUNK, content.length)
+                setDisplayed(content.slice(0, i))
+            } else {
+                clearInterval(id)
+                setDone(true)
+                onDone?.()
+            }
+        }, SPEED)
+        return () => clearInterval(id)
+    }, [content])
+
+    if (done) {
+        return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+    }
+    return (
+        <span style={{ whiteSpace: 'pre-wrap', lineHeight: 1.75 }}>
+            {displayed}
+            <span className="typing-cursor" />
+        </span>
+    )
+}
+
 export default function ChatPanel({ messages, loading, currentTopic, onSend, onShowVisualization, onShowInteractive, onReadyForQuiz }) {
     const [input, setInput] = useState('')
+    const [streamingId, setStreamingId] = useState(null)
     const messagesEndRef = useRef(null)
     const inputRef = useRef(null)
+    const prevCountRef = useRef(messages.length)
+
+    // Détecte l'arrivée d'un nouveau message bot → lance le streaming
+    useEffect(() => {
+        if (messages.length > prevCountRef.current) {
+            const last = messages[messages.length - 1]
+            if (last?.role === 'bot' && !last.type) {
+                setStreamingId(last.id)
+            }
+        }
+        prevCountRef.current = messages.length
+    }, [messages])
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages, loading])
+    }, [messages, loading, streamingId])
 
     const handleSend = () => {
         if (!input.trim() || loading) return
@@ -79,7 +127,12 @@ export default function ChatPanel({ messages, loading, currentTopic, onSend, onS
                                     </button>
                                 </div>
                             ) : msg.role === 'bot' ? (
-                                <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                msg.id === streamingId
+                                    ? <StreamingMessage
+                                        content={msg.content}
+                                        onDone={() => setStreamingId(null)}
+                                      />
+                                    : <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                             ) : (
                                 <p>{msg.content}</p>
                             )}

@@ -6,6 +6,198 @@ import { useNavigate } from 'react-router-dom'
 import html2pdf from 'html2pdf.js'
 import '../index.css' 
 
+// ── Parse les champs input du code HTML de l'élève ──
+function parseFields(html) {
+  const fields = []
+  const re = /<input([^>]*)>/gi
+  let m
+  while ((m = re.exec(html)) !== null) {
+    const attrs = m[1]
+    const type = (attrs.match(/type=["']([^"']*)["']/i)||[])[1] || 'text'
+    const placeholder = (attrs.match(/placeholder=["']([^"']*)["']/i)||[])[1] || ''
+    if (!['submit','button','hidden','reset'].includes(type.toLowerCase())) {
+      fields.push({ type: type.toLowerCase(), placeholder })
+    }
+  }
+  return fields.slice(0, 4)
+}
+
+const SAMPLE = {
+  text:     'Liodavinci',
+  email:    'lion@gmail.com',
+  number:   '16',
+  tel:      '0607080910',
+  date:     '2008-01-15',
+  password: '••••••••',
+  default:  'Ma réponse',
+}
+
+// ── Animation téléphone 3D ──
+function Phone3DSubmit({ fields, theme }) {
+  const [phase, setPhase]     = useState('enter')   // enter → type → submit → success
+  const [fieldIdx, setFieldIdx] = useState(0)
+  const [typed, setTyped]     = useState(fields.map(() => ''))
+  const [submitFlash, setSubmitFlash] = useState(false)
+
+  // Lancer le remplissage après que le téléphone entre
+  useEffect(() => {
+    const t = setTimeout(() => setPhase('type'), 1500)
+    return () => clearTimeout(t)
+  }, [])
+
+  // Typing séquentiel champ par champ
+  useEffect(() => {
+    if (phase !== 'type') return
+    if (fieldIdx >= fields.length) {
+      // Tous les champs remplis → soumettre
+      setSubmitFlash(true)
+      setTimeout(() => setPhase('success'), 1100)
+      return
+    }
+    const val = SAMPLE[fields[fieldIdx]?.type] || SAMPLE.default
+    let i = 0
+    const iv = setInterval(() => {
+      if (i < val.length) { i++; setTyped(prev => { const n=[...prev]; n[fieldIdx]=val.slice(0,i); return n }) }
+      else { clearInterval(iv); setTimeout(() => setFieldIdx(f => f + 1), 380) }
+    }, 55)
+    return () => clearInterval(iv)
+  }, [phase, fieldIdx])
+
+  const fldStyle = (active, done) => ({
+    border: `1.5px solid ${active ? '#1DB97A' : done ? '#1DB97A55' : '#eaeaea'}`,
+    borderRadius: 6, padding: '5px 8px', fontSize: 10,
+    fontFamily: 'Outfit,sans-serif', color: active || done ? '#222' : '#ccc',
+    background: active ? '#f0fff7' : done ? '#f8fff9' : '#f9f9f9',
+    minHeight: 26, transition: 'all 0.3s',
+    boxShadow: active ? '0 0 0 2px #1DB97A22' : 'none',
+    display: 'flex', alignItems: 'center',
+  })
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 100, damping: 14 }}
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '10px 0 24px' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.5)', fontFamily: 'Outfit,sans-serif', textAlign: 'center', letterSpacing: '0.06em', textTransform: 'uppercase' }}
+      >
+        Ton formulaire sur un vrai téléphone 📱
+      </motion.div>
+
+      {/* Téléphone 3D */}
+      <motion.div
+        initial={{ rotateY: -35, rotateX: 12, y: 60, opacity: 0, scale: 0.82 }}
+        animate={{ rotateY: 0, rotateX: 0, y: 0, opacity: 1, scale: 1, ...(phase==='success' ? {} : {}) }}
+        transition={{ duration: 1.1, type: 'spring', stiffness: 65, damping: 13 }}
+        style={{
+          transformPerspective: 1100, width: 195,
+          background: 'linear-gradient(160deg, #2e2e46 0%, #18182a 100%)',
+          borderRadius: 34, padding: 7,
+          boxShadow: '22px 22px 55px rgba(0,0,0,0.7), -3px -3px 14px rgba(255,255,255,0.05), inset 0 0 0 0.5px rgba(255,255,255,0.08)',
+          position: 'relative',
+        }}
+      >
+        {/* Boutons latéraux */}
+        <div style={{ position:'absolute', left:-4, top:75, width:4, height:22, background:'#222238', borderRadius:'2px 0 0 2px' }}/>
+        <div style={{ position:'absolute', left:-4, top:105, width:4, height:22, background:'#222238', borderRadius:'2px 0 0 2px' }}/>
+        <div style={{ position:'absolute', right:-4, top:90, width:4, height:34, background:'#222238', borderRadius:'0 2px 2px 0' }}/>
+
+        {/* Écran */}
+        <div style={{ width:'100%', background:'#fff', borderRadius:28, overflow:'hidden', height:390, display:'flex', flexDirection:'column' }}>
+          {/* Encoche */}
+          <div style={{ height:20, background:'#fff', display:'flex', alignItems:'flex-start', justifyContent:'center', flexShrink:0 }}>
+            <div style={{ width:64, height:14, background:'#18182a', borderRadius:'0 0 10px 10px' }}/>
+          </div>
+
+          {/* Header */}
+          <div style={{ background:'linear-gradient(135deg,#1DB97A,#0ea5c4)', padding:'9px 12px 7px', textAlign:'center', flexShrink:0 }}>
+            <div style={{ color:'#fff', fontWeight:800, fontSize:11, fontFamily:'Outfit,sans-serif' }}>
+              📝 {theme || 'Mon Formulaire'}
+            </div>
+          </div>
+
+          {/* Corps */}
+          <AnimatePresence mode="wait">
+            {phase === 'success' ? (
+              <motion.div key="success"
+                initial={{ opacity:0, scale:0.85 }} animate={{ opacity:1, scale:1 }}
+                transition={{ type:'spring', stiffness:200 }}
+                style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, background:'#f0fff7' }}
+              >
+                <motion.div
+                  initial={{ scale:0 }} animate={{ scale:1 }}
+                  transition={{ type:'spring', stiffness:300, damping:14, delay:0.1 }}
+                  style={{ width:52, height:52, borderRadius:'50%', background:'#1DB97A', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 6px 24px #1DB97A55' }}
+                >
+                  <FiCheckCircle size={26} color="#fff" strokeWidth={2.5} />
+                </motion.div>
+                <div style={{ fontSize:11, fontWeight:800, color:'#1DB97A', fontFamily:'Outfit,sans-serif' }}>Formulaire envoyé !</div>
+                <div style={{ fontSize:9, color:'#aaa', fontFamily:'Outfit,sans-serif' }}>Merci pour ta réponse ✓</div>
+              </motion.div>
+            ) : (
+              <motion.div key="form"
+                style={{ padding:'9px 10px', flex:1, display:'flex', flexDirection:'column', gap:7, overflow:'hidden' }}
+              >
+                {fields.map((f, i) => {
+                  const isActive = phase === 'type' && i === fieldIdx
+                  const isDone   = i < fieldIdx || (phase === 'submit')
+                  return (
+                    <div key={i} style={{ position:'relative' }}>
+                      {f.placeholder && (
+                        <div style={{ fontSize:8.5, color:'#888', fontFamily:'Outfit,sans-serif', marginBottom:2 }}>{f.placeholder}</div>
+                      )}
+                      <div style={fldStyle(isActive, isDone)}>
+                        <span style={{ fontFamily:'Outfit,sans-serif', fontSize:10, color:'#333' }}>
+                          {typed[i] || (isDone ? (SAMPLE[f.type]||SAMPLE.default) : '')}
+                        </span>
+                        {isActive && (
+                          <motion.span animate={{ opacity:[1,0,1] }} transition={{ repeat:Infinity, duration:0.65 }}
+                            style={{ width:1.5, height:10, background:'#1DB97A', display:'inline-block', marginLeft:1 }} />
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {/* Bouton envoyer */}
+                <motion.div
+                  animate={submitFlash ? { scale:[1,0.93,1.05,1], background:['#d0d0d0','#1DB97A','#1DB97A'] } : {}}
+                  transition={{ duration:0.55 }}
+                  style={{ marginTop:'auto', background: fieldIdx >= fields.length ? '#1DB97A' : '#d0d0d0', color:'#fff', borderRadius:7, padding:'8px', textAlign:'center', fontSize:11, fontWeight:800, fontFamily:'Outfit,sans-serif', transition:'background 0.4s' }}
+                >
+                  {submitFlash ? '⚡ Envoi en cours…' : 'Envoyer'}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function StreamingHtmlMessage({ html, onDone }) {
+  const plain = (html || '').replace(/<[^>]*>/g, '')
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone]           = useState(false)
+  useEffect(() => {
+    setDisplayed(''); setDone(false)
+    let i = 0
+    const id = setInterval(() => {
+      if (i < plain.length) { i++; setDisplayed(plain.slice(0, i)) }
+      else { clearInterval(id); setDone(true); onDone?.() }
+    }, 22)
+    return () => clearInterval(id)
+  }, [html])
+  if (done) return <span dangerouslySetInnerHTML={{ __html: html }} />
+  return <span style={{ whiteSpace:'pre-wrap', lineHeight:1.7 }}>{displayed}<span className="typing-cursor" /></span>
+}
+
 export default function MiniProjectPage({ user }) {
   const navigate = useNavigate()
   
@@ -15,7 +207,8 @@ export default function MiniProjectPage({ user }) {
   const [formName, setFormName] = useState('')
   const [projectCode, setProjectCode] = useState('')
   
-  const [exportReady, setExportReady] = useState(false)
+  const [exportReady, setExportReady]   = useState(false)
+  const [showPhone3D, setShowPhone3D]   = useState(false)
   const [mistakes, setMistakes] = useState(new Set())
   const [dayMode, setDayMode] = useState(false)
   const liveFeedbackSent = useRef(new Set())
@@ -29,15 +222,23 @@ export default function MiniProjectPage({ user }) {
       html: `Bravo d'être arrivé jusqu'ici <strong>${user?.name || 'toi'}</strong> ! 🎉<br><br>Il est temps de créer ton tout premier formulaire complet à partir de zéro.<br><br>👉 <strong>Dans quelle activité aimerais-tu utiliser ce formulaire ?</strong> (ex: Inscription au club de foot, Commande de pizza, Tournoi d'échecs...)`,
     },
   ])
-  const [chatInput, setChatInput] = useState('')
+  const [chatInput, setChatInput]     = useState('')
   const [chatLoading, setChatLoading] = useState(false)
-  const msgsRef = useRef(null)
+  const [streamingIdx, setStreamingIdx] = useState(null)
+  const msgsRef       = useRef(null)
+  const prevMsgCount  = useRef(2)
 
   useEffect(() => {
-    if (msgsRef.current) {
-      msgsRef.current.scrollTop = msgsRef.current.scrollHeight
-    }
+    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight
   }, [messages, chatLoading])
+
+  useEffect(() => {
+    if (messages.length > prevMsgCount.current) {
+      const last = messages[messages.length - 1]
+      if (last?.type === 'bot') setStreamingIdx(messages.length - 1)
+    }
+    prevMsgCount.current = messages.length
+  }, [messages])
 
   const addMsg = (type, html, delay = 0) => {
     if (delay > 0) {
@@ -141,6 +342,7 @@ export default function MiniProjectPage({ user }) {
       bilan += "Tu peux maintenant imprimer ton travail pour le garder en portfolio. Clique sur <strong>Télécharger mon Formulaire</strong> en haut du Rendu Direct !"
       
       addMsg('bot', bilan, 500)
+      setTimeout(() => setShowPhone3D(true), 1800)
     }
   }
 
@@ -169,6 +371,67 @@ export default function MiniProjectPage({ user }) {
 
   return (
     <div className="fnd-app">
+
+      {/* ── Modal téléphone 3D ── */}
+      <AnimatePresence>
+        {showPhone3D && (
+          <motion.div
+            key="phone-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPhone3D(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 1000,
+              background: 'rgba(0,0,0,0.75)',
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            {/* Panneau centré - stoppe la propagation du clic */}
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 30 }}
+              transition={{ type: 'spring', stiffness: 120, damping: 16 }}
+              onClick={e => e.stopPropagation()}
+              style={{
+                position: 'relative',
+                background: 'linear-gradient(180deg, #0a0a12 0%, #0f0f1e 100%)',
+                borderRadius: 28, padding: '32px 28px 28px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 40px 80px rgba(0,0,0,0.8)',
+                minWidth: 280,
+              }}
+            >
+              {/* Croix fermeture */}
+              <button
+                onClick={() => setShowPhone3D(false)}
+                style={{
+                  position: 'absolute', top: 14, right: 14,
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'rgba(255,255,255,0.6)', fontSize: 16, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'Outfit,sans-serif', transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background='rgba(255,80,80,0.2)'; e.currentTarget.style.color='#ff6b6b' }}
+                onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.08)'; e.currentTarget.style.color='rgba(255,255,255,0.6)' }}
+              >
+                ✕
+              </button>
+
+              <Phone3DSubmit
+                key={showPhone3D}
+                fields={parseFields(projectCode)}
+                theme={theme}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ────────────────────────────────────────────────────────
           COLONNE GAUCHE — LE CHAT CODEBOT
       ──────────────────────────────────────────────────────── */}
@@ -194,7 +457,12 @@ export default function MiniProjectPage({ user }) {
                 {m.type === 'sys' ? (
                   <div className="fnd-msg-sys">{m.html}</div>
                 ) : (
-                  <div className="fnd-msg-bubble" dangerouslySetInnerHTML={{ __html: m.html }} />
+                  <div className="fnd-msg-bubble">
+                    {m.type === 'bot' && messages.indexOf(m) === streamingIdx
+                      ? <StreamingHtmlMessage html={m.html} onDone={() => setStreamingIdx(null)} />
+                      : <span dangerouslySetInnerHTML={{ __html: m.html }} />
+                    }
+                  </div>
                 )}
                 {m.type === 'user' && <div className="fnd-msg-avt u">{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>}
               </motion.div>
@@ -228,9 +496,25 @@ export default function MiniProjectPage({ user }) {
       ──────────────────────────────────────────────────────── */}
       <div className={`fnd-content-col${dayMode ? ' day' : ''}`} style={{ padding: '0 32px' }}>
         <div className="fnd-top-hd">
-          <div className="fnd-hd-left">
-            <h1 className="fnd-ti-main">Mon Mini-Projet <span style={{color:'var(--amb)', textShadow: '0 0 15px rgba(255, 189, 46, 0.4)'}}>HTML</span></h1>
-            <div className="fnd-ti-sub">Crée, vérifie, et imprime ton formulaire comme un pro.</div>
+          <div className="fnd-hd-left" style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                display:'flex', alignItems:'center', gap:5,
+                background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)',
+                color:'rgba(255,255,255,0.55)', borderRadius:10,
+                padding:'6px 12px', fontSize:12, fontFamily:'Outfit,sans-serif',
+                fontWeight:600, cursor:'pointer', flexShrink:0, transition:'all 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='rgba(255,255,255,0.25)' }}
+              onMouseLeave={e => { e.currentTarget.style.color='rgba(255,255,255,0.55)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.1)' }}
+            >
+              ‹ Retour
+            </button>
+            <div>
+              <h1 className="fnd-ti-main">Mon Mini-Projet <span style={{color:'var(--amb)', textShadow: '0 0 15px rgba(255, 189, 46, 0.4)'}}>HTML</span></h1>
+              <div className="fnd-ti-sub">Crée, vérifie, et imprime ton formulaire comme un pro.</div>
+            </div>
           </div>
           <button
             className="mp-mode-toggle"
@@ -295,20 +579,21 @@ export default function MiniProjectPage({ user }) {
           </div>
         ) : (
           /* ── LE WORKSPACE DEBLOQUÉ ── */
-          <motion.div 
+          <motion.div
             className="fnd-workspace"
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '32px', flex: 1, minHeight: 0, overflowY: 'auto', paddingBottom: '40px' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 32, flex: 1, minHeight: 0, overflowY: 'auto', paddingBottom: 40 }}
           >
             {/* L'Éditeur Pro (Style macOS) */}
-            <div style={{ flexShrink: 0, borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(94, 234, 212, 0.05)' }}>
-              <div style={{ background: '#1e1e1e', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff5f56', boxShadow: '0 0 5px rgba(255,95,86,0.5)' }} />
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffbd2e', boxShadow: '0 0 5px rgba(255,189,46,0.5)' }} />
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#27c93f', boxShadow: '0 0 5px rgba(39,201,63,0.5)' }} />
-                <code style={{ marginLeft: '16px', color: 'rgba(255,255,255,0.4)', fontSize: '12px', fontWeight: '500', letterSpacing: '0.5px' }}>index.html — Éditeur Temps Réel</code>
+            <div style={{ flexShrink: 0, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(94,234,212,0.05)' }}>
+              <div style={{ background: '#1e1e1e', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width:12, height:12, borderRadius:'50%', background:'#ff5f56', boxShadow:'0 0 5px rgba(255,95,86,0.5)' }} />
+                <div style={{ width:12, height:12, borderRadius:'50%', background:'#ffbd2e', boxShadow:'0 0 5px rgba(255,189,46,0.5)' }} />
+                <div style={{ width:12, height:12, borderRadius:'50%', background:'#27c93f', boxShadow:'0 0 5px rgba(39,201,63,0.5)' }} />
+                <code style={{ marginLeft:16, color:'rgba(255,255,255,0.4)', fontSize:12, fontWeight:500, letterSpacing:'0.5px' }}>index.html — Éditeur Temps Réel</code>
+                <span style={{ marginLeft:'auto', fontSize:10, color:'rgba(255,255,255,0.25)', fontFamily:'Outfit,sans-serif' }}>{projectCode.split('\n').length} lignes</span>
               </div>
               <textarea
                 value={projectCode}
@@ -316,23 +601,25 @@ export default function MiniProjectPage({ user }) {
                 spellCheck={false}
                 style={{
                   width: '100%',
-                  height: '240px',
+                  minHeight: '180px',
+                  height: '180px',
                   backgroundColor: '#0d1117',
                   color: '#5eead4',
                   border: 'none',
                   padding: '24px',
                   fontFamily: '"Fira Code", monospace',
-                  fontSize: '15px',
-                  lineHeight: '1.6',
+                  fontSize: '14px',
+                  lineHeight: '1.7',
                   resize: 'vertical',
                   outline: 'none',
-                  boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8)'
+                  boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8)',
+                  display: 'block',
                 }}
               />
             </div>
 
             {/* Le Navigateur Web (Aperçu) */}
-            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.3)', background: '#f8fafc', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.3)', background: '#f8fafc', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
               <div style={{ background: '#e2e8f0', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #cbd5e1' }}>
                 <div style={{ display: 'flex', gap: '8px' }}>
                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#94a3b8' }} />
@@ -353,9 +640,9 @@ export default function MiniProjectPage({ user }) {
                       className="premium-export-btn"
                       style={{
                         display: 'flex', alignItems: 'center', gap: '8px',
-                        background: 'linear-gradient(135deg, var(--vio) 0%, #b624ff 100%)', color: 'white', fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #1DB97A 0%, #0ea5c4 100%)', color: 'white', fontWeight: 'bold',
                         border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer',
-                        boxShadow: '0 4px 15px rgba(123,111,248,0.4)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px'
+                        boxShadow: '0 4px 15px rgba(29,185,122,0.45)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px'
                       }}
                     >
                       <FiDownload size={16} /> Transformer en PDF
@@ -364,13 +651,11 @@ export default function MiniProjectPage({ user }) {
                 )}
               </div>
               
-              <div 
-                style={{ 
-                  background: '#f8fafc',
-                  padding: '32px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  minHeight: '300px'
+              <div
+                style={{
+                  background: '#f8fafc', padding: '32px',
+                  display: 'flex', justifyContent: 'center',
+                  minHeight: 520,
                 }}
               >
                 <div 
@@ -415,6 +700,7 @@ export default function MiniProjectPage({ user }) {
               </div>
             </div>
             
+
             {exportReady && (
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
@@ -422,6 +708,25 @@ export default function MiniProjectPage({ user }) {
                 transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
                 style={{ alignSelf: 'center', width: '100%', maxWidth: '420px', marginTop: '8px', marginBottom: '32px' }}
               >
+                {/* Bouton voir sur mobile */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setShowPhone3D(v => !v)}
+                  style={{
+                    width: '100%', marginBottom: 12, padding: '14px 24px',
+                    background: showPhone3D ? 'rgba(29,185,122,0.12)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${showPhone3D ? '#1DB97A' : 'rgba(255,255,255,0.12)'}`,
+                    borderRadius: 14, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                    color: showPhone3D ? '#1DB97A' : 'rgba(255,255,255,0.6)',
+                    fontFamily: 'Outfit,sans-serif', fontWeight: 700, fontSize: 14,
+                    transition: 'all 0.25s',
+                  }}
+                >
+                  📱 {showPhone3D ? 'Masquer la démo mobile' : 'Voir mon formulaire sur mobile'}
+                </motion.button>
+
                 <motion.button
                   whileHover={{ scale: 1.03, y: -3 }}
                   whileTap={{ scale: 0.97 }}
@@ -429,7 +734,7 @@ export default function MiniProjectPage({ user }) {
                   style={{
                     width: '100%',
                     padding: '18px 24px',
-                    background: 'linear-gradient(135deg, #7b6ff8 0%, #18c97a 100%)',
+                    background: 'linear-gradient(135deg, #1DB97A 0%, #0ea5c4 100%)',
                     border: 'none',
                     borderRadius: '18px',
                     cursor: 'pointer',
@@ -437,7 +742,7 @@ export default function MiniProjectPage({ user }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '12px',
-                    boxShadow: '0 8px 32px rgba(123,111,248,0.35), 0 2px 8px rgba(24,201,122,0.2)',
+                    boxShadow: '0 8px 32px rgba(29,185,122,0.4), 0 2px 8px rgba(14,165,196,0.25)',
                   }}
                 >
                   <FiArrowRight size={22} color="rgba(255,255,255,0.9)" />

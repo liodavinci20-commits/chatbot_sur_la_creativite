@@ -1,6 +1,37 @@
 // ChatPanel2.jsx — Chat panel redesigné (dark theme, typing indicator, chips)
 import { useState, useRef, useEffect } from 'react'
 
+// ── Streaming HTML : tape le texte brut puis affiche le HTML complet ──
+function StreamingHtmlMessage({ html, onDone }) {
+    const plain = (html || '').replace(/<[^>]*>/g, '')
+    const [displayed, setDisplayed] = useState('')
+    const [done, setDone]           = useState(false)
+
+    useEffect(() => {
+        setDisplayed('')
+        setDone(false)
+        let i = 0
+        const id = setInterval(() => {
+            if (i < plain.length) {
+                i = Math.min(i + 1, plain.length)
+                setDisplayed(plain.slice(0, i))
+            } else {
+                clearInterval(id)
+                setDone(true)
+                onDone?.()
+            }
+        }, 28)
+        return () => clearInterval(id)
+    }, [html])
+
+    if (done) return <span dangerouslySetInnerHTML={{ __html: html }} />
+    return (
+        <span style={{ whiteSpace: 'pre-wrap' }}>
+            {displayed}<span className="typing-cursor" />
+        </span>
+    )
+}
+
 export default function ChatPanel2({
     messages = [],
     loading = false,
@@ -9,15 +40,28 @@ export default function ChatPanel2({
     chips = [],
     onSend,
 }) {
-    const [input, setInput] = useState('')
-    const msgsRef = useRef(null)
+    const [input, setInput]           = useState('')
+    const [streamingIdx, setStreamingIdx] = useState(null)
+    const msgsRef    = useRef(null)
+    const prevCount  = useRef(messages.length)
+
+    // Détecte un nouveau message bot → lance le streaming
+    useEffect(() => {
+        if (messages.length > prevCount.current) {
+            const last = messages[messages.length - 1]
+            if (last?.type === 'bot' || last?.type === 'soc') {
+                setStreamingIdx(messages.length - 1)
+            }
+        }
+        prevCount.current = messages.length
+    }, [messages])
 
     // Auto-scroll vers le bas
     useEffect(() => {
         if (msgsRef.current) {
             msgsRef.current.scrollTop = msgsRef.current.scrollHeight
         }
-    }, [messages, loading])
+    }, [messages, loading, streamingIdx])
 
     const handleSend = () => {
         const text = input.trim()
@@ -37,7 +81,7 @@ export default function ChatPanel2({
         <div className="v2-chat">
             {/* Header */}
             <div className="v2-chat-hd">
-                <div className="v2-bot-av">^_^</div>
+                <div className="v2-bot-av">💎</div>
                 <div>
                     <div className="v2-bot-name">CodeBot</div>
                     <div className="v2-bot-status">{phaseLabel}</div>
@@ -58,13 +102,18 @@ export default function ChatPanel2({
                         return (
                             <div key={i} className="v2-mg">
                                 <div className={`v2-ms ${msg.type}`}>
-                                    <span>{msg.type === 'soc' ? '(?)' : '(^_^)'}</span>
+                                    <span>{msg.type === 'soc' ? '💭' : '💎'}</span>
                                     CodeBot{msg.type === 'soc' ? ' — Réflexion' : ''}
                                 </div>
-                                <div
-                                    className={`v2-bbl ${msg.type}`}
-                                    dangerouslySetInnerHTML={{ __html: msg.html || msg.text }}
-                                />
+                                <div className={`v2-bbl ${msg.type}`}>
+                                    {i === streamingIdx
+                                        ? <StreamingHtmlMessage
+                                            html={msg.html || msg.text || ''}
+                                            onDone={() => setStreamingIdx(null)}
+                                          />
+                                        : <span dangerouslySetInnerHTML={{ __html: msg.html || msg.text }} />
+                                    }
+                                </div>
                             </div>
                         )
                     }

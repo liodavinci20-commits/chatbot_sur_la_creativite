@@ -291,7 +291,7 @@ Voici ta mission finale :
 
 {FINAL_CHALLENGE['description']}
 
-**Écris ton code HTML complet et envoie-le-moi !** 🚀""",
+**Écris ton code HTML complet et envoie-le-moi !** ⚡""",
                 "completed_topic": None,
                 "final_complete": False,
                 "conversation_state": conversation_state
@@ -484,7 +484,7 @@ Pour ce défi, tu dois écrire du **code HTML**. Commence par les balises qu'on 
 - `<textarea>` pour un message
 - `<input type="submit">` et `<input type="reset">` pour les boutons
 
-**Écris le tout dans une balise `<form>` et envoie-moi le code !** 🚀""",
+**Écris le tout dans une balise `<form>` et envoie-moi le code !** ⚡""",
                     "completed_topic": None,
                     "final_complete": False,
                     "conversation_state": conversation_state
@@ -545,7 +545,7 @@ Commence par la structure de base :
 
 **Rappel** : tu dois utiliser TOUTES les notions qu'on a apprises ensemble (text, password, checkbox, radio, select, textarea, submit, reset).
 
-**Écris le code et envoie-le !** 🚀""",
+**Écris le code et envoie-le !** ⚡""",
                     "completed_topic": None,
                     "final_complete": False,
                     "conversation_state": conversation_state
@@ -561,7 +561,7 @@ Commence par la structure de base :
             return {
                 "response": f"""👋 **Salut {student_name} !**
 
-Je suis **CodeBot** 🤖, ton assistant pour apprendre les formulaires HTML !
+Je suis **CodeBot** 💎, ton assistant pour apprendre les formulaires HTML !
 
 👈 **Choisis une rubrique** dans le menu à gauche pour commencer à apprendre. J'ai hâte de t'enseigner ! 😊""",
                 "completed_topic": None,
@@ -571,7 +571,7 @@ Je suis **CodeBot** 🤖, ton assistant pour apprendre les formulaires HTML !
 
         # Message hors-sujet ou non reconnu
         return {
-            "response": f"""🤖 **Hey {student_name} !**
+            "response": f"""💎 **Hey {student_name} !**
 
 Je suis spécialisé dans les **formulaires HTML** ! Pour avancer, voici ce que tu peux faire :
 
@@ -580,7 +580,7 @@ Je suis spécialisé dans les **formulaires HTML** ! Pour avancer, voici ce que 
 3. 💻 Si tu es dans un défi, **envoie-moi ton code HTML**
 4. 🤔 Si tu ne comprends pas, **dis-le moi** et je t'expliquerai autrement !
 
-**Choisis une rubrique pour commencer !** 🚀""",
+**Choisis une rubrique pour commencer !** ⚡""",
             "completed_topic": None,
             "final_complete": False,
             "conversation_state": conversation_state

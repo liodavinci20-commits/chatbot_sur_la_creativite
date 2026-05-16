@@ -1,9 +1,8 @@
-// LoginPage.jsx — Split-screen dark design, simplified login/register
-// Login-first approach with simple registration
+// LoginPage.jsx — Supabase Auth
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { API_BASE_URL } from '../config'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '../lib/supabase'
 
 // ── Password strength checker ──
 function getPasswordStrength(pwd) {
@@ -108,7 +107,7 @@ export default function LoginPage({ onLogin }) {
     // ── Password strength ──
     const pwdStr = password.length > 0 ? getPasswordStrength(password) : 0
     const pwdColors = ['rgba(240,98,74,.7)', 'rgba(232,160,32,.8)', 'rgba(29,185,122,.8)']
-    const pwdLabels = [['(-_-) Trop court', 'rgba(240,98,74,.8)'], ['(~_~) Moyen', 'rgba(232,160,32,.9)'], ['(^_^) Solide !', 'rgba(29,185,122,.9)']]
+    const pwdLabels = [['(-_-) Trop court', 'rgba(240,98,74,.8)'], ['Moyen', 'rgba(232,160,32,.9)'], ['(^_^) Solide !', 'rgba(29,185,122,.9)']]
 
     // ── Register handler ──
     const handleRegister = async () => {
@@ -116,29 +115,18 @@ export default function LoginPage({ onLogin }) {
         setLoading(true)
         setError('')
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    prenom: prenom.trim(),
-                    nom: nom.trim(),
-                    email: email.trim(),
-                    password,
-                })
-            })
-            const data = await res.json()
+        const fullName = `${prenom.trim()} ${nom.trim()}`
+        const { error: signUpError } = await supabase.auth.signUp({
+            email: email.trim(),
+            password,
+            options: { data: { name: fullName, prenom: prenom.trim(), nom: nom.trim() } }
+        })
 
-            if (data.success) {
-                // Switch to login mode — email & password are already filled (shared state)
-                showToast('Compte créé ! Connecte-toi maintenant (^_^)')
-                setMode('login')
-            } else {
-                setError(data.error || 'Erreur lors de la création du compte')
-            }
-        } catch {
-            setError('Erreur de connexion au serveur')
+        if (signUpError) {
+            setError(signUpError.message)
+        } else {
+            showToast('Compte créé ! Connecte-toi maintenant 😊')
+            setMode('login')
         }
         setLoading(false)
     }
@@ -147,7 +135,7 @@ export default function LoginPage({ onLogin }) {
     const handleLogin = async () => {
         if (!loginOk) return
 
-        // ── Secret Admin Detection ──
+        // ── Admin dev secret ──
         if (email.trim().toLowerCase() === 'admin@admin.com' && password === 'creabot2024') {
             onLogin({ name: 'Admin Dev', isAdmin: true })
             showToast('🔧 Mode Développeur activé')
@@ -158,27 +146,19 @@ export default function LoginPage({ onLogin }) {
         setLoading(true)
         setError('')
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: email.trim(),
-                    password,
-                })
-            })
-            const data = await res.json()
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+        })
 
-            if (data.success) {
-                onLogin({ name: data.name, classe: data.classe })
-                showToast('Ravi de te revoir !')
-                setTimeout(() => navigate('/intro', { replace: true }), 1200)
-            } else {
-                setError(data.error || 'Erreur de connexion')
-            }
-        } catch {
-            setError('Erreur de connexion au serveur')
+        if (signInError) {
+            setError('Email ou mot de passe incorrect')
+        } else {
+            const meta = data.user?.user_metadata || {}
+            const name = meta.name || meta.prenom || email.split('@')[0]
+            onLogin({ name, id: data.user.id })
+            showToast('Ravi de te revoir ! 😊')
+            setTimeout(() => navigate('/intro', { replace: true }), 1000)
         }
         setLoading(false)
     }

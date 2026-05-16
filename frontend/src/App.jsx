@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import AdminBar from './components/AdminBar'
+import { supabase } from './lib/supabase'
 import './index.css'
 
 // Lazy load des pages lourdes pour des transitions fluides
@@ -38,26 +39,40 @@ function PageLoader() {
 }
 
 function App() {
-  // Persister l'utilisateur dans sessionStorage pour ne pas le perdre lors de la navigation
   const [user, setUser] = useState(() => {
-    try {
-      const saved = sessionStorage.getItem('chatbot_user')
-      return saved ? JSON.parse(saved) : null
-    } catch {
-      return null
-    }
+    try { return JSON.parse(sessionStorage.getItem('chatbot_user')) } catch { return null }
   })
 
-  // Synchroniser avec sessionStorage à chaque changement
+  // Écoute les changements de session Supabase
   useEffect(() => {
-    if (user) {
-      sessionStorage.setItem('chatbot_user', JSON.stringify(user))
-    } else {
-      sessionStorage.removeItem('chatbot_user')
-    }
+    // Récupère la session active au démarrage
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && !user) {
+        const meta = session.user.user_metadata || {}
+        const name = meta.name || meta.prenom || session.user.email.split('@')[0]
+        const u = { name, id: session.user.id }
+        setUser(u)
+        sessionStorage.setItem('chatbot_user', JSON.stringify(u))
+      }
+    })
+
+    // Écoute les changements AUTH (login / logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        setUser(null)
+        sessionStorage.removeItem('chatbot_user')
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (user) sessionStorage.setItem('chatbot_user', JSON.stringify(user))
+    else sessionStorage.removeItem('chatbot_user')
   }, [user])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
     setUser(null)
     sessionStorage.removeItem('chatbot_user')
   }
